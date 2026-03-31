@@ -733,6 +733,7 @@
             .cart-drawer { width: 100%; max-width: none; }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -896,8 +897,27 @@
                 <span data-i18n="total">Total</span>
                 <span id="cart-total-val">$0.00</span>
             </div>
-            <div class="checkout-btns">
-                <!-- 支付方式选择标签 -->
+
+            <!-- ===== 步骤1: 填写收货信息 ===== -->
+            <div id="checkout-step1">
+                <div style="margin-bottom:12px;">
+                    <div style="font-size:0.8rem;color:var(--accent-gold);letter-spacing:2px;margin-bottom:10px;text-align:center;" id="order-form-title">✦ 填写收货信息 ✦</div>
+                    <input type="text" id="cust-name" placeholder="姓名 / Name" style="width:100%;padding:10px 12px;margin-bottom:8px;background:#1a1a1a;border:1px solid var(--card-border);border-radius:8px;color:var(--text-primary);font-size:0.85rem;box-sizing:border-box;">
+                    <input type="text" id="cust-phone" placeholder="手机号 / Phone" style="width:100%;padding:10px 12px;margin-bottom:8px;background:#1a1a1a;border:1px solid var(--card-border);border-radius:8px;color:var(--text-primary);font-size:0.85rem;box-sizing:border-box;">
+                    <textarea id="cust-address" placeholder="收货地址 / Shipping Address" rows="2" style="width:100%;padding:10px 12px;margin-bottom:8px;background:#1a1a1a;border:1px solid var(--card-border);border-radius:8px;color:var(--text-primary);font-size:0.85rem;resize:none;font-family:inherit;box-sizing:border-box;"></textarea>
+                    <input type="email" id="cust-email" placeholder="邮箱(可选) / Email (optional)" style="width:100%;padding:10px 12px;margin-bottom:10px;background:#1a1a1a;border:1px solid var(--card-border);border-radius:8px;color:var(--text-primary);font-size:0.85rem;box-sizing:border-box;">
+                </div>
+                <button onclick="submitOrder()" id="submit-order-btn" style="width:100%;padding:14px;background:var(--accent-gold);color:var(--bg-color);border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;font-family:inherit;transition:var(--transition);" id="btn-submit-order">✦ 提交订单 / Place Order ✦</button>
+                <p id="form-error" style="color:#ff6b6b;font-size:0.75rem;text-align:center;margin-top:6px;display:none;"></p>
+            </div>
+
+            <!-- ===== 步骤2: 选择支付方式 ===== -->
+            <div id="checkout-step2" style="display:none;">
+                <div style="text-align:center;margin-bottom:12px;">
+                    <div style="font-size:0.8rem;color:var(--accent-gold);letter-spacing:2px;margin-bottom:4px;">✦ 订单已提交 ✦</div>
+                    <div style="font-size:1.1rem;color:var(--text-primary);font-weight:bold;" id="order-id-display"></div>
+                    <p style="font-size:0.7rem;color:var(--text-secondary);margin-top:4px;" id="order-hint-text">请选择支付方式完成付款</p>
+                </div>
                 <div style="display:flex;gap:6px;margin-bottom:12px;">
                     <button onclick="showPayMethod('paypal')" class="pay-tab active" id="tab-paypal" style="flex:1;padding:8px;border:1px solid var(--accent-gold);background:rgba(200,168,78,0.15);color:var(--accent-gold);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">PayPal / Card</button>
                     <button onclick="showPayMethod('wechat')" class="pay-tab" id="tab-wechat" style="flex:1;padding:8px;border:1px solid var(--card-border);background:transparent;color:var(--text-secondary);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">微信支付</button>
@@ -918,10 +938,12 @@
                         <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
                             <img src="https://sc01.alicdn.com/kf/Ab951043291954da182c48f9f9560d478A.jpg" alt="微信支付" style="width:100%;height:100%;object-fit:cover;">
                         </div>
-                        <p style="color:var(--accent-gold);font-size:0.9rem;margin-bottom:6px;" data-i18n="wechat_scan">微信扫码支付</p>
+                        <p style="color:var(--accent-gold);font-size:0.9rem;margin-bottom:6px;">微信扫码支付</p>
                         <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:var(--accent-gold);font-size:1.1rem;" id="wechat-amount">¥0</strong></p>
-                        <p style="color:var(--text-secondary);font-size:0.65rem;margin-top:8px;line-height:1.5;" data-i18n="wechat_note">扫码支付后请截图凭证<br>发送到微信客服确认订单</p>
-                        <a href="#" id="wechat-cs-link" onclick="openWechatCS()" style="display:inline-block;margin-top:10px;padding:8px 20px;background:#07C160;color:white;border-radius:20px;text-decoration:none;font-size:0.8rem;" data-i18n="contact_cs">联系客服确认</a>
+                        <p style="color:var(--accent-gold);font-size:0.8rem;margin-top:8px;background:rgba(200,168,78,0.1);padding:6px 10px;border-radius:6px;" id="wechat-order-hint"></p>
+                        <p style="color:var(--text-secondary);font-size:0.65rem;margin-top:8px;line-height:1.5;">扫码支付后请截图凭证<br>发送到微信客服确认订单</p>
+                        <a href="#" onclick="openWechatCS()" style="display:inline-block;margin-top:10px;padding:8px 20px;background:#07C160;color:white;border-radius:20px;text-decoration:none;font-size:0.8rem;">联系客服确认</a>
+                        <button onclick="confirmPaid()" style="display:block;width:100%;margin-top:10px;padding:10px;background:var(--accent-gold);color:var(--bg-color);border:none;border-radius:8px;font-size:0.85rem;cursor:pointer;font-family:inherit;">已完成支付 ✓</button>
                     </div>
                 </div>
 
@@ -931,19 +953,25 @@
                         <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
                             <img src="https://sc01.alicdn.com/kf/A23158c62dbb3409892b30609e90de80bV.jpg" alt="支付宝支付" style="width:100%;height:100%;object-fit:cover;">
                         </div>
-                        <p style="color:#1677FF;font-size:0.9rem;margin-bottom:6px;" data-i18n="alipay_scan">支付宝扫码支付</p>
+                        <p style="color:#1677FF;font-size:0.9rem;margin-bottom:6px;">支付宝扫码支付</p>
                         <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:#1677FF;font-size:1.1rem;" id="alipay-amount">¥0</strong></p>
-                        <p style="color:var(--text-secondary);font-size:0.65rem;margin-top:8px;line-height:1.5;" data-i18n="alipay_note">扫码支付后请截图凭证<br>发送到客服确认订单</p>
-                        <a href="#" id="alipay-cs-link" onclick="openAlipayCS()" style="display:inline-block;margin-top:10px;padding:8px 20px;background:#1677FF;color:white;border-radius:20px;text-decoration:none;font-size:0.8rem;" data-i18n="contact_cs_alipay">联系客服确认</a>
+                        <p style="color:#1677FF;font-size:0.8rem;margin-top:8px;background:rgba(22,119,255,0.1);padding:6px 10px;border-radius:6px;" id="alipay-order-hint"></p>
+                        <p style="color:var(--text-secondary);font-size:0.65rem;margin-top:8px;line-height:1.5;">扫码支付后请截图凭证<br>发送到客服确认订单</p>
+                        <a href="#" onclick="openAlipayCS()" style="display:inline-block;margin-top:10px;padding:8px 20px;background:#1677FF;color:white;border-radius:20px;text-decoration:none;font-size:0.8rem;">联系客服确认</a>
+                        <button onclick="confirmPaid()" style="display:block;width:100%;margin-top:10px;padding:10px;background:var(--accent-gold);color:var(--bg-color);border:none;border-radius:8px;font-size:0.85rem;cursor:pointer;font-family:inherit;">已完成支付 ✓</button>
                     </div>
                 </div>
-
-                <!-- 备选联系方式 -->
-                <div style="display:flex;gap:6px;margin-top:10px;">
-                    <a href="#" id="wa-link" class="btn-wa" data-i18n="checkout_wa" style="flex:1;font-size:0.7rem;opacity:0.6;padding:8px;text-align:center;">WhatsApp</a>
-                    <a href="#" id="mail-link" class="btn-mail" data-i18n="checkout_mail" style="flex:1;font-size:0.7rem;opacity:0.6;padding:8px;text-align:center;background:#666;color:white;border:none;border-radius:8px;text-decoration:none;">Email</a>
-                </div>
             </div>
+
+            <!-- ===== 步骤3: 订单确认页 ===== -->
+            <div id="checkout-step3" style="display:none;text-align:center;padding:20px 0;">
+                <div style="font-size:2.5rem;margin-bottom:10px;">✨</div>
+                <div style="font-size:1.1rem;color:var(--accent-gold);font-weight:bold;margin-bottom:6px;" id="confirm-title">订单已提交！</div>
+                <div style="font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;" id="confirm-order-id"></div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.8;margin:12px 0;" id="confirm-msg">我们已收到您的订单，正在为您准备灵力好物。<br>如有疑问请联系微信客服：<strong style="color:var(--accent-gold);">xingxingxinghuaya</strong></p>
+                <button onclick="resetCheckout()" style="width:100%;padding:12px;background:var(--accent-gold);color:var(--bg-color);border:none;border-radius:8px;font-size:0.9rem;cursor:pointer;font-family:inherit;margin-top:10px;">继续购物 ✦</button>
+            </div>
+
         </div>
     </div>
 
@@ -1952,11 +1980,11 @@
         }
 
         function openWechatCS() {
-            const orderSummary = cart.map(i => `${i.name_zh} x${i.qty}`).join('，');
+            const oid = currentOrderId || '';
+            const orderSummary = cart.map(i => `${i[lang==='zh'?'name_zh':'name_en']} x${i.qty}`).join('，');
             const totalUSD = cart.reduce((s,i) => s + i.price * i.qty, 0);
             const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
-            const msg = `【命运工坊订单】\n商品：${orderSummary}\n金额：¥${totalCNY}（$${totalUSD.toFixed(2)}）\n\n我已扫码支付，请确认订单。`;
-            // 尝试复制到剪贴板
+            const msg = `【命运工坊订单 ${oid}】\n商品：${orderSummary}\n金额：¥${totalCNY}（$${totalUSD.toFixed(2)}）\n\n我已扫码支付，请确认订单。`;
             navigator.clipboard.writeText(msg).then(() => {
                 alert(lang === 'zh' 
                     ? '订单信息已复制！请打开微信发送给客服。\n\n微信号：xingxingxinghuaya' 
@@ -1969,12 +1997,150 @@
         }
 
         function openAlipayCS() {
-            const orderSummary = cart.map(i => `${i.name_zh} x${i.qty}`).join('，');
+            const oid = currentOrderId || '';
+            const orderSummary = cart.map(i => `${i[lang==='zh'?'name_zh':'name_en']} x${i.qty}`).join('，');
             const totalUSD = cart.reduce((s,i) => s + i.price * i.qty, 0);
             const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
-            const msg = `【命运工坊订单】商品：${orderSummary} 金额：¥${totalCNY}`;
-            const mailLink = `mailto:347806280@qq.com?subject=${encodeURIComponent('支付宝订单确认')}&body=${encodeURIComponent(msg + '\n\n我已通过支付宝扫码支付，请确认。')}`;
+            const msg = `【命运工坊订单 ${oid}】商品：${orderSummary} 金额：¥${totalCNY}`;
+            const mailLink = `mailto:347806280@qq.com?subject=${encodeURIComponent('支付宝订单确认 ' + oid)}&body=${encodeURIComponent(msg + '\n\n我已通过支付宝扫码支付，请确认。')}`;
             window.open(mailLink);
+        }
+
+        // --- 订单系统 ---
+        let currentOrderId = '';
+
+        // 初始化 EmailJS
+        (function() {
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init('547M4T-GG7qFWahhk');
+            }
+        })();
+
+        function generateOrderId() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth()+1).padStart(2,'0');
+            const d = String(now.getDate()).padStart(2,'0');
+            const r = String(Math.floor(Math.random()*10000)).padStart(4,'0');
+            return `DA-${y}${m}${d}-${r}`;
+        }
+
+        function submitOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const errEl = document.getElementById('form-error');
+
+            // 验证
+            if (!name || !phone || !address) {
+                errEl.textContent = lang === 'zh' ? '请填写姓名、手机号和收货地址' : 'Please fill in name, phone and address';
+                errEl.style.display = 'block';
+                return;
+            }
+            if (cart.length === 0) {
+                errEl.textContent = lang === 'zh' ? '购物车是空的' : 'Cart is empty';
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+
+            // 生成订单号
+            currentOrderId = generateOrderId();
+            const totalUSD = cart.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
+            const isZh = lang === 'zh';
+
+            // 构建商品明细
+            const itemsHtml = cart.map(i => 
+                `<li>${i[isZh?'name_zh':'name_en']} × ${i.qty} — $${(i.price*i.qty).toFixed(2)}</li>`
+            ).join('');
+
+            // 发送邮件通知
+            const btn = document.getElementById('submit-order-btn');
+            btn.textContent = isZh ? '提交中...' : 'Submitting...';
+            btn.disabled = true;
+
+            const emailParams = {
+                order_id: currentOrderId,
+                customer_name: name,
+                customer_phone: phone,
+                customer_address: address,
+                payment_method: '待支付',
+                order_total: `$${totalUSD.toFixed(2)} (¥${totalCNY})`,
+                order_items: `<ul>${itemsHtml}</ul>`
+            };
+
+            const custEmail = document.getElementById('cust-email').value.trim();
+            if (custEmail) emailParams.customer_email = custEmail;
+
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send('service_20w4jm4', 'template_jjj882q', emailParams)
+                    .then(function() {
+                        console.log('Order email sent');
+                        showStep2();
+                    })
+                    .catch(function(err) {
+                        console.error('EmailJS error:', err);
+                        // 邮件发送失败也继续流程，不影响客户下单
+                        showStep2();
+                    });
+            } else {
+                // EmailJS 未加载，直接继续
+                showStep2();
+            }
+        }
+
+        function showStep2() {
+            document.getElementById('checkout-step1').style.display = 'none';
+            document.getElementById('checkout-step2').style.display = 'block';
+            document.getElementById('order-id-display').textContent = currentOrderId;
+
+            const totalUSD = cart.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
+
+            // 微信/支付宝显示订单号提示
+            const wh = document.getElementById('wechat-order-hint');
+            const ah = document.getElementById('alipay-order-hint');
+            if (wh) wh.textContent = `转账备注: ${currentOrderId}`;
+            if (ah) ah.textContent = `转账备注: ${currentOrderId}`;
+
+            // 更新金额
+            const we = document.getElementById('wechat-amount');
+            const ae = document.getElementById('alipay-amount');
+            if (we) we.textContent = '¥' + totalCNY;
+            if (ae) ae.textContent = '¥' + totalCNY;
+
+            // 默认显示 PayPal
+            showPayMethod('paypal');
+        }
+
+        function confirmPaid() {
+            document.getElementById('checkout-step2').style.display = 'none';
+            document.getElementById('checkout-step3').style.display = 'block';
+            document.getElementById('confirm-order-id').textContent = currentOrderId;
+
+            const isZh = lang === 'zh';
+            document.getElementById('confirm-title').textContent = isZh ? '订单已提交！' : 'Order Placed!';
+            document.getElementById('confirm-msg').innerHTML = isZh
+                ? `我们已收到您的订单，正在为您准备灵力好物。<br>如有疑问请联系微信客服：<strong style="color:var(--accent-gold);">xingxingxinghuaya</strong>`
+                : `We've received your order and are preparing your spiritual treasures.<br>Questions? Contact WeChat: <strong style="color:var(--accent-gold);">xingxingxinghuaya</strong>`;
+        }
+
+        function resetCheckout() {
+            cart = [];
+            currentOrderId = '';
+            updateCartUI();
+            document.getElementById('checkout-step1').style.display = 'block';
+            document.getElementById('checkout-step2').style.display = 'none';
+            document.getElementById('checkout-step3').style.display = 'none';
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-phone').value = '';
+            document.getElementById('cust-address').value = '';
+            document.getElementById('cust-email').value = '';
+            const btn = document.getElementById('submit-order-btn');
+            btn.textContent = '✦ 提交订单 / Place Order ✦';
+            btn.disabled = false;
+            toggleCart(false);
         }
 
         // 覆盖 updateCartUI 以同步更新人民币金额
@@ -1987,6 +2153,13 @@
             const ae = document.getElementById('alipay-amount');
             if (we) we.textContent = '¥' + totalCNY;
             if (ae) ae.textContent = '¥' + totalCNY;
+
+            // 重新打开购物车时回到步骤1（如果没有进行中的订单）
+            if (cart.length === 0 && !currentOrderId) {
+                document.getElementById('checkout-step1').style.display = 'block';
+                document.getElementById('checkout-step2').style.display = 'none';
+                document.getElementById('checkout-step3').style.display = 'none';
+            }
         };
     </script>
 </body>

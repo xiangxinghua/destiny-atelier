@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny Atelier | 命运工坊</title>
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --card-border: #2a2a2a;
+            --accent-gold: #c8a84e;
+            --text-primary: #e8e8e8;
+            --text-secondary: #888;
+            --white: #ffffff;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Utils */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .gold-text { color: var(--accent-gold); }
+        .hidden { display: none !important; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-toggle {
+            background: none;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .lang-toggle:hover {
+            background: var(--accent-gold);
+            color: var(--bg-color);
+        }
+
+        .cart-icon-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            position: relative;
+            font-size: 1.5rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: var(--accent-gold);
+            color: var(--bg-color);
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0f0f0f 100%);
+            padding-top: 70px;
+        }
+
+        #hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cta-btn {
+            background: var(--accent-gold);
+            color: var(--bg-color);
+            padding: 15px 40px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(200, 168, 78, 0.2);
+        }
+
+        /* Reading Section */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 2px;
+            background: var(--accent-gold);
+            margin: 15px auto;
+        }
+
+        .reading-form {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid var(--card-border);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        select, input, textarea {
+            background: #252525;
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            outline: none;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        /* Results Area */
+        #reading-results {
+            margin-top: 60px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .energy-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .circular-progress {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: conic-gradient(var(--accent-gold) calc(var(--val) * 1%), #222 0);
+        }
+
+        .circular-progress::before {
+            content: "";
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background: var(--card-bg);
+            border-radius: 50%;
+        }
+
+        .progress-value {
+            position: relative;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .dimension-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .dim-item .dim-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .dim-item .dim-bar-bg {
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            margin-bottom: 5px;
+        }
+
+        .dim-item .dim-bar-fill {
+            height: 100%;
+            background: var(--accent-gold);
+            border-radius: 3px;
+        }
+
+        .narrative-box {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .narrative-box h3 {
+            margin-bottom: 15px;
+            color: var(--accent-gold);
+        }
+
+        .lucky-elements {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding: 20px;
+            background: #222;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .lucky-item span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Products Section */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-gold);
+            color: var(--bg-color);
+            border-color: var(--accent-gold);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+        .product-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-info {
+            padding: 20px 20px 10px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .product-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            height: 2.5em;
+            overflow: hidden;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+        }
+
+        .add-cart-btn {
+            width: 100%;
+            margin-top: 15px;
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .add-cart-btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-color);
+        }
+
+        .rec-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--accent-gold);
+            color: var(--bg-color);
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        /* Product Detail Modal */
+        .detail-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .detail-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .detail-modal {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .detail-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: rgba(15,15,15,0.8);
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 12px;
+            transition: var(--transition);
+        }
+        .detail-close:hover { background: var(--accent-gold); color: var(--bg-color); }
+        .detail-img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 16px 16px 0 0;
+        }
+        .detail-body {
+            padding: 30px;
+        }
+        .detail-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .detail-effects {
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .detail-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+        }
+        .detail-section-title {
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            margin: 24px 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .detail-section-title::before,
+        .detail-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(200,168,78,0.2);
+        }
+        .detail-story {
+            line-height: 2;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        .detail-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .detail-meta-item {
+            background: rgba(200,168,78,0.05);
+            border: 1px solid rgba(200,168,78,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .detail-meta-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .detail-meta-value {
+            color: var(--accent-gold);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .detail-add-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-gold);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: var(--transition);
+        }
+        .detail-add-btn:hover { background: #ddbf5c; }
+        .product-card { cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .detail-modal { max-height: 95vh; border-radius: 12px; }
+            .detail-img { max-height: 280px; }
+            .detail-body { padding: 20px; }
+            .detail-title { font-size: 1.3rem; }
+            .detail-meta { grid-template-columns: 1fr 1fr; gap: 8px; }
+        }
+
+        /* Cart Drawer */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1100;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background: var(--card-bg);
+            z-index: 1200;
+            transition: 0.4s ease;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-drawer.active {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 15px;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #222;
+        }
+
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-name {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+
+        .qty-btn {
+            background: #333;
+            border: none;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cart-footer {
+            margin-top: 20px;
+            border-top: 1px solid var(--card-border);
+            padding-top: 20px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .checkout-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-wa { background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: center; text-decoration: none; }
+        .btn-mail { background: #555; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; text-align: center; text-decoration: none; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            #hero h1 { font-size: 2rem; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .product-info { padding: 10px; }
+            .product-name { font-size: 0.9rem; }
+            .product-desc { display: none; }
+            .product-price { font-size: 1rem; }
+            .reading-form { padding: 20px; }
+            .energy-header { flex-direction: column; }
+            .cart-drawer { width: 100%; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container nav-content">
+            <div class="logo">Destiny <span class="gold-text">Atelier</span></div>
+            <div class="nav-actions">
+                <button class="lang-toggle" onclick="toggleLanguage()">中文 / EN</button>
+                <button class="cart-icon-btn" onclick="toggleCart(true)">
+                    🛒
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header id="hero">
+        <h1 data-i18n="hero_title">Destiny Atelier</h1>
+        <p data-i18n="hero_tagline">Discover Your Energy · Find Your Balance</p>
+        <button class="cta-btn" onclick="scrollToId('reading')" data-i18n="start_btn">Start Your Reading</button>
+    </header>
+
+    <main class="container">
+        <!-- Reading Section -->
+        <section id="reading">
+            <h2 class="section-title" data-i18n="reading_title">Personalized Reading</h2>
+            <div class="reading-form">
+                <div class="form-group">
+                    <label data-i18n="label_birthday">Date of Birth</label>
+                    <div class="form-row">
+                        <select id="birth-year" required></select>
+                        <select id="birth-month" required></select>
+                        <select id="birth-day" required></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="label_birthtime">Time of Birth (Optional)</label>
+                    <select id="birth-hour">
+                        <option value="unknown" data-i18n="opt_unknown">I don't remember</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="label_gender">Gender</label>
+                    <select id="gender">
+                        <option value="female" data-i18n="opt_female">Female</option>
+                        <option value="male" data-i18n="opt_male">Male</option>
+                        <option value="other" data-i18n="opt_other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="label_mbti">MBTI (Optional)</label>
+                    <select id="mbti">
+                        <option value="" data-i18n="opt_none">None</option>
+                        <!-- Filled by JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="label_question">Your Question (Optional)</label>
+                    <textarea id="question" rows="3" placeholder="What's on your mind?"></textarea>
+                </div>
+                <button class="cta-btn" style="width: 100%;" onclick="runReading()" data-i18n="reveal_btn">Reveal My Destiny</button>
+            </div>
+
+            <!-- Results -->
+            <div id="reading-results" class="hidden">
+                <div class="result-card">
+                    <div class="energy-header">
+                        <div class="circular-progress" id="energy-circle" style="--val: 0">
+                            <div class="progress-value" id="energy-val">0</div>
+                        </div>
+                        <div style="flex-grow: 1; max-width: 400px;">
+                            <h2 class="gold-text" data-i18n="overall_energy">Overall Energy Score</h2>
+                            <p data-i18n="energy_desc" style="color: var(--text-secondary); font-size: 0.9rem;">Your current cosmic resonance level.</p>
+                            <div class="dimension-grid" style="margin-top: 20px;">
+                                <div class="dim-item">
+                                    <div class="dim-label" data-i18n="career">Career</div>
+                                    <div class="dim-bar-bg"><div class="dim-bar-fill" id="bar-career" style="width: 0%"></div></div>
+                                    <span id="val-career">0</span>
+                                </div>
+                                <div class="dim-item">
+                                    <div class="dim-label" data-i18n="wealth">Wealth</div>
+                                    <div class="dim-bar-bg"><div class="dim-bar-fill" id="bar-wealth" style="width: 0%"></div></div>
+                                    <span id="val-wealth">0</span>
+                                </div>
+                                <div class="dim-item">
+                                    <div class="dim-label" data-i18n="love">Love</div>
+                                    <div class="dim-bar-bg"><div class="dim-bar-fill" id="bar-love" style="width: 0%"></div></div>
+                                    <span id="val-love">0</span>
+                                </div>
+                                <div class="dim-item">
+                                    <div class="dim-label" data-i18n="health">Health</div>
+                                    <div class="dim-bar-bg"><div class="dim-bar-fill" id="bar-health" style="width: 0%"></div></div>
+                                    <span id="val-health">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="narrative-box">
+                        <h3 data-i18n="reading_narrative_title">Your Cosmic Reading</h3>
+                        <div id="narrative-content"></div>
+                    </div>
+
+                    <div class="lucky-elements">
+                        <div class="lucky-item"><span data-i18n="lucky_color">Lucky Color</span><strong id="res-color">?</strong></div>
+                        <div class="lucky-item"><span data-i18n="lucky_number">Lucky Number</span><strong id="res-number">?</strong></div>
+                        <div class="lucky-item"><span data-i18n="lucky_direction">Lucky Direction</span><strong id="res-direction">?</strong></div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 40px;">
+                        <p data-i18n="shop_transition" style="margin-bottom: 20px;">To harmonize your energy, we recommend:</p>
+                        <button class="cta-btn" onclick="scrollToId('shop')" data-i18n="see_recs">View Recommended Items</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shop Section -->
+        <section id="shop">
+            <h2 class="section-title" data-i18n="shop_title">Curated Spiritual Items</h2>
+            
+            <div class="filter-tabs" id="filter-tabs">
+                <button class="filter-btn active" data-cat="all" data-i18n="cat_all">All</button>
+                <button class="filter-btn" data-cat="bracelets" data-i18n="cat_bracelets">Bracelets</button>
+                <button class="filter-btn" data-cat="necklaces" data-i18n="cat_necklaces">Necklaces</button>
+                <button class="filter-btn" data-cat="decor" data-i18n="cat_decor">Decor</button>
+                <button class="filter-btn" data-cat="accessories" data-i18n="cat_accessories">Accessories</button>
+            </div>
+
+            <div class="product-grid" id="product-grid">
+                <!-- Products injected by JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Destiny Atelier / 命运工坊. <span data-i18n="footer_rights">All rights reserved.</span></p>
+    </footer>
+
+    <!-- Cart UI -->
+    <!-- Product Detail Modal -->
+    <div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
+        <div class="detail-modal" id="detail-modal">
+            <button class="detail-close" onclick="closeDetail()">&times;</button>
+            <img class="detail-img" id="detail-img" src="" alt="">
+            <div class="detail-body" id="detail-body"></div>
+        </div>
+    </div>
+
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3 data-i18n="cart_title">Your Ritual Bag</h3>
+            <button class="close-cart" onclick="toggleCart(false)">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Items injected by JS -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span data-i18n="total">Total</span>
+                <span id="cart-total-val">$0.00</span>
+            </div>
+            <div class="checkout-btns">
+                <!-- 支付方式选择标签 -->
+                <div style="display:flex;gap:6px;margin-bottom:12px;">
+                    <button onclick="showPayMethod('paypal')" class="pay-tab active" id="tab-paypal" style="flex:1;padding:8px;border:1px solid var(--accent-gold);background:rgba(200,168,78,0.15);color:var(--accent-gold);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">PayPal / Card</button>
+                    <button onclick="showPayMethod('wechat')" class="pay-tab" id="tab-wechat" style="flex:1;padding:8px;border:1px solid var(--card-border);background:transparent;color:var(--text-secondary);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">微信支付</button>
+                    <button onclick="showPayMethod('alipay')" class="pay-tab" id="tab-alipay" style="flex:1;padding:8px;border:1px solid var(--card-border);background:transparent;color:var(--text-secondary);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">支付宝</button>
+                </div>
+
+                <!-- PayPal区 -->
+                <div id="pay-paypal">
+                    <div id="paypal-btn-area" data-total="0" style="margin-bottom:10px;">
+                        <div id="paypal-button-container"></div>
+                    </div>
+                    <p style="font-size:0.65rem;color:var(--text-secondary);text-align:center;" data-i18n="payment_note">Secure payment via PayPal. You can also pay with credit/debit card.</p>
+                </div>
+
+                <!-- 微信支付区 -->
+                <div id="pay-wechat" style="display:none;text-align:center;padding:15px 0;">
+                    <div style="background:#2a2a2a;border-radius:12px;padding:20px;display:inline-block;">
+                        <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
+                            <img src="https://sc01.alicdn.com/kf/Ab951043291954da182c48f9f9560d478A.jpg" alt="微信支付" style="width:100%;height:100%;object-fit:cover;">
+                        </div>
+                        <p style="color:var(--accent-gold);font-size:0.9rem;margin-bottom:6px;" data-i18n="wechat_scan">微信扫码支付</p>
+                        <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:var(--accent-gold);font-size:1.1rem;" id="wechat-amount">¥0</strong></p>
+                        <p style="color:var(--text-secondary);font-size:0.65rem;margin-top:8px;line-height:1.5;" data-i18n="wechat_note">扫码支付后请截图凭证<br>发送到微信客服确认订单</p>
+                        <a href="#" id="wechat-cs-link" onclick="openWechatCS()" style="display:inline-block;margin-top:10px;padding:8px 20px;background:#07C160;color:white;border-radius:20px;text-decoration:none;font-size:0.8rem;" data-i18n="contact_cs">联系客服确认</a>
+                    </div>
+                </div>
+
+                <!-- 支付宝区 -->
+                <div id="pay-alipay" style="display:none;text-align:center;padding:15px 0;">
+                    <div style="background:#2a2a2a;border-radius:12px;padding:20px;display:inline-block;">
+                        <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
+                            <img src="https://sc01.alicdn.com/kf/A23158c62dbb3409892b30609e90de80bV.jpg" alt="支付宝支付" style="width:100%;height:100%;object-fit:cover;">
+                        </div>
+                        <p style="color:#1677FF;font-size:0.9rem;margin-bottom:6px;" data-i18n="alipay_scan">支付宝扫码支付</p>
+                        <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:#1677FF;font-size:1.1rem;" id="alipay-amount">¥0</strong></p>
+                        <p style="color:var(--text-secondary);font-size:0.65rem;margin-top:8px;line-height:1.5;" data-i18n="alipay_note">扫码支付后请截图凭证<br>发送到客服确认订单</p>
+                        <a href="#" id="alipay-cs-link" onclick="openAlipayCS()" style="display:inline-block;margin-top:10px;padding:8px 20px;background:#1677FF;color:white;border-radius:20px;text-decoration:none;font-size:0.8rem;" data-i18n="contact_cs_alipay">联系客服确认</a>
+                    </div>
+                </div>
+
+                <!-- 备选联系方式 -->
+                <div style="display:flex;gap:6px;margin-top:10px;">
+                    <a href="#" id="wa-link" class="btn-wa" data-i18n="checkout_wa" style="flex:1;font-size:0.7rem;opacity:0.6;padding:8px;text-align:center;">WhatsApp</a>
+                    <a href="#" id="mail-link" class="btn-mail" data-i18n="checkout_mail" style="flex:1;font-size:0.7rem;opacity:0.6;padding:8px;text-align:center;background:#666;color:white;border:none;border-radius:8px;text-decoration:none;">Email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const PRODUCTS = [
+            {
+                id: 1, name_zh: "黑曜石手串", name_en: "Black Obsidian Bracelet",
+                desc_zh: "强力护身石，净化负能量，增强气场", desc_en: "Powerful protection stone. Cleanses negative energy and strengthens your aura.",
+                price: 12.99, category: "bracelets", element: "water",
+                img: "https://sc02.alicdn.com/kf/Abbff0e9d57544ef1aa70536edf279ab3w.png",
+                effects_zh: "辟邪 · 安神 · 增强气场", effects_en: "Protection · Calm · Aura"
+            },
+            {
+                id: 2, name_zh: "粉水晶手串", name_en: "Rose Quartz Bracelet",
+                desc_zh: "爱情之石，旺桃花，增强人缘魅力", desc_en: "Stone of love. Attracts romance and enhances personal charm.",
+                price: 14.99, category: "bracelets", element: "fire",
+                img: "https://sc02.alicdn.com/kf/A0503a744c9384852800d68c46b2274c4u.png",
+                effects_zh: "旺桃花 · 增人缘 · 促感情", effects_en: "Romance · Charm · Love"
+            },
+            {
+                id: 3, name_zh: "绿幽灵水晶手串", name_en: "Green Aventurine Bracelet",
+                desc_zh: "财富之石，招财旺事业，促进成长", desc_en: "Stone of wealth. Attracts prosperity and career growth.",
+                price: 16.99, category: "bracelets", element: "wood",
+                img: "https://sc02.alicdn.com/kf/A1e83ae62d55a4c39a57430d02b366d7fj.png",
+                effects_zh: "招财 · 旺事业 · 促成长", effects_en: "Wealth · Career · Growth"
+            },
+            {
+                id: 4, name_zh: "虎眼石手串", name_en: "Tiger Eye Bracelet",
+                desc_zh: "勇气之石，增强信心与行动力", desc_en: "Stone of courage. Boosts confidence and decisiveness.",
+                price: 13.99, category: "bracelets", element: "earth",
+                img: "https://sc02.alicdn.com/kf/A1c10a63ef83d48219091db75d8e4e7f0d.png",
+                effects_zh: "增勇气 · 助事业 · 辟邪", effects_en: "Courage · Career · Protection"
+            },
+            {
+                id: 5, name_zh: "紫水晶手串", name_en: "Amethyst Bracelet",
+                desc_zh: "智慧之石，安神助眠，提升灵性", desc_en: "Stone of wisdom. Promotes calm sleep and spiritual growth.",
+                price: 15.99, category: "bracelets", element: "fire",
+                img: "https://sc02.alicdn.com/kf/A35ca6ce3ad1c4b299f50d5a6275e89b0Y.png",
+                effects_zh: "安神 · 助眠 · 增智慧", effects_en: "Calm · Sleep · Wisdom"
+            },
+            {
+                id: 6, name_zh: "琥珀手串", name_en: "Amber Bracelet",
+                desc_zh: "千年松脂，温润养人，安神定气", desc_en: "Ancient tree resin. Warm healing energy, calms the spirit.",
+                price: 19.99, category: "bracelets", element: "earth",
+                img: "https://sc02.alicdn.com/kf/Aef7c25e9dfce43d399aa9bc4ef24d263a.png",
+                effects_zh: "养人 · 安神 · 增免疫", effects_en: "Healing · Calm · Immunity"
+            },
+            {
+                id: 7, name_zh: "月光石项链", name_en: "Moonstone Pendant Necklace",
+                desc_zh: "月光能量，增强直觉，调节情绪", desc_en: "Moonlight energy. Enhances intuition and emotional balance.",
+                price: 18.99, category: "necklaces", element: "water",
+                img: "https://sc02.alicdn.com/kf/A7b46aef4d5bb42dda7a408747bccc50e4.png",
+                effects_zh: "增直觉 · 调情绪 · 助好梦", effects_en: "Intuition · Balance · Dreams"
+            },
+            {
+                id: 8, name_zh: "翡翠平安扣项链", name_en: "Jade Peace Pendant Necklace",
+                desc_zh: "平安富贵，温润养人，旺运护身", desc_en: "Symbol of peace and fortune. Jade nurtures body and spirit.",
+                price: 22.99, category: "necklaces", element: "wood",
+                img: "https://sc02.alicdn.com/kf/Afca402cc14af471c945a1a729757382fk.png",
+                effects_zh: "保平安 · 养人 · 旺运", effects_en: "Peace · Nurture · Fortune"
+            },
+            {
+                id: 9, name_zh: "青金石项链", name_en: "Lapis Lazuli Pendant Necklace",
+                desc_zh: "智慧之石，促进表达，减轻压力", desc_en: "Stone of truth. Promotes self-expression and stress relief.",
+                price: 17.99, category: "necklaces", element: "water",
+                img: "https://sc02.alicdn.com/kf/A21623ce174af4442b16379f9ef50381dL.png",
+                effects_zh: "增智慧 · 促表达 · 减压", effects_en: "Wisdom · Expression · Relief"
+            },
+            {
+                id: 10, name_zh: "招财猫摆件", name_en: "Lucky Cat Figurine (Maneki-neko)",
+                desc_zh: "日式招财猫，招财纳福，可爱吉祥物", desc_en: "Japanese lucky cat. Attracts wealth and good fortune.",
+                price: 9.99, category: "decor", element: "earth",
+                img: "https://sc02.alicdn.com/kf/Ac3c956f54b8843ebb868f83de1da9f4bT.png",
+                effects_zh: "招财 · 纳福 · 好运", effects_en: "Wealth · Fortune · Luck"
+            },
+            {
+                id: 11, name_zh: "水晶球摆件", name_en: "Crystal Ball with Stand",
+                desc_zh: "天然水晶球，净化空间，增强灵感", desc_en: "Natural crystal sphere. Purifies space and boosts inspiration.",
+                price: 14.99, category: "decor", element: "metal",
+                img: "https://sc02.alicdn.com/kf/Af15cedd4d56c4b8b8de8d5f83532a324K.png",
+                effects_zh: "净化 · 增灵感 · 冥想", effects_en: "Purify · Inspire · Meditate"
+            },
+            {
+                id: 12, name_zh: "貔貅红绳手链", name_en: "Pixiu Lucky Red String Bracelet",
+                desc_zh: "招财神兽，红绳辟邪，双重守护", desc_en: "Mythical fortune beast on red string. Dual protection and wealth attraction.",
+                price: 8.99, category: "accessories", element: "fire",
+                img: "https://sc02.alicdn.com/kf/Ab64ec4fbd93a4f1ba7fc57ad29e772d4I.png",
+                effects_zh: "招财 · 辟邪 · 双重守护", effects_en: "Wealth · Protection · Guard"
+            },
+            {
+                id: 13, name_zh: "黄水晶招财手串", name_en: "Citrine Wealth Bracelet",
+                desc_zh: "商人之石，增强财运，激发自信与创造力", desc_en: "Merchant's stone. Amplifies wealth energy, boosts confidence and creativity.",
+                price: 17.99, category: "bracelets", element: "earth",
+                img: "https://sc02.alicdn.com/kf/A2d4858350acb435fa642ee1e590311ba4.png",
+                effects_zh: "招财 · 自信 · 创造力", effects_en: "Wealth · Confidence · Creativity"
+            },
+            {
+                id: 14, name_zh: "红玛瑙护身手串", name_en: "Red Agate Protection Bracelet",
+                desc_zh: "热情之石，增强活力与行动力，稳固情感", desc_en: "Stone of passion. Enhances vitality, courage, and emotional stability.",
+                price: 13.99, category: "bracelets", element: "fire",
+                img: "https://sc02.alicdn.com/kf/A2590c54439054b5fba3fe6cbe099f1a0T.png",
+                effects_zh: "活力 · 勇气 · 稳定", effects_en: "Vitality · Courage · Stability"
+            },
+            {
+                id: 15, name_zh: "月光石灵感手串", name_en: "Moonstone Intuition Bracelet",
+                desc_zh: "月亮之石，增强直觉力与女性能量，安抚情绪", desc_en: "Moon's stone. Enhances intuition and feminine energy, soothes emotions.",
+                price: 18.99, category: "bracelets", element: "water",
+                img: "https://sc02.alicdn.com/kf/Acd7ba58d8c3648a5988ae3e5fe71ba1er.png",
+                effects_zh: "直觉 · 柔和 · 安抚", effects_en: "Intuition · Grace · Soothe"
+            },
+            {
+                id: 16, name_zh: "虎眼石勇气手串", name_en: "Tiger Eye Courage Bracelet",
+                desc_zh: "王者之眼，增强意志力与决断力，化解恐惧", desc_en: "King's eye. Strengthens willpower and decisiveness, dissolves fear.",
+                price: 14.99, category: "bracelets", element: "earth",
+                img: "https://sc02.alicdn.com/kf/Acce8b60c24254943b502640958fdba64y.png",
+                effects_zh: "勇气 · 决断 · 自信", effects_en: "Courage · Decision · Confidence"
+            },
+            {
+                id: 17, name_zh: "白水晶灵摆吊坠", name_en: "Clear Quartz Crystal Pendant",
+                desc_zh: "万能水晶之王，放大能量，净化身心，提升灵性", desc_en: "King of all crystals. Amplifies energy, purifies body and mind, elevates spirituality.",
+                price: 21.99, category: "necklaces", element: "metal",
+                img: "https://sc02.alicdn.com/kf/A124d68ccb7c84ce69f64450d538b3a78X.png",
+                effects_zh: "净化 · 放大 · 灵性", effects_en: "Purify · Amplify · Spirit"
+            },
+            {
+                id: 18, name_zh: "青金石智慧手串", name_en: "Lapis Lazuli Wisdom Bracelet",
+                desc_zh: "皇家之石，激发智慧与洞察力，增强沟通表达", desc_en: "Royal stone. Activates wisdom and insight, enhances communication and expression.",
+                price: 19.99, category: "bracelets", element: "water",
+                img: "https://sc02.alicdn.com/kf/A3d9a79af45c94815b12191e88605a864k.png",
+                effects_zh: "智慧 · 洞察 · 表达", effects_en: "Wisdom · Insight · Expression"
+            },
+            {
+                id: 19, name_zh: "东陵玉好运手串", name_en: "Green Aventurine Lucky Bracelet",
+                desc_zh: "机遇之石，吸引好运与贵人，缓解焦虑", desc_en: "Stone of opportunity. Attracts luck and helpful people, eases anxiety.",
+                price: 12.99, category: "bracelets", element: "wood",
+                img: "https://sc02.alicdn.com/kf/Aa22452cdcf9c4676bd7bb05951678c169.png",
+                effects_zh: "好运 · 贵人 · 安心", effects_en: "Luck · Support · Peace"
+            },
+            {
+                id: 20, name_zh: "紫晶洞摆件", name_en: "Amethyst Geode Cluster",
+                desc_zh: "风水镇宅之宝，净化空间磁场，招财聚气", desc_en: "Feng shui treasure. Purifies space energy, attracts wealth and harmony.",
+                price: 22.99, category: "decor", element: "fire",
+                img: "https://sc02.alicdn.com/kf/Aa29c15adb0d547b69fdd47bbfffac476T.png",
+                effects_zh: "镇宅 · 净化 · 聚气", effects_en: "Protect · Purify · Harmonize"
+            },
+            {
+                id: 21, name_zh: "七脉轮能量套装", name_en: "Seven Chakra Crystal Set",
+                desc_zh: "七种天然水晶对应七大脉轮，全面平衡身心能量", desc_en: "Seven natural crystals for seven chakras. Comprehensive body-mind energy balance.",
+                price: 23.99, category: "decor", element: "metal",
+                img: "https://sc02.alicdn.com/kf/A0b2d6137b502494383d884a51c5fef83N.png",
+                effects_zh: "平衡 · 疗愈 · 全面", effects_en: "Balance · Healing · Complete"
+            },
+            {
+                id: 22, name_zh: "黑曜石貔貅手串", name_en: "Obsidian Pixiu Wealth Bracelet",
+                desc_zh: "双重招财辟邪，黑曜石搭配金貔貅，至强守护", desc_en: "Double protection & wealth. Black obsidian with golden Pixiu charm, ultimate guardian.",
+                price: 16.99, category: "bracelets", element: "water",
+                img: "https://sc02.alicdn.com/kf/A54de8b1eac8a474d8e521d3e4f74a74cW.png",
+                effects_zh: "招财 · 辟邪 · 至强守护", effects_en: "Wealth · Shield · Guardian"
+            },
+            {
+                id: 23, name_zh: "玫瑰石英美容套装", name_en: "Rose Quartz Beauty Set",
+                desc_zh: "天然粉水晶刮痧板+美容滚轮，美容养颜，提升爱情能量", desc_en: "Natural rose quartz gua sha + facial roller. Beauty care and love energy amplifier.",
+                price: 19.99, category: "accessories", element: "fire",
+                img: "https://sc02.alicdn.com/kf/Ad71cf5815857406ba5ebfa6e8ed954a0T.png",
+                effects_zh: "美容 · 爱情 · 滋养", effects_en: "Beauty · Love · Nourish"
+            }
+        ];
+
+        // --- PRODUCT STORIES & LORE ---
+        const STORIES = {
+            1: {
+                origin_zh: "火山深处", origin_en: "Volcanic Depths",
+                chakra_zh: "海底轮", chakra_en: "Root Chakra",
+                suit_zh: "压力大、需要安全感的人", suit_en: "Those under stress who need grounding",
+                care_zh: "月光净化，流水冲洗", care_en: "Moonlight cleansing, running water rinse",
+                story_zh: "黑曜石诞生于火山熔岩遇水急冷的那一刻——这是大地之火与天降之水的极致碰撞。在古代玛雅文明中，黑曜石被称为\"神之镜\"，祭司用它窥视未来、驱散邪灵。在中国风水传统里，黑曜石是最强的辟邪之石，能吸收和化解负面能量。它就像你的隐形护盾，当外界的压力、焦虑、负面情绪试图侵蚀你时，黑曜石会默默替你承受和转化。适合经常加班、压力大、容易被他人情绪影响的你。佩戴在右手可化煞辟邪，佩戴在左手则可增强自信与行动力。每两周将它放在月光下净化一晚，让它恢复守护之力。",
+                story_en: "Black Obsidian is born in the instant when volcanic lava meets water — a dramatic collision of earth's fire and heaven's water. In ancient Mayan civilization, it was called the 'Mirror of the Gods,' used by priests to peer into the future and banish dark spirits. In Chinese Feng Shui tradition, Black Obsidian is the most powerful protective stone, capable of absorbing and transmuting negative energy. Think of it as your invisible shield — when external stress, anxiety, and negativity try to seep in, Black Obsidian quietly absorbs and transforms them for you. Perfect for those who work long hours, carry heavy stress, or are easily affected by others' emotions. Wear on your right hand for protection, or left hand for confidence. Cleanse under moonlight every two weeks to restore its guardian power."
+            },
+            2: {
+                origin_zh: "巴西矿脉", origin_en: "Brazilian Mines",
+                chakra_zh: "眉心轮", chakra_en: "Third Eye Chakra",
+                suit_zh: "失眠焦虑、需要平静的人", suit_en: "Those with anxiety or insomnia seeking calm",
+                care_zh: "紫水晶洞消磁，避免阳光直射", care_en: "Cleanse in amethyst geode, avoid direct sunlight",
+                story_zh: "紫水晶的名字源于古希腊语'amethystos'，意为\"不醉\"。传说酒神狄俄尼索斯曾发怒欲将一位少女石化，月神阿尔忒弥斯将少女变为白色水晶保护她，酒神悔悟后将酒倒在水晶上，从此它染上了永恒的紫色。这个传说赋予紫水晶\"守护清醒\"的力量——不仅是身体的清醒，更是心灵的清醒。在中国传统中，紫色代表紫气东来，是尊贵与智慧的象征。紫水晶能安抚躁动的思绪，帮助你在深夜找回内心的宁静。如果你常常思绪纷飞、难以入眠，把紫水晶放在枕边，它会用温柔的频率帮你卸下一天的疲惫。",
+                story_en: "Amethyst derives its name from the Greek 'amethystos,' meaning 'not intoxicated.' Legend tells of Dionysus, the god of wine, who in a rage tried to petrify a maiden. Artemis, the moon goddess, transformed her into white crystal for protection. Remorseful, Dionysus poured wine over the crystal, giving it its eternal purple hue. This myth granted Amethyst the power of 'guarding clarity' — not just physical sobriety, but spiritual lucidity. In Chinese tradition, purple represents 'auspicious energy from the east,' symbolizing nobility and wisdom. Amethyst soothes restless thoughts and helps you find inner peace in the quiet hours. If your mind races at night, place it by your pillow — its gentle frequency will help you release the day's burdens."
+            },
+            3: {
+                origin_zh: "马达加斯加", origin_en: "Madagascar",
+                chakra_zh: "心轮", chakra_en: "Heart Chakra",
+                suit_zh: "渴望爱情、需要治愈情伤的人", suit_en: "Those seeking love or healing from heartbreak",
+                care_zh: "玫瑰花瓣水浸泡净化", care_en: "Cleanse with rose petal water",
+                story_zh: "粉水晶被称为\"爱之石\"，但它守护的不仅仅是爱情——更是你对自己的爱。在古埃及，克利奥帕特拉（埃及艳后）每天用粉水晶研磨成粉敷面，认为它能永葆青春与魅力。在希腊神话中，粉水晶是爱神阿佛洛狄忒的眼泪与阿多尼斯的鲜血融合而成，从此承载了爱与牺牲的力量。但真正的秘密是：粉水晶最强大的功效，是帮你学会\"先爱自己\"。当你不再苛责自己的不完美，当你开始接纳真实的自己，爱情反而会不请自来。它特别适合刚经历情伤、或者总觉得自己\"不够好\"的你。",
+                story_en: "Rose Quartz is called the 'Stone of Love,' but it guards more than romance — it nurtures your love for yourself. In ancient Egypt, Cleopatra ground Rose Quartz into powder for her daily facials, believing it preserved eternal youth and allure. In Greek mythology, Rose Quartz formed from the mingled tears of Aphrodite and the blood of Adonis, forever carrying the essence of love and sacrifice. But the true secret: Rose Quartz's greatest power is teaching you to love yourself first. When you stop criticizing your imperfections, when you embrace your authentic self, love arrives uninvited. It's especially powerful for those healing from heartbreak, or anyone who constantly feels 'not good enough.'"
+            },
+            4: {
+                origin_zh: "波罗的海", origin_en: "Baltic Sea",
+                chakra_zh: "太阳轮", chakra_en: "Solar Plexus Chakra",
+                suit_zh: "体虚疲劳、需要温暖能量的人", suit_en: "Those feeling fatigued who need warm energy",
+                care_zh: "阳光温和照射补能", care_en: "Gentle sunlight to recharge",
+                story_zh: "琥珀不是石头，而是远古松脂经过数千万年凝结而成的时光胶囊。每一颗琥珀里都封存着史前森林的阳光和呼吸。在北欧神话中，琥珀是女神芙蕾雅思念丈夫时流下的金色眼泪，因此它天生带有温暖与治愈的频率。中医认为琥珀能安神定魄、活血化瘀，是\"五宝\"之一。它散发的温润能量就像冬日的暖阳，能驱散你体内积累的寒气和疲惫。如果你经常手脚冰冷、容易感到疲倦或情绪低落，琥珀会是最温柔的陪伴者。将它贴近皮肤佩戴，让千万年的阳光温暖你此刻的每一寸心田。",
+                story_en: "Amber is not a stone — it's a time capsule, ancient tree resin crystallized over tens of millions of years. Each piece holds the preserved sunlight and breath of prehistoric forests. In Norse mythology, Amber is the golden tears of the goddess Freya, shed while mourning her husband, and so it naturally carries frequencies of warmth and healing. In Traditional Chinese Medicine, Amber calms the spirit, promotes circulation, and is one of the 'Five Treasures.' Its warm radiance is like winter sunshine, driving away the cold and fatigue accumulated in your body. If you often have cold hands, feel tired, or struggle with low moods, Amber is the gentlest companion. Wear it close to your skin and let millions of years of captured sunlight warm every corner of your heart."
+            },
+            5: {
+                origin_zh: "深海珊瑚", origin_en: "Deep Sea Coral",
+                chakra_zh: "喉轮", chakra_en: "Throat Chakra",
+                suit_zh: "需要表达自我、追求宁静的人", suit_en: "Those seeking self-expression and tranquility",
+                care_zh: "温水轻拭，避免化学品", care_en: "Wipe gently with warm water, avoid chemicals",
+                story_zh: "绿松石是人类最早使用的宝石之一，距今已有七千年历史。在古波斯，它被镶嵌在王冠上象征胜利；在藏族文化中，它是\"天之骄子\"的化身，代表吉祥与保护；在美洲原住民传统里，绿松石是沟通天地的桥梁，巫师通过它向苍天祈祷。绿松石最独特的灵性力量在于\"真实表达\"——它对应喉轮，帮助你说出内心真正的声音，不再为了讨好他人而压抑自己。如果你总是\"把话咽回去\"，如果你觉得没有人真正听到你的声音，绿松石会赋予你温和而坚定的表达力。它也是旅行者的护身符，保佑平安归来。",
+                story_en: "Turquoise is one of humanity's oldest gemstones, with a history spanning seven thousand years. In ancient Persia, it was set in crowns as a symbol of victory; in Tibetan culture, it embodies the 'chosen of heaven,' representing auspiciousness and protection; in Native American traditions, Turquoise bridges heaven and earth, used by shamans for celestial prayers. Turquoise's most unique spiritual power lies in 'authentic expression' — aligned with the Throat Chakra, it helps you speak your true inner voice rather than suppressing yourself to please others. If you always 'swallow your words,' if you feel no one truly hears you, Turquoise grants you gentle yet firm expressive power. It's also a traveler's talisman, blessing safe journeys and returns."
+            },
+            6: {
+                origin_zh: "缅甸矿脉", origin_en: "Myanmar Mines",
+                chakra_zh: "心轮·眉心轮", chakra_en: "Heart & Third Eye Chakra",
+                suit_zh: "追求智慧与好运的人", suit_en: "Those seeking wisdom and good fortune",
+                care_zh: "白水晶簇消磁", care_en: "Cleanse with clear quartz cluster",
+                story_zh: "翡翠在东方文化中拥有至高无上的地位，被誉为\"玉石之王\"。古人说\"玉不琢不成器\"，而翡翠本身就是大自然经过亿万年精雕细琢的杰作。它的每一缕翠绿都蕴含着大地深处的生命能量。在中国传统中，佩戴翡翠不仅象征品德高洁，更被认为能\"养人\"——长期贴身佩戴，翡翠会越戴越通透，仿佛它与主人的能量在互相滋养。翡翠对应心轮，帮助你保持情感的平衡与和谐，同时它也被认为能带来好运和财富。如果你是创业者或正在经历人生转折，翡翠会用它沉稳的力量帮你稳住心神，看清方向。",
+                story_en: "Jade holds supreme status in Eastern culture, revered as the 'King of Stones.' The ancients said 'uncarved jade cannot become a vessel,' yet Jade itself is nature's masterwork, sculpted over billions of years. Every thread of its green holds the life energy from deep within the earth. In Chinese tradition, wearing Jade symbolizes noble character and is believed to 'nourish the wearer' — with prolonged wear, Jade becomes more translucent, as if exchanging energy with its owner. Aligned with the Heart Chakra, Jade helps maintain emotional balance and harmony, while attracting good fortune and wealth. If you're an entrepreneur or navigating a life transition, Jade lends its steady power to calm your spirit and clarify your path."
+            },
+            7: {
+                origin_zh: "巴西·乌拉圭", origin_en: "Brazil & Uruguay",
+                chakra_zh: "心轮", chakra_en: "Heart Chakra",
+                suit_zh: "追求财富与好人缘的人", suit_en: "Those seeking wealth and social connections",
+                care_zh: "温水清洗，紫水晶洞消磁", care_en: "Warm water wash, amethyst geode cleanse",
+                story_zh: "葡萄石因其圆润的外形和清透的色泽酷似一颗颗葡萄而得名。它在矿物界被称为\"好望角翡翠\"，是南非好望角最珍贵的矿物之一。葡萄石是一块\"希望之石\"——它能帮助你释放心中积压已久的担忧和恐惧，找回对生活的信心和期待。在能量层面，葡萄石与心轮共振，它的清新绿光能化解你内心的阴霾，让你重新看到生活中的美好。它还有一个独特的功效：增强\"被贵人发现\"的运气。如果你觉得自己的才华总是被埋没，葡萄石会帮你散发出让人无法忽视的光芒。",
+                story_en: "Prehnite gets its name from its round, grape-like clusters and translucent green glow. Known in the mineral world as 'Cape Emerald,' it's one of the Cape of Good Hope's most precious stones. Prehnite is a 'Stone of Hope' — it helps you release long-buried worries and fears, restoring confidence and anticipation for life. Energetically resonating with the Heart Chakra, its fresh green light dissolves inner shadows, helping you rediscover life's beauty. It also has a unique ability: enhancing your 'luck of being discovered.' If you feel your talents are constantly overlooked, Prehnite helps you radiate a brilliance that cannot be ignored."
+            },
+            8: {
+                origin_zh: "世界各地火山区", origin_en: "Volcanic Regions Worldwide",
+                chakra_zh: "全脉轮", chakra_en: "All Chakras",
+                suit_zh: "追求通透人生的人", suit_en: "Those seeking clarity in life",
+                care_zh: "阳光照射充能，海盐水净化", care_en: "Sunlight charging, sea salt water cleanse",
+                story_zh: "白水晶被誉为\"水晶之王\"，是所有水晶中频率最纯净的存在。它就像一面无暇的镜子，能照见万物的本质。在世界各地的灵性传统中，白水晶都是冥想与灵修的首选之石——它能放大你的意念、增强你的直觉、净化你的能量场。有趣的是，白水晶也是\"万能搭配石\"，它能放大任何与它搭配的水晶的功效。如果你是水晶新手，不知道从何选起，白水晶就是最好的起点。它不挑人，不挑时间，默默地为你净化、放大、守护。将它握在手心冥想，你会感受到一股清透的能量从掌心流向全身。",
+                story_en: "Clear Quartz, crowned the 'King of Crystals,' possesses the purest frequency among all crystals. Like a flawless mirror, it reveals the essence of all things. Across spiritual traditions worldwide, Clear Quartz is the premier stone for meditation and spiritual practice — it amplifies your intentions, enhances your intuition, and purifies your energy field. Fascinatingly, it's also the 'universal amplifier,' boosting the power of any crystal it's paired with. If you're new to crystals and unsure where to begin, Clear Quartz is the perfect starting point. It doesn't choose its owner or its moment — it simply purifies, amplifies, and protects. Hold it in your palm during meditation, and you'll feel a crystalline stream of energy flowing from your hand through your entire being."
+            },
+            9: {
+                origin_zh: "斯里兰卡·缅甸", origin_en: "Sri Lanka & Myanmar",
+                chakra_zh: "心轮·眉心轮", chakra_en: "Heart & Third Eye Chakra",
+                suit_zh: "追求优雅与内在平和的人", suit_en: "Those seeking elegance and inner peace",
+                care_zh: "月光充能，软布擦拭", care_en: "Moonlight charging, soft cloth wipe",
+                story_zh: "月光石项链将\"月亮之石\"的柔和能量佩戴于心口，是最接近心轮的佩戴方式。月光石的泛蓝光晕如同月光洒落水面，那种若隐若现的光泽仿佛来自另一个时空。在印度传说中，月光石是月光凝结而成的圣石，拥有预知未来的力量。在新时代灵性里，月光石被视为\"女神之石\"，增强直觉力和女性能量。将它佩戴在胸前，贴近心脏跳动的位置，它会在你每一次呼吸中注入温柔的力量——帮你在繁忙的生活中保持一份宁静的清醒，在纷扰的人际中守住一颗通透的心。",
+                story_en: "The Moonstone Necklace brings the 'Moon Stone's' gentle energy to rest at your heart center — the closest position to the Heart Chakra. Moonstone's blue-white sheen resembles moonlight dancing on water, its ethereal glow seeming to originate from another dimension. In Indian legend, Moonstone is a sacred stone formed from crystallized moonlight, possessing the power to foresee the future. In modern spirituality, it's revered as the 'Goddess Stone,' amplifying intuition and feminine energy. Worn close to your chest, near the rhythm of your heartbeat, it infuses gentle power into every breath — helping you maintain serene clarity amid life's chaos and preserve a luminous heart amid social turbulence."
+            },
+            10: {
+                origin_zh: "日本", origin_en: "Japan",
+                chakra_zh: "太阳轮", chakra_en: "Solar Plexus Chakra",
+                suit_zh: "店铺经营者、创业者", suit_en: "Shop owners and entrepreneurs",
+                care_zh: "清水擦拭，保持微笑面朝门口", care_en: "Wipe with clean water, keep smiling face toward door",
+                story_zh: "招财猫（Maneki-neko）源于日本江户时代的传说：一只猫在寺庙门口举起前爪向一位武士招手，武士好奇走进寺庙，刚一进门，身后就落下一道惊雷——这只猫救了他的命。从此，招财猫成为\"福气与财运\"的象征。举左手招人缘和客源，举右手招财运和金银。在风水中，将招财猫放在店铺收银台或家中财位，能起到\"聚气纳财\"的作用。这款精致的招财猫摆件不仅是吉祥物，更是一份带着温暖祝福的礼物——送给正在努力奋斗的自己，或者你最在乎的人。",
+                story_en: "The Lucky Cat (Maneki-neko) originates from a Japanese Edo-period legend: a cat raised its paw to beckon a samurai into a temple. Moments after he entered, lightning struck the exact spot where he'd been standing — the cat saved his life. Since then, the Lucky Cat has symbolized fortune and prosperity. A raised left paw attracts customers and social connections; a raised right paw draws wealth and treasure. In Feng Shui, placing a Lucky Cat at a shop's cash register or a home's wealth corner 'gathers energy and attracts fortune.' This exquisite Lucky Cat figurine isn't just a charm — it's a warm blessing, perfect as a gift to yourself during your hustle, or to someone you truly cherish."
+            },
+            11: {
+                origin_zh: "天然矿石", origin_en: "Natural Mineral",
+                chakra_zh: "全脉轮", chakra_en: "All Chakras",
+                suit_zh: "冥想爱好者、灵修者", suit_en: "Meditation enthusiasts and spiritual practitioners",
+                care_zh: "月光净化，不同水晶分别消磁", care_en: "Moonlight cleanse, cleanse each crystal separately",
+                story_zh: "水晶摆锤是灵性工具中最古老的存在之一。它不是用来\"测\"什么，而是帮你\"听见\"自己内心深处已经知道的答案。当你手持摆锤静心提问，它的摆动方向其实是你潜意识的投射。天然水晶的纯净频率会放大你的直觉信号，让那些被日常噪音淹没的内心声音重新浮现。在能量疗愈中，摆锤还被用来检测脉轮的运转状态——它会在阻塞的脉轮位置改变摆动模式。适合喜欢冥想、对灵性探索感兴趣、或者在人生十字路口需要\"听听内心声音\"的你。",
+                story_en: "The crystal pendulum is one of the oldest spiritual tools in existence. It doesn't 'predict' — it helps you 'hear' what your deepest self already knows. When you hold it still and ask a question, its swing direction is actually a projection of your subconscious. Natural crystal's pure frequency amplifies your intuitive signals, surfacing inner voices drowned out by daily noise. In energy healing, pendulums also detect chakra function — they shift their swing pattern over blocked chakras. Perfect for meditation lovers, spiritual explorers, or anyone at life's crossroads who needs to 'listen to their inner voice.'"
+            },
+            12: {
+                origin_zh: "中国传统", origin_en: "Chinese Tradition",
+                chakra_zh: "海底轮·太阳轮", chakra_en: "Root & Solar Plexus Chakra",
+                suit_zh: "求财求平安的人", suit_en: "Those seeking wealth and safety",
+                care_zh: "红绳不可自己剪断，自然断裂代表已挡灾", care_en: "Never cut the red string yourself; natural breakage means it absorbed negativity",
+                story_zh: "貔貅是中国古代神话中的瑞兽，传说它口大无肛，只进不出——象征着财富只进不漏。自古以来，从帝王到商贾，无不将貔貅视为招财镇宅的神兽。红绳则是中国最古老的辟邪之物，传说月老用红线牵引姻缘，红绳能连接天地正气。貔貅配红绳，是\"招财+辟邪\"的双重守护组合。有趣的是，民间有\"貔貅认主\"的说法——新请的貔貅要先用清水洗净，然后由主人第一个触摸它的眼睛和嘴巴，这叫\"开光认主\"。之后它就只为你一人招财守护了。",
+                story_en: "Pixiu is an auspicious beast from ancient Chinese mythology, said to have a large mouth but no anus — symbolizing that wealth only enters, never leaves. From emperors to merchants, Pixiu has been revered as the ultimate charm for attracting wealth and guarding the home. The red string is China's oldest talisman against negative energy — legend says the Moon God uses red thread to bind destined lovers, and red rope channels the righteous energy between heaven and earth. Pixiu paired with red string creates the ultimate 'wealth attraction + protection' combination. Interestingly, folk tradition holds that Pixiu 'bonds with its master' — a new Pixiu should be washed with clean water, then its eyes and mouth touched by its owner first (called 'awakening and bonding'). After that, it guards and attracts wealth for you alone."
+            },
+            13: {
+                origin_zh: "巴西·非洲", origin_en: "Brazil & Africa",
+                chakra_zh: "太阳轮", chakra_en: "Solar Plexus Chakra",
+                suit_zh: "创业者、销售人员、求财者", suit_en: "Entrepreneurs, salespeople, wealth seekers",
+                care_zh: "温和阳光照射补能，避免长时间暴晒", care_en: "Gentle sunlight to recharge, avoid prolonged exposure",
+                story_zh: "黄水晶被称为\"商人之石\"，自古以来就是财富与成功的象征。它那温暖的金色光芒如同凝固的阳光，天然蕴含着丰盛与富足的频率。在西方水晶疗法中，黄水晶直接对应太阳轮——掌管自信、意志力和个人力量的能量中心。当你的太阳轮被激活，你会自然散发出一种\"我值得拥有\"的气场，这种气场会像磁铁一样吸引机会和财富。黄水晶特别适合正在创业、做销售、或渴望突破收入瓶颈的你。它不会凭空变出钱来，但它会调整你与\"丰盛\"的关系——当你从内心深处相信自己值得富足，财富的河流就会自然流向你。",
+                story_en: "Citrine is called the 'Merchant's Stone,' a symbol of wealth and success since ancient times. Its warm golden glow is like solidified sunlight, naturally carrying the frequency of abundance and prosperity. In Western crystal therapy, Citrine directly corresponds to the Solar Plexus Chakra — the energy center governing confidence, willpower, and personal power. When your Solar Plexus is activated, you naturally radiate an aura of 'I deserve abundance,' which attracts opportunities and wealth like a magnet. Citrine is especially suited for entrepreneurs, salespeople, and anyone seeking to break through income ceilings. It won't conjure money from thin air, but it recalibrates your relationship with abundance — when you truly believe you deserve prosperity, the river of wealth naturally flows toward you."
+            },
+            14: {
+                origin_zh: "印度·巴西", origin_en: "India & Brazil",
+                chakra_zh: "海底轮·心轮", chakra_en: "Root & Heart Chakra",
+                suit_zh: "缺乏勇气、需要行动力的人", suit_en: "Those lacking courage who need action energy",
+                care_zh: "流水冲洗，阳光短暂照射", care_en: "Running water rinse, brief sunlight",
+                story_zh: "红玛瑙自古就是勇者之石。在古罗马，战士们出征前会将红玛瑙镶嵌在铠甲和剑柄上，相信它能赋予无畏的勇气和不竭的体力。在佛教七宝中，红玛瑙（赤珠）代表了热忱与精进的力量。红玛瑙的深红色蕴含着大地最原始的生命力——它像一团温暖的火焰，不会灼伤你，却能点燃你内心沉睡的热情。如果你最近总觉得\"提不起劲\"，做什么事都缺乏动力，红玛瑙会帮你重新找回那份冲劲。它也是稳固情感关系的好帮手，帮助你在亲密关系中保持真诚与热情，不再因为害怕受伤而退缩。",
+                story_en: "Red Agate has been a warrior's stone since antiquity. In ancient Rome, soldiers embedded Red Agate in their armor and sword hilts before battle, believing it granted fearless courage and inexhaustible stamina. Among Buddhism's Seven Treasures, Red Agate represents passionate devotion and diligent power. Its deep crimson holds the earth's most primal life force — like a warm flame that won't burn you but ignites the dormant passion within. If you've been feeling 'uninspired' lately, lacking motivation for anything, Red Agate helps you rediscover your drive. It also stabilizes emotional relationships, helping you maintain sincerity and warmth in intimate bonds without retreating from fear of being hurt."
+            },
+            15: {
+                origin_zh: "斯里兰卡·印度", origin_en: "Sri Lanka & India",
+                chakra_zh: "顶轮·眉心轮", chakra_en: "Crown & Third Eye Chakra",
+                suit_zh: "创意工作者、直觉敏锐的人", suit_en: "Creative workers and highly intuitive people",
+                care_zh: "月光充能最佳，避免高温", care_en: "Best charged under moonlight, avoid high heat",
+                story_zh: "月光石是月亮的凝固之光，拥有一种如梦似幻的蓝色光晕（月光效应）。在印度教传说中，月光石是由月光凝结而成，代表了月亮女神的祝福。在古罗马，人们相信月光石中住着月亮女神黛安娜，佩戴它的人会获得爱情与好运。月光石最独特的力量在于\"直觉增强\"——它仿佛能打开你与宇宙之间的一条秘密通道，让你在关键时刻收到来自潜意识的提示。如果你从事创意、艺术、写作等需要灵感的工作，月光石会是你最忠实的缪斯。它也特别适合在新月和满月时佩戴，借助月亮的力量放大它的能量。",
+                story_en: "Moonstone is solidified moonlight, graced with a dreamlike blue sheen (adularescence). In Hindu legend, Moonstone formed from crystallized moonbeams, representing the Moon Goddess's blessing. In ancient Rome, people believed the goddess Diana dwelled within Moonstone, granting love and fortune to its wearer. Moonstone's most unique power is 'intuition enhancement' — it opens a secret channel between you and the universe, delivering subconscious hints at critical moments. If you work in creativity, art, writing, or any field requiring inspiration, Moonstone is your most faithful muse. It's especially powerful when worn during new moons and full moons, harnessing lunar energy to amplify its own."
+            },
+            16: {
+                origin_zh: "南非·澳大利亚", origin_en: "South Africa & Australia",
+                chakra_zh: "太阳轮·海底轮", chakra_en: "Solar Plexus & Root Chakra",
+                suit_zh: "领导者、决策者、需要勇气的人", suit_en: "Leaders, decision-makers, those needing courage",
+                care_zh: "阳光短暂照射充能", care_en: "Brief sunlight to recharge",
+                story_zh: "虎眼石因其独特的猫眼效应而得名——转动角度时，金色的光带在石面上流转，仿佛一只猛虎正在注视着你。在古埃及，虎眼石被视为\"全知之眼\"，法老将它镶嵌在胸饰中以获得洞察万物的能力。虎眼石是天生的\"领导力之石\"，它对应太阳轮，能增强你的意志力、决断力和自信心。当你面对重大抉择犹豫不决时，虎眼石会帮你厘清思路，看穿表象之下的真相。它特别适合管理者、创业者、以及所有需要在压力下做出正确决策的人。有趣的是，虎眼石还有\"辟小人\"的说法——它那锐利的目光能让心怀不善者不敢接近。",
+                story_en: "Tiger's Eye gets its name from its unique chatoyancy — as you turn it, golden bands of light flow across the surface like the gaze of a watching tiger. In ancient Egypt, Tiger's Eye was the 'All-Seeing Eye,' set in pharaohs' pectorals for the power to perceive all things. Tiger's Eye is a natural 'Leadership Stone,' aligned with the Solar Plexus Chakra, amplifying willpower, decisiveness, and confidence. When you face major decisions with hesitation, Tiger's Eye helps you cut through confusion and see the truth beneath appearances. Ideal for managers, entrepreneurs, and anyone who must make sound decisions under pressure. Interestingly, Tiger's Eye is also said to 'repel those with ill intent' — its sharp gaze keeps the dishonest at bay."
+            },
+            17: {
+                origin_zh: "巴西·阿尔卑斯", origin_en: "Brazil & Alps",
+                chakra_zh: "顶轮", chakra_en: "Crown Chakra",
+                suit_zh: "灵修者、追求清明的人", suit_en: "Spiritual practitioners seeking clarity",
+                care_zh: "月光充能，海盐水浸泡", care_en: "Moonlight charging, sea salt soak",
+                story_zh: "白水晶灵摆吊坠将\"水晶之王\"悬挂于心口，是灵性与日常的完美融合。天然白水晶六棱柱的尖端自然汇聚能量，就像一个微型的能量发射塔，时刻为你的能量场进行\"信号增强\"。在能量疗愈领域，尖端向下的水晶吊坠被认为能将宇宙能量引导入体内，而尖端向上则将体内的负面能量释放出去。白水晶吊坠特别适合作为冥想时的专注锚点——当杂念纷飞时，你只需轻触胸前的水晶，让它清透的频率帮你快速回到当下。它也是最百搭的灵性首饰，无论搭配什么服装都透着一份清雅脱俗的气质。",
+                story_en: "The Clear Quartz pendant suspends the 'King of Crystals' at your heart center — a perfect fusion of spirituality and daily life. The natural hexagonal prism's tip naturally converges energy, acting as a miniature energy transmitter that continuously 'boosts the signal' of your energy field. In energy healing, a crystal pendant pointing downward channels universal energy into the body, while pointing upward releases negative energy outward. This pendant is especially powerful as a meditation focus anchor — when thoughts scatter, simply touch the crystal at your chest and let its clear frequency bring you instantly back to the present. It's also the most versatile spiritual jewelry, adding an air of refined elegance to any outfit."
+            },
+            18: {
+                origin_zh: "阿富汗", origin_en: "Afghanistan",
+                chakra_zh: "眉心轮·喉轮", chakra_en: "Third Eye & Throat Chakra",
+                suit_zh: "学者、求知者、需要表达的人", suit_en: "Scholars, truth-seekers, communicators",
+                care_zh: "月光净化，避免水洗", care_en: "Moonlight cleanse, avoid water immersion",
+                story_zh: "青金石的深蓝色中点缀着金色的黄铁矿颗粒，宛如一片微缩的星空。在古巴比伦和埃及，青金石比黄金更珍贵——埃及法老图坦卡蒙的面具眉毛就是用青金石镶嵌而成。在佛教中，青金石是\"药师佛\"的化身，代表觉知与智慧的光芒。它同时对应眉心轮和喉轮，这意味着它不仅帮你\"想清楚\"，还帮你\"说明白\"——这对于需要表达观点、进行演讲、或做学术研究的人来说极其重要。如果你总觉得脑子里有很多想法却组织不出来，或者面对重要场合总是\"词不达意\"，青金石会帮你打通思维与表达之间的通道。",
+                story_en: "Lapis Lazuli's deep blue is flecked with golden pyrite particles, resembling a miniature night sky. In ancient Babylon and Egypt, Lapis was more precious than gold — Pharaoh Tutankhamun's famous mask features eyebrows inlaid with Lapis Lazuli. In Buddhism, Lapis embodies the 'Medicine Buddha,' representing the light of awareness and wisdom. It simultaneously aligns with the Third Eye and Throat Chakras, meaning it helps you both 'think clearly' and 'speak precisely' — crucial for those who need to present ideas, give speeches, or conduct academic research. If your mind brims with thoughts you can't organize, or you find yourself tongue-tied at important moments, Lapis Lazuli bridges the gap between thought and expression."
+            },
+            19: {
+                origin_zh: "印度·巴西", origin_en: "India & Brazil",
+                chakra_zh: "心轮", chakra_en: "Heart Chakra",
+                suit_zh: "求职者、考试者、需要好运的人", suit_en: "Job seekers, students, those needing luck",
+                care_zh: "流水冲洗，白水晶簇消磁", care_en: "Running water, clear quartz cluster cleanse",
+                story_zh: "东陵玉（绿东陵）被称为\"机遇之石\"——它不会直接给你带来好运，但它会让你成为\"更容易被好运找到\"的人。东陵玉的绿色能量如同春天的第一缕微风，给你带来新鲜的希望和可能性。在能量层面，它帮你释放\"我不配\"\"我运气不好\"这些自我限制的信念，让你以更开放的心态迎接生活中的每一个机会。面试前、考试前、谈判前佩戴东陵玉，它会帮你缓解紧张情绪，让你展现出最自然、最有魅力的状态。东陵玉也是缓解焦虑的好帮手——当你焦虑时握住它，它清凉的触感和温和的绿色能量会像一只看不见的手，轻轻抚平你的心跳。",
+                story_en: "Green Aventurine is called the 'Stone of Opportunity' — it doesn't directly bring luck, but makes you the kind of person luck finds more easily. Aventurine's green energy is like spring's first breeze, carrying fresh hope and possibility. Energetically, it releases self-limiting beliefs like 'I don't deserve this' and 'I'm just unlucky,' opening your heart to every opportunity life offers. Wear it before job interviews, exams, or negotiations — it eases tension and helps you present your most natural, charismatic self. Aventurine also excels at anxiety relief — when anxious, hold it in your palm and let its cool touch and gentle green energy smooth your racing heartbeat like an invisible, soothing hand."
+            },
+            20: {
+                origin_zh: "巴西·乌拉圭", origin_en: "Brazil & Uruguay",
+                chakra_zh: "眉心轮·顶轮", chakra_en: "Third Eye & Crown Chakra",
+                suit_zh: "家居风水、追求空间净化的人", suit_en: "Home feng shui, space purification seekers",
+                care_zh: "每月阳光照射2小时补能", care_en: "Monthly 2-hour sunlight recharge",
+                story_zh: "紫晶洞是大自然用亿万年时光雕琢的紫色宫殿。它的形成过程本身就是一个奇迹——火山岩浆中的气泡在冷却过程中，地下水中的硅元素缓慢渗透结晶，最终在岩洞内壁长出密密麻麻的紫水晶晶柱。每一个紫晶洞都是独一无二的，就像宇宙专门为你定制的能量场发生器。在风水中，紫晶洞被称为\"聚宝盆\"——不仅因为它的形状像盆，更因为它能\"聚气\"。将它放在家中的财位或客厅，它会持续净化空间中的负面能量，同时像一个能量漏斗一样将正面能量汇聚到你的生活空间中。",
+                story_en: "An Amethyst Geode is nature's purple palace, sculpted over hundreds of millions of years. Its formation is a miracle in itself — gas bubbles in volcanic magma slowly cool while silicon in groundwater seeps in and crystallizes, eventually growing dense clusters of amethyst pillars inside the rock cavity. Every geode is unique, like a custom-made energy field generator crafted by the universe just for you. In Feng Shui, Amethyst Geodes are called 'treasure basins' — not just because of their basin-like shape, but because they 'gather energy.' Place it at your home's wealth corner or living room, and it continuously purifies negative energy from the space while funneling positive energy into your living environment like an energy vortex."
+            },
+            21: {
+                origin_zh: "世界各地", origin_en: "Worldwide",
+                chakra_zh: "七大脉轮", chakra_en: "All Seven Chakras",
+                suit_zh: "能量疗愈爱好者、冥想练习者", suit_en: "Energy healing enthusiasts and meditators",
+                care_zh: "各水晶分别净化，满月时阵列摆放充能", care_en: "Cleanse each crystal separately, arrange during full moon",
+                story_zh: "七脉轮能量套装是一套完整的身心调频工具。从海底轮到顶轮，七种天然水晶分别对应人体七个能量中心：红碧玉→海底轮（安全感）、红玛瑙→脐轮（创造力）、黄水晶→太阳轮（自信）、绿东陵→心轮（爱与慈悲）、青金石→喉轮（表达）、紫水晶→眉心轮（直觉）、白水晶→顶轮（灵性）。当你将七颗水晶按顺序排列在身体中线上进行冥想时，你会感受到一种从脊椎底部向头顶流动的温暖能量流——那是你的昆达里尼能量在苏醒。即使不做冥想，将这套水晶摆放在书桌或床头，它们也会默默平衡你周围的能量场。",
+                story_en: "The Seven Chakra Crystal Set is a complete body-mind tuning toolkit. From Root to Crown, seven natural crystals correspond to the body's seven energy centers: Red Jasper → Root Chakra (security), Carnelian → Sacral Chakra (creativity), Citrine → Solar Plexus (confidence), Green Aventurine → Heart Chakra (love & compassion), Lapis Lazuli → Throat Chakra (expression), Amethyst → Third Eye (intuition), Clear Quartz → Crown Chakra (spirituality). When you lay these seven stones along your body's center line during meditation, you'll feel a warm energy current flowing from the base of your spine to the crown of your head — your Kundalini energy awakening. Even without meditation, placing this set on your desk or nightstand quietly balances the energy field around you."
+            },
+            22: {
+                origin_zh: "墨西哥·中国", origin_en: "Mexico & China",
+                chakra_zh: "海底轮·太阳轮", chakra_en: "Root & Solar Plexus Chakra",
+                suit_zh: "生意人、追求双重守护的人", suit_en: "Business owners seeking double protection",
+                care_zh: "月光净化，避免他人触摸", care_en: "Moonlight cleanse, avoid others touching it",
+                story_zh: "这款手串将黑曜石的强大辟邪力与貔貅的招财神力合二为一，是\"防守+进攻\"的最强组合。黑曜石串珠形成第一道防线，抵御外界一切负面能量的侵扰；金色貔貅坐镇中央，如同一位永不打瞌睡的守财神将，源源不断地为你吸纳财气。在民间传说中，貔貅特别\"护主\"——一旦它认定了主人，就会竭尽全力保护你不受邪祟侵害，同时把它在四面八方\"吃\"到的财气全部带回给你。佩戴时注意：貔貅的头应朝向小指方向（向外），这样才能面向外界\"吃\"进财富；切勿让外人触摸你的貔貅，以免混淆它的认主意识。",
+                story_en: "This bracelet fuses Black Obsidian's powerful protective energy with Pixiu's legendary wealth attraction — the ultimate 'defense + offense' combination. Black Obsidian beads form the first line of defense, shielding against all external negative energy; the golden Pixiu sits at the center like an ever-vigilant wealth guardian, continuously drawing prosperity toward you. In folk legend, Pixiu is fiercely loyal — once it bonds with its master, it devotes all its power to protecting you from harm while bringing home every bit of fortune it 'devours' from all directions. Wearing tip: Pixiu's head should face toward your little finger (outward), so it faces the world to 'consume' wealth; never let others touch your Pixiu, as this may confuse its bond with you."
+            },
+            23: {
+                origin_zh: "马达加斯加·巴西", origin_en: "Madagascar & Brazil",
+                chakra_zh: "心轮", chakra_en: "Heart Chakra",
+                suit_zh: "注重美容护肤、追求内外兼修的人", suit_en: "Beauty-conscious individuals seeking inner and outer harmony",
+                care_zh: "温水清洗，软布擦干，避免跌落", care_en: "Warm water rinse, soft cloth dry, avoid dropping",
+                story_zh: "玫瑰石英（粉水晶）不仅是\"爱之石\"，还是古今中外公认的\"美容圣石\"。埃及艳后克利奥帕特拉每天用粉水晶磨成的粉末护肤，据说这是她永葆容颜的秘密之一。这套美容工具将古老的水晶能量与传统刮痧手法完美结合：玉石滚轮能促进面部血液循环、消除浮肿、紧致轮廓；刮痧板能疏通面部经络、排出毒素、提亮肤色。而粉水晶天然携带的\"爱的频率\"会在你护肤的每一刻提醒你：照顾好自己的容颜，不是虚荣，而是对自己的温柔。当你用它轻柔地按摩面部时，你不仅在护理皮肤，更在与自己的身体进行一场爱的对话。",
+                story_en: "Rose Quartz isn't just the 'Stone of Love' — it's universally recognized as the 'Sacred Beauty Stone.' Cleopatra used powdered Rose Quartz in her daily skincare, allegedly one of her secrets to eternal beauty. This beauty set perfectly combines ancient crystal energy with traditional Gua Sha technique: the jade roller promotes facial circulation, reduces puffiness, and firms contours; the Gua Sha board unblocks facial meridians, releases toxins, and brightens complexion. Rose Quartz's natural 'frequency of love' reminds you with every skincare moment: caring for your appearance isn't vanity — it's tenderness toward yourself. As you gently massage your face, you're not just caring for skin — you're having a love conversation with your own body."
+            }
+        };
+
+        const I18N = {
+            zh: {
+                hero_title: "命运工坊",
+                hero_tagline: "探索你的能量 · 找到你的平衡",
+                start_btn: "开始测算",
+                reading_title: "专属命运测算",
+                label_birthday: "出生日期",
+                label_birthtime: "出生时间 (可选)",
+                opt_unknown: "我不记得了",
+                label_gender: "性别",
+                opt_female: "女性",
+                opt_male: "男性",
+                opt_other: "其他",
+                label_mbti: "MBTI 人格 (可选)",
+                opt_none: "未知",
+                label_question: "你想问的问题 (可选)",
+                reveal_btn: "揭示我的命运",
+                overall_energy: "综合能量分",
+                energy_desc: "你当前的宇宙共鸣水平。",
+                career: "事业",
+                wealth: "财运",
+                love: "感情",
+                health: "健康",
+                reading_narrative_title: "你的能量解读",
+                lucky_color: "幸运色",
+                lucky_number: "幸运数字",
+                lucky_direction: "幸运方位",
+                shop_transition: "为了平衡你的能量，我们建议：",
+                see_recs: "查看推荐好物",
+                shop_title: "能量好物",
+                cat_all: "全部",
+                cat_bracelets: "手串",
+                cat_necklaces: "项链",
+                cat_decor: "家居",
+                cat_accessories: "配饰",
+                footer_rights: "版权所有。",
+                cart_title: "你的转运袋",
+                total: "总计",
+                checkout_wa: "通过 WhatsApp 下单",
+                checkout_mail: "通过邮件下单",
+                payment_note: "通过 PayPal 安全支付，也可使用信用卡/借记卡。",
+                wechat_scan: "微信扫码支付",
+                wechat_note: "扫码支付后请截图凭证\n发送到微信客服确认订单",
+                alipay_scan: "支付宝扫码支付",
+                alipay_note: "扫码支付后请截图凭证\n发送到客服确认订单",
+                contact_cs: "联系客服确认",
+                contact_cs_alipay: "联系客服确认",
+                add_to_cart: "加入购物车",
+                recommended: "测算推荐",
+                placeholder_question: "你想知道关于哪方面的信息？",
+                luck_colors: ["金色", "深蓝色", "森林绿", "珍珠白", "朱砂红", "紫色"],
+                luck_dirs: ["正东", "东南", "正西", "西北", "正北"]
+            },
+            en: {
+                hero_title: "Destiny Atelier",
+                hero_tagline: "Discover Your Energy · Find Your Balance",
+                start_btn: "Start Your Reading",
+                reading_title: "Personalized Reading",
+                label_birthday: "Date of Birth",
+                label_birthtime: "Time of Birth (Optional)",
+                opt_unknown: "I don't remember",
+                label_gender: "Gender",
+                opt_female: "Female",
+                opt_male: "Male",
+                opt_other: "Other",
+                label_mbti: "MBTI (Optional)",
+                opt_none: "None",
+                label_question: "Your Question (Optional)",
+                reveal_btn: "Reveal My Destiny",
+                overall_energy: "Overall Energy Score",
+                energy_desc: "Your current cosmic resonance level.",
+                career: "Career",
+                wealth: "Wealth",
+                love: "Love",
+                health: "Health",
+                reading_narrative_title: "Your Cosmic Reading",
+                lucky_color: "Lucky Color",
+                lucky_number: "Lucky Number",
+                lucky_direction: "Lucky Direction",
+                shop_transition: "To harmonize your energy, we recommend:",
+                see_recs: "View Recommended Items",
+                shop_title: "Curated Spiritual Items",
+                cat_all: "All",
+                cat_bracelets: "Bracelets",
+                cat_necklaces: "Necklaces",
+                cat_decor: "Decor",
+                cat_accessories: "Accessories",
+                footer_rights: "All rights reserved.",
+                cart_title: "Your Ritual Bag",
+                total: "Total",
+                checkout_wa: "Checkout via WhatsApp",
+                checkout_mail: "Checkout via Email",
+                payment_note: "Secure payment via PayPal. You can also pay with credit/debit card.",
+                wechat_scan: "Scan to Pay with WeChat",
+                wechat_note: "After payment, screenshot the receipt\nand send to our customer service",
+                alipay_scan: "Scan to Pay with Alipay",
+                alipay_note: "After payment, screenshot the receipt\nand send to our customer service",
+                contact_cs: "Contact Customer Service",
+                contact_cs_alipay: "Contact Customer Service",
+                add_to_cart: "Add to Cart",
+                recommended: "Recommended",
+                placeholder_question: "What's on your mind?",
+                luck_colors: ["Gold", "Deep Blue", "Forest Green", "Pearl White", "Vermilion Red", "Violet"],
+                luck_dirs: ["East", "Southeast", "West", "Northwest", "North"]
+            }
+        };
+
+        const MBTIS = ["INTJ", "INTP", "ENTJ", "ENTP", "INFJ", "INFP", "ENFJ", "ENFP", "ISTJ", "ISFJ", "ESTJ", "ESFJ", "ISTP", "ISFP", "ESTP", "ESFP"];
+
+        // --- STATE ---
+        let lang = 'zh';
+        let cart = [];
+        let recommendations = [];
+
+        // --- CORE FUNCTIONS ---
+
+        function init() {
+            populateForm();
+            renderProducts();
+            updateLanguage();
+        }
+
+        function populateForm() {
+            const yearSelect = document.getElementById('birth-year');
+            const monthSelect = document.getElementById('birth-month');
+            const daySelect = document.getElementById('birth-day');
+            const hourSelect = document.getElementById('birth-hour');
+            const mbtiSelect = document.getElementById('mbti');
+
+            // Years
+            for (let i = 2020; i >= 1950; i--) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.innerText = i;
+                yearSelect.appendChild(opt);
+            }
+            // Months
+            for (let i = 1; i <= 12; i++) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.innerText = i;
+                monthSelect.appendChild(opt);
+            }
+            // Days
+            for (let i = 1; i <= 31; i++) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.innerText = i;
+                daySelect.appendChild(opt);
+            }
+            // Hours
+            for (let i = 0; i < 24; i++) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.innerText = `${i}:00 - ${i}:59`;
+                hourSelect.appendChild(opt);
+            }
+            // MBTI
+            MBTIS.forEach(m => {
+                let opt = document.createElement('option');
+                opt.value = m; opt.innerText = m;
+                mbtiSelect.appendChild(opt);
+            });
+        }
+
+        function toggleLanguage() {
+            lang = lang === 'zh' ? 'en' : 'zh';
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (I18N[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = I18N[lang][key];
+                    } else {
+                        el.innerText = I18N[lang][key];
+                    }
+                }
+            });
+            renderProducts(); // Refresh buttons/badges
+            updateCartUI();
+        }
+
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- READING ENGINE ---
+
+        function runReading() {
+            const y = document.getElementById('birth-year').value;
+            const m = document.getElementById('birth-month').value;
+            const d = document.getElementById('birth-day').value;
+            const h = document.getElementById('birth-hour').value;
+            const mbti = document.getElementById('mbti').value;
+            const q = document.getElementById('question').value;
+
+            // Simple deterministic seed
+            const seed = parseInt(y) + parseInt(m) * 10 + parseInt(d) * 100;
+            const pseudoRandom = (offset) => {
+                let x = Math.sin(seed + offset) * 10000;
+                return x - Math.floor(x);
+            };
+
+            const overall = Math.floor(65 + pseudoRandom(1) * 30);
+            const career = Math.floor(60 + pseudoRandom(2) * 35);
+            const wealth = Math.floor(60 + pseudoRandom(3) * 35);
+            const love = Math.floor(60 + pseudoRandom(4) * 35);
+            const health = Math.floor(60 + pseudoRandom(5) * 35);
+
+            // UI Update
+            document.getElementById('energy-circle').style.setProperty('--val', overall);
+            document.getElementById('energy-val').innerText = overall;
+            
+            animateBar('career', career);
+            animateBar('wealth', wealth);
+            animateBar('love', love);
+            animateBar('health', health);
+
+            // Lucky items
+            const colorIdx = Math.floor(pseudoRandom(6) * I18N[lang].luck_colors.length);
+            const dirIdx = Math.floor(pseudoRandom(7) * I18N[lang].luck_dirs.length);
+            document.getElementById('res-color').innerText = I18N[lang].luck_colors[colorIdx];
+            document.getElementById('res-number').innerText = Math.floor(pseudoRandom(8) * 9) + 1;
+            document.getElementById('res-direction').innerText = I18N[lang].luck_dirs[dirIdx];
+
+            // Narrative
+            const narrative = generateNarrative(overall, {career, wealth, love, health}, mbti, q);
+            document.getElementById('narrative-content').innerHTML = narrative;
+
+            // Logic for recommendations
+            recommendations = [];
+            if (wealth < 75) recommendations.push('wood', 'earth');
+            if (love < 75) recommendations.push('fire');
+            if (career < 75) recommendations.push('metal', 'water');
+            if (recommendations.length === 0) recommendations.push('water');
+
+            document.getElementById('reading-results').classList.remove('hidden');
+            scrollToId('reading-results');
+            renderProducts();
+        }
+
+        function animateBar(id, val) {
+            document.getElementById(`val-${id}`).innerText = val;
+            document.getElementById(`bar-${id}`).style.width = val + '%';
+        }
+
+        function generateNarrative(score, dims, mbti, question) {
+            const maxDim = Object.keys(dims).reduce((a, b) => dims[a] > dims[b] ? a : b);
+            const minDim = Object.keys(dims).reduce((a, b) => dims[a] < dims[b] ? a : b);
+            const sorted = Object.entries(dims).sort((a,b) => b[1] - a[1]);
+            const secondDim = sorted[1][0];
+            const thirdDim = sorted[2][0];
+
+            // Seeded random for variety based on score
+            const seed = (score * 7 + dims[maxDim] * 3 + dims[minDim] * 11) % 100;
+
+            const mbtiInsights = {
+                INTJ:{zh:'你是一位天生的战略家。你的内心如同一座深邃的湖泊——表面平静，底下却蕴藏着惊人的智慧和远见。你习惯在别人还没看清方向时，就已经把棋局推演了三步。这种超前的思维能力，是你命格中最珍贵的天赋。不过，有时候你可能会因为想得太远，反而忽略了眼前人的温度。记住，人生不只是一盘棋，也是一场需要用心感受的旅途。',en:'You are a natural strategist. Your inner world is like a deep, still lake — calm on the surface but harboring remarkable wisdom and foresight beneath. While others are still trying to read the map, you\'ve already charted three moves ahead. This visionary thinking is the most precious gift in your energy blueprint. Yet sometimes, looking too far ahead means missing the warmth of those standing right beside you. Remember: life isn\'t just a chess game — it\'s also a journey meant to be felt with the heart.'},
+                INTP:{zh:'你的灵魂里住着一位哲学家和发明家。你对这个世界有着永不疲倦的好奇心，喜欢拆解事物的本质，直到找到那个让一切"说得通"的答案。这种追求真理的执着，让你在很多人眼中是那个"最聪明的人"。但聪明有时也是一种重量——你可能会在思考的迷宫里转太久，而忘了走出来享受阳光。给自己一些"不思考"的时间，反而会让灵感更容易敲门。',en:'A philosopher and inventor live within your soul. You carry an inexhaustible curiosity about the world, loving to deconstruct things to their essence until everything "makes sense." This relentless pursuit of truth makes you the smartest person in many rooms. But intelligence can also be a weight — sometimes you wander too long in the labyrinth of thought and forget to step out into the sunlight. Give yourself permission to simply *be* without analyzing, and watch how inspiration knocks at your door.'},
+                ENTJ:{zh:'你的能量场中有一道非常强烈的"王者之光"。你天生就知道如何掌控局面，如何把一群人的力量凝聚成一股不可阻挡的洪流。你不是那种等机会来找你的人——你是那个创造机会的人。这种与生俱来的领导力，在你的命格中显得格外突出。但请记住，真正的王者不仅仅是被追随，更是被热爱。偶尔放下铠甲，展现你柔软的一面，会让你的领导力更有温度。',en:'Your energy field carries a powerful "sovereign light." You instinctively know how to command a room and channel collective energy into an unstoppable force. You don\'t wait for opportunity — you create it. This innate leadership is exceptionally prominent in your cosmic blueprint. But remember: a true sovereign isn\'t just followed — they are loved. Occasionally lowering your armor to reveal your softer side will make your leadership not just respected, but genuinely warm.'},
+                ENTP:{zh:'你的灵魂是一团永远跳动的火焰——充满创意、永不安分。你看到别人看不到的可能性，你能把两个毫不相关的想法碰撞出惊人的火花。这种"灵光一闪"的天赋，是你生命中最大的宝藏。但火焰需要燃料才能持续燃烧：学会把你的一百个好点子变成一个做到底的行动，才是你真正爆发的关键。',en:'Your soul is an ever-dancing flame — brimming with ideas, never still. You see possibilities invisible to others, sparking brilliance by connecting the seemingly unrelated. This gift of "lightning insight" is your life\'s greatest treasure. But fire needs fuel to keep burning: learning to channel a hundred brilliant ideas into one committed action is the key to your true breakthrough.'},
+                INFJ:{zh:'你是人群中最安静的那束光，但也可能是照得最远的那束。你对人性有着几乎直觉般的洞察力，常常在别人还没开口之前就已经读懂了他们的心事。这种共情的天赋让你成为了很多人心中的"树洞"和"港湾"。但你也因此容易承受太多不属于自己的情绪重量。请记住，你也值得被人温柔对待——先照顾好自己，才能更好地温暖他人。',en:'You are the quietest light in the crowd, yet perhaps the one that reaches the farthest. You possess an almost intuitive understanding of human nature, often reading hearts before words are spoken. This empathic gift makes you many people\'s safe harbor. But this also means you absorb emotional weight that isn\'t yours to carry. Remember: you deserve gentleness too — caring for yourself first is not selfish, it\'s the foundation for warming others.'},
+                INFP:{zh:'在你的内心深处，住着一整个宇宙——有星辰，有大海，有诗，还有一份对这个世界永远不会熄灭的温柔。你是那种"看起来安安静静，其实内心波澜壮阔"的人。你追求的不是世俗意义上的成功，而是一种更深层的"意义感"。这份纯粹和理想主义，是你区别于所有人的独特光芒。但请不要因为世界的粗糙而否定自己的柔软，恰恰是你的柔软，才是最有力量的东西。',en:'Deep inside you lives an entire universe — stars, oceans, poetry, and an inexhaustible tenderness for this world. You appear quiet on the surface but carry tidal waves within. You don\'t chase conventional success — you seek something deeper: *meaning*. This purity and idealism is the unique light that sets you apart from everyone else. Don\'t let the world\'s roughness make you doubt your softness — it is precisely your softness that holds the greatest strength.'},
+                ENFJ:{zh:'如果说有些人天生就是来温暖这个世界的，你一定是其中之一。你身上有一种独特的磁场，能让身边的人感到被理解、被支持、被相信。你是天生的"点灯人"——走到哪里，就把光明带到哪里。但也请留意，你在为别人举灯的时候，自己是否也站在光里。你的能量需要补给，你的心也需要被看见。',en:'If some people are born to warm the world, you are undoubtedly one of them. You carry a unique magnetism that makes everyone around you feel understood, supported, and believed in. You are a natural "lamplighter" — bringing illumination wherever you go. But please notice: while you hold the lamp for others, are you standing in the light yourself? Your energy needs replenishing. Your heart deserves to be seen too.'},
+                ENFP:{zh:'你就像一场流动的盛宴——走到哪里，就把热情和欢笑带到哪里。你的眼睛里永远闪烁着对生活的好奇和期待，仿佛每一天都是一场新的冒险。这种感染力让你成为社交场合中最耀眼的存在。但烟花再美，也需要有人陪你看烟花散去之后的星空。偶尔停下来，深呼吸，和一个懂你的人安静地待一会儿——那些沉默的时刻，也是生命的馈赠。',en:'You are a moving celebration — bringing passion and laughter wherever you go. Your eyes forever sparkle with curiosity, as if every day is a new adventure. This infectious energy makes you the brightest presence in any room. But even fireworks need someone to watch the quiet starry sky after the show. Pause sometimes. Breathe deeply. Sit quietly with someone who truly understands you — those silent moments are life\'s gifts too.'},
+                ISTJ:{zh:'你是这个浮躁时代里最稀有的存在——一个真正靠谱的人。你说到做到，承诺就是承诺，你的字典里没有"差不多"这个词。这种脚踏实地的品质，让你成为了很多人生命中的"定海神针"。但也请允许自己偶尔"不那么完美"，允许计划有变，允许意外成为惊喜。生活不是一张需要打满勾的清单，有时候，迷路反而能发现最美的风景。',en:'In this restless era, you are the rarest kind of person — genuinely reliable. Your word is your bond, and "good enough" doesn\'t exist in your vocabulary. This grounded integrity makes you the anchor in many people\'s lives. But please allow yourself to be "less than perfect" sometimes. Let plans change. Let surprises become gifts. Life isn\'t a checklist to complete — sometimes getting lost leads you to the most beautiful scenery.'},
+                ISFJ:{zh:'你是那种"默默付出，从不邀功"的人，就像冬日里的暖炉——不张扬，但少了你，整个房间都会冷下来。你记得每个人的喜好和需要，总是在别人开口之前就已经准备好了一切。这份细腻和温暖，是你身上最动人的光芒。但也请记住，你不需要用"有用"来证明自己的价值。你的存在本身，就已经足够珍贵了。',en:'You are the kind of person who gives silently, never seeking credit — like a warm hearth in winter. Unassuming, but without you, the whole room goes cold. You remember everyone\'s preferences, preparing everything before anyone asks. This attentive warmth is your most touching radiance. But please remember: you don\'t need to prove your worth by being "useful." Your existence alone is already precious enough.'},
+                ESTJ:{zh:'你身上有一种"说干就干"的利落劲儿，让你在任何团队里都是那个最高效的推动者。规则、流程、结果——这三个词就是你的行动纲领。你的执行力强大到让人信服。但有时候，效率并不是衡量一切的唯一标准。停下来听听那些"看起来没用"的声音，你会发现，人心才是你最强大的资源。',en:'You have a "just do it" decisiveness that makes you the most efficient driver in any team. Rules, process, results — these three words are your operating principles. Your execution power commands respect. But sometimes efficiency isn\'t the only metric that matters. Pause to listen to those "seemingly useless" voices — you\'ll discover that human hearts are your most powerful resource.'},
+                ESFJ:{zh:'你的身上有一种天然的"暖阳"特质——你走到哪里，哪里就变得更和谐、更温暖。你天生懂得如何照顾别人的感受，如何让每个人都觉得自己被重视。这种社交天赋让你拥有令人羡慕的好人缘。但也请记住，你不需要让所有人都满意。你最重要的观众，是镜子里的那个自己。',en:'You carry a natural "warm sun" quality — wherever you go becomes more harmonious, more warm. You instinctively know how to tend to others\' feelings, making everyone feel valued. This social gift gives you enviable connections. But remember: you don\'t need everyone\'s approval. Your most important audience is the person in the mirror.'},
+                ISTP:{zh:'你就像一把瑞士军刀——低调、精准、在关键时刻总能解决问题。你不爱说漂亮话，但你的行动比任何言语都有说服力。你享受独处的时光，在那些安静的时刻里，你的思维其实比任何人都活跃。这种"冷酷外表下的热烈内心"，是你最迷人的反差。但也试着让你在意的人看到那份热烈——你值得被深深理解。',en:'You\'re like a Swiss Army knife — understated, precise, and always solving problems when it counts. You don\'t say pretty words, but your actions speak louder than any speech. You enjoy solitude, and in those quiet moments, your mind is more active than anyone knows. This contrast of cool exterior and passionate interior is your most captivating quality. But try letting the people you care about see that passion — you deserve to be deeply understood.'},
+                ISFP:{zh:'你的灵魂里有一双"美"的眼睛——你能看到日落的一百种颜色，能感受到微风中的故事。你不喜欢被规则束缚，你需要自由，就像鸟儿需要天空。你的审美和感知力是你最独特的天赋，它让你创造出别人想象不到的美好事物。但请不要太沉溺在自己的世界里——外面虽然吵闹，但也有值得你驻足的风景和值得你敞开心扉的人。',en:'Your soul has eyes for beauty — you see a hundred colors in a sunset, feel stories in the breeze. You resist being caged by rules; you need freedom like birds need sky. Your aesthetic sense and perception are your most unique gifts, letting you create beauty others can\'t imagine. But don\'t retreat too deep into your own world — the outside may be noisy, but it also holds scenery worth pausing for and people worth opening your heart to.'},
+                ESTP:{zh:'你身上有一种让人着迷的"当下感"——你不会纠结过去，也不会焦虑未来，你永远活在最鲜活的此刻。你的反应速度比大多数人快两拍，这让你在危机时刻总能化险为夷。你是天生的行动派，"犹豫"这个词不存在于你的人生词典。但行动力再强，也需要偶尔按下暂停键。有些路，慢慢走反而走得更远。',en:'You carry a fascinating "presence" — you don\'t dwell on the past or worry about the future. You live in the most vivid *now*. Your reflexes are two beats faster than most, making you a natural at turning crisis into opportunity. Hesitation doesn\'t exist in your vocabulary. But even the strongest engine needs to pause sometimes. Some roads, walked slowly, lead you much further.'},
+                ESFP:{zh:'你就像一首会走路的歌——热烈、明亮、让人忍不住跟着节奏摇摆。你有一种神奇的魔力，能让最无聊的场合变得生动有趣。你的笑容有治愈力，你的热情有感染力。你是这个世界上最懂得"活着"的人之一。但在聚光灯之外的安静时刻，也请温柔地对待自己内心偶尔浮现的不安。每一颗星星都有暗淡的时候，但这不影响它是星星。',en:'You\'re like a walking song — vibrant, bright, making everyone sway to your rhythm. You have a magical ability to turn the dullest occasion into something alive. Your smile heals; your enthusiasm is contagious. You are among the people in this world who truly understand what it means to *live*. But in the quiet moments away from the spotlight, be gentle with the occasional unease in your heart. Every star has dim moments, but that doesn\'t make it any less of a star.'}
+            };
+
+            if (lang === 'zh') {
+                const L = { career:'事业', wealth:'财运', love:'感情', health:'健康' };
+                let parts = [];
+
+                // === 第一段：命格总论（模棱两可 + 正向） ===
+                const p1Variants = [
+                    `从你出生那一刻起，宇宙就为你写下了一段独特的密码。你的综合能量指数为 <strong style="color:var(--accent-gold)">${score}</strong>，这个数字并非偶然——它暗示着你身上蕴藏着某种<em>尚未被完全释放的力量</em>。在我接触过的众多能量场中，你的频率有一种罕见的特质：它不是那种张扬外放的强大，而是一种内敛深沉的潜力，像是还没有破土的种子，一旦找到合适的土壤和阳光，就会以令人惊叹的速度绽放。`,
+                    `你的综合能量指数达到了 <strong style="color:var(--accent-gold)">${score}</strong>。说实话，这个数字一出现，我就感受到了一些不寻常的信号——你的命格中有一种很少见的"双重特质"：一面是理性的、克制的、深思熟虑的你；另一面则是感性的、直觉敏锐的、充满想象力的你。大多数人只拥有其中一面，而你两者兼具。这种内在的张力，恰恰是你最大的优势，也是你偶尔感到矛盾和纠结的根源。`,
+                    `综合能量扫描显示，你的频率为 <strong style="color:var(--accent-gold)">${score}</strong>。有趣的是，这个数字透露了一个你可能自己都没意识到的真相——你比你以为的自己要强大得多。你身上有一种"隐藏buff"：当你真正投入一件事的时候，你的能量场会自发地进入一种高度集中的状态，效率和灵感都会成倍增长。问题只在于，你并不总是相信自己有这样的力量。`
+                ];
+                parts.push(p1Variants[seed % 3]);
+
+                // === 第二段：维度解读（给人"被看透"的感觉） ===
+                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ 维 度 解 析 ◈</span>在你的能量版图中，<strong style="color:var(--accent-gold)">${L[maxDim]}</strong>维度最为亮眼，达到了 ${dims[maxDim]} 分。这说明你在${L[maxDim]}方面有着天然的敏锐度和好运加持——你可能已经感受到了，在这个领域，你的直觉往往比分析更准确，你的努力往往比别人更容易看到回报。这并不是运气，而是你的能量磁场在这个方向上天然地强大。`);
+
+                parts.push(`相比之下，<strong>${L[minDim]}</strong>维度暂时处于 ${dims[minDim]} 分的位置，这并不是说你在这方面"不行"——恰恰相反，它说明你在${L[minDim]}领域有<em>巨大的上升空间</em>。就像一根弹簧被压到最低点，蓄积的势能反而最大。你可能最近在${L[minDim]}方面遇到了一些让你感到困惑或不安的事情，别着急，这正是宇宙在提醒你：是时候给这个维度"充电"了。${L[secondDim]}（${sorted[1][1]}分）和${L[thirdDim]}（${sorted[2][1]}分）处于稳健区间，稍加调整即可更上一层楼。`);
+
+                // === 第三段：心理安抚（说到心坎里） ===
+                const comfortVariants = [
+                    `我能感受到，你可能是一个习惯性"内耗"的人——外人看到的你总是从容不迫，但只有你自己知道，那些深夜辗转反侧的时刻，那些不断质疑自己"是不是还不够好"的瞬间，消耗了你多少能量。我想告诉你的是：<strong style="color:var(--accent-gold)">你已经做得够好了</strong>。你不需要成为别人期待中的样子，你只需要成为你自己——那个有时候很强大、有时候也会脆弱，但永远在努力往前走的你。宇宙看到了你的每一份坚持，即使你觉得"好像什么都没发生"，种子其实早就在地下生根了。`,
+                    `看到你的能量数据，有一些话我忍不住想对你说——你是不是经常觉得"自己不被理解"？你身边的人可能欣赏你、依赖你，但真正懂你内心深处那些微妙感受的人，似乎总是很少。这不是你的问题，而是你的频率确实比较独特。<strong style="color:var(--accent-gold)">独特从来不是缺陷，而是天赋</strong>。你不需要降低自己的频率去迎合别人。对的人和对的事，会在正确的时间走向你——而你现在要做的，就是保持住自己的光芒。`,
+                    `如果我没有猜错的话，你最近可能正处于一个"看起来一切正常，但内心有点迷茫"的状态。这种感觉并不是坏事——它恰恰说明你的灵魂在寻找更高层次的意义。<strong style="color:var(--accent-gold)">你不是在原地打转，你是在螺旋上升</strong>。你正站在一个重要的十字路口，过去的你已经完成了它的使命，新的你正在酝酿。给自己一些时间和耐心，蝴蝶不会在茧里就长出翅膀——它需要等待那个属于它的时刻。`
+                ];
+                parts.push(comfortVariants[(seed + dims[maxDim]) % 3]);
+
+                // === 第四段：正向指引 ===
+                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ 未 来 指 引 ◈</span>从能量走势来看，你接下来的3-6个月将进入一个${score > 70 ? '逐渐上行的通道' : '触底反弹的转折期'}。${L[maxDim]}维度会继续保持强势，可能会有${maxDim === 'career' ? '升职加薪或重要合作的机会出现' : maxDim === 'wealth' ? '意想不到的财运或投资回报' : maxDim === 'love' ? '一段深刻的情感连接或关系升温' : '身心状态明显改善的转折点'}。而${L[minDim]}维度，只要你主动去调和——${minDim === 'career' ? '大胆表达自己的想法，不要总是退让' : minDim === 'wealth' ? '重新审视你和金钱的关系，允许自己"值得"拥有更多' : minDim === 'love' ? '试着打开心门，不要用坚硬的壳保护柔软的自己' : '放慢脚步，倾听身体的声音，它比你想象中更诚实'}——你会发现，改变来得比你想象的要快。`);
+
+                // === 第五段：MBTI 深度人格洞察 ===
+                if (mbti && mbtiInsights[mbti]) {
+                    parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.06); border:1px solid rgba(200,168,78,0.15); border-radius:12px;">
+                        <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ ${mbti} · 人 格 能 量 洞 察 ◈</span>
+                        <p style="line-height:1.9;margin:0;">${mbtiInsights[mbti].zh}</p>
+                        <p style="line-height:1.9;margin:12px 0 0 0;">当你的${mbti}性格与${L[maxDim]}维度的强势能量结合时，你会在这个领域展现出${mbti.includes('E') ? '极具感染力的领导力和号召力' : '深邃独到的洞察力和判断力'}。而在${L[minDim]}方面，你的${mbti.includes('F') ? '敏感细腻可能会让你过度在意外界的评价' : '理性克制可能会让你忽视内心真实的声音'}——尝试${mbti.includes('J') ? '放下一些控制欲，允许生活有一些意外和惊喜' : '给自己的生活建立一些小小的仪式感和秩序感'}，你会找到新的平衡。</p>
+                    </div>`);
+                }
+
+                // === 第六段：能量调和 → 软营销 ===
+                const elemMap = {
+                    career: { items: '黑曜石或水晶球', why: '它们的沉稳频率能帮助你在职场中保持清醒的判断力，不被外界的噪音干扰' },
+                    wealth: { items: '绿幽灵或虎眼石', why: '它们的丰盛频率能帮助你打开"值得拥有"的信念，让财富更自然地流向你' },
+                    love: { items: '粉水晶或月光石', why: '它们的温柔频率能帮助你软化心墙，让爱更容易流动——无论是给予还是接受' },
+                    health: { items: '琥珀或紫水晶', why: '它们的安宁频率能帮助你的身体进入深度修复模式，找回被消耗的元气' }
+                };
+                const rec = elemMap[minDim];
+                parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.06); border:1px solid rgba(200,168,78,0.15); border-radius:12px;">
+                    <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ 能 量 调 和 方 案 ◈</span>
+                    <p style="line-height:1.9;margin:0;">根据你的能量版图，我建议你在日常生活中引入一些与<strong style="color:var(--accent-gold)">${L[minDim]}维度</strong>共振的能量物件。最匹配你当前状态的是<strong style="color:var(--accent-gold)">${rec.items}</strong>——${rec.why}。</p>
+                    <p style="line-height:1.9;margin:12px 0 0 0;">这不是"迷信"，而是一种<em>能量提醒</em>。就像有些人通过冥想来校准心境，有些人通过运动来释放压力，佩戴与自己频率共振的天然矿石，是一种古老而有效的能量调和方式。每天手腕上的那一圈温润，会在无形中提醒你：<strong style="color:var(--accent-gold)">你值得更好的，而更好的正在来的路上。</strong></p>
+                </div>`);
+
+                // === 第七段：问题专区 ===
+                if (question) {
+                    parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.08); border-left:4px solid var(--accent-gold); border-radius:0 12px 12px 0;">
+                        <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">✦ 关 于 你 的 提 问 ✦</span>
+                        <p style="line-height:1.9;margin:0;">首先，你会把这个问题提出来，本身就说明你已经在认真对待自己的人生——这比很多人都更有智慧和勇气。</p>
+                        <p style="line-height:1.9;margin:12px 0 0 0;">综合你的能量格局，${dims[maxDim] > 80 ? '当前整体势能向好，你的直觉大概率是对的' : '目前正处于一个微妙的过渡期，急于求成反而可能事与愿违'}。我的建议是：${score > 75 ? '相信自己的判断，当你反复犹豫的时候，第一个冒出来的念头往往最接近答案' : '给自己三到五天的时间"不思考这个问题"，让潜意识替你工作。你会发现，答案往往在你放手的那一刻清晰起来'}。</p>
+                        <p style="line-height:1.9;margin:12px 0 0 0;">你的<strong style="color:var(--accent-gold)">${L[maxDim]}能量</strong>是你面对这个问题时最强的助力——试着从这个方向切入。${dims[minDim] < 65 ? `但也请留意${L[minDim]}维度可能带来的意外变量，提前做好Plan B。` : '各维度能量相对均衡，顺势而为即可。'}记住，<em>没有任何一个决定是100%完美的</em>，但只要方向大致正确，宇宙会帮你修正细节。</p>
+                    </div>`);
+                }
+
+                return parts.map((p, i) => {
+                    if (typeof p === 'string' && (p.startsWith('<div') || p.startsWith('<span'))) return p;
+                    return `<p style="line-height:1.9;margin-bottom:16px;">${p}</p>`;
+                }).join('');
+
+            } else {
+                // ============ ENGLISH VERSION ============
+                const L = { career:'Career', wealth:'Wealth', love:'Love', health:'Health' };
+                let parts = [];
+
+                const p1Variants = [
+                    `From the moment you were born, the universe encoded a unique signature into your being. Your overall energy index is <strong style="color:var(--accent-gold)">${score}</strong> — and this number is no accident. It hints at a power within you that <em>hasn't been fully unleashed yet</em>. Among the many energy fields I've encountered, yours carries a rare quality: not the loud, flashy kind of strength, but a deep, reserved potential — like a seed that hasn't broken soil yet. Once it finds the right soil and sunlight, it will bloom at a pace that astounds everyone, including yourself.`,
+                    `Your overall energy index reads <strong style="color:var(--accent-gold)">${score}</strong>. Honestly, the moment this number appeared, I sensed something unusual — your blueprint carries a rare "dual nature." One side of you is rational, measured, deeply thoughtful. The other is intuitive, perceptive, brimming with imagination. Most people possess only one of these faces; you have both. This inner tension is simultaneously your greatest strength and the reason you sometimes feel torn or conflicted.`,
+                    `Your energy scan reveals a frequency of <strong style="color:var(--accent-gold)">${score}</strong>. Interestingly, this number reveals a truth you may not even realize about yourself — you are far more powerful than you believe. You carry a "hidden advantage": when you truly commit to something, your energy field spontaneously enters a state of hyper-focus, multiplying your efficiency and inspiration. The only catch? You don't always trust that you have this power.`
+                ];
+                parts.push(p1Variants[seed % 3]);
+
+                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ DIMENSION ANALYSIS ◈</span>In your energy landscape, <strong style="color:var(--accent-gold)">${L[maxDim]}</strong> shines brightest at ${dims[maxDim]} points. This means you have a natural acuity and cosmic favor in this area — you've probably noticed that your instincts here are sharper than analysis, and your efforts yield results more easily than others'. This isn't luck. It's your energy field being naturally powerful in this direction.`);
+
+                parts.push(`By contrast, <strong>${L[minDim]}</strong> currently sits at ${dims[minDim]} — but this doesn't mean you're "weak" here. Quite the opposite: it signals <em>enormous room for growth</em>. Like a spring compressed to its lowest point, the stored potential energy is at its peak. You may have experienced some confusion or unease in your ${L[minDim]} area recently. Don't worry — the universe is simply reminding you: it's time to recharge this dimension. ${L[secondDim]} (${sorted[1][1]}) and ${L[thirdDim]} (${sorted[2][1]}) are in solid territory and can be quickly elevated with small adjustments.`);
+
+                const comfortVariants = [
+                    `I can sense that you might be someone who "overthinks in silence" — the world sees you as calm and collected, but only you know about those late-night moments of tossing and turning, those whispers of <em>"am I good enough?"</em> that drain your energy more than any physical effort. Here's what I want you to hear: <strong style="color:var(--accent-gold)">You are already enough.</strong> You don't need to become the person others expect you to be. You just need to be yourself — the one who is sometimes powerful, sometimes vulnerable, but always moving forward. The universe sees every ounce of your persistence. Even when it feels like "nothing is happening," the seeds have long been taking root underground.`,
+                    `Looking at your energy data, there's something I can't help but say — do you often feel <em>"not truly understood"</em>? People around you may admire and depend on you, but those who genuinely comprehend the subtle feelings deep inside you seem few and far between. This isn't your flaw — it's simply that your frequency is unique. <strong style="color:var(--accent-gold)">Uniqueness has never been a defect; it's a gift.</strong> You don't need to lower your frequency to fit in. The right people and the right things will find you at the right time — and what you need to do right now is simply keep shining.`,
+                    `If I'm not mistaken, you might be in a phase where "everything looks fine on the outside, but there's a quiet fog inside." This feeling isn't a bad thing — it means your soul is searching for a higher level of meaning. <strong style="color:var(--accent-gold)">You're not going in circles; you're spiraling upward.</strong> You're standing at an important crossroads. The old you has completed its mission; the new you is brewing. Give yourself time and patience — a butterfly doesn't grow its wings inside the cocoon. It waits for its moment.`
+                ];
+                parts.push(comfortVariants[(seed + dims[maxDim]) % 3]);
+
+                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ FUTURE GUIDANCE ◈</span>Based on your energy trajectory, the next 3-6 months will be ${score > 70 ? 'a gradually ascending channel' : 'a turning point after hitting bottom'}. Your ${L[maxDim]} dimension will continue its strong momentum — ${maxDim === 'career' ? 'expect opportunities for advancement or significant partnerships' : maxDim === 'wealth' ? 'watch for unexpected financial gains or investment returns' : maxDim === 'love' ? 'a profound emotional connection or deepening relationship may emerge' : 'a noticeable turning point in your physical and mental wellbeing'}. As for ${L[minDim]}, if you actively harmonize it — ${minDim === 'career' ? 'speak up boldly; stop always deferring to others' : minDim === 'wealth' ? 'reexamine your relationship with money; allow yourself to believe you *deserve* more' : minDim === 'love' ? 'try opening your heart; stop protecting your softness with hard walls' : 'slow down and listen to your body; it\'s more honest than you think'} — you'll find that change comes faster than you expected.`);
+
+                if (mbti && mbtiInsights[mbti]) {
+                    parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.06); border:1px solid rgba(200,168,78,0.15); border-radius:12px;">
+                        <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ ${mbti} · PERSONALITY ENERGY INSIGHT ◈</span>
+                        <p style="line-height:1.9;margin:0;">${mbtiInsights[mbti].en}</p>
+                        <p style="line-height:1.9;margin:12px 0 0 0;">When your ${mbti} personality merges with your strong ${L[maxDim]} energy, you exhibit ${mbti.includes('E') ? 'infectious leadership and rallying power' : 'profound insight and discerning judgment'} in this domain. In your ${L[minDim]} area, your ${mbti.includes('F') ? 'sensitivity may cause you to overweigh external opinions' : 'rationality may lead you to overlook your inner voice'} — try ${mbti.includes('J') ? 'releasing some control and allowing life its surprises' : 'building small daily rituals and a sense of structure'}, and you\'ll discover a new equilibrium.</p>
+                    </div>`);
+                }
+
+                const elemMap = {
+                    career: { items: 'Black Obsidian or a Crystal Sphere', why: 'their grounding frequency helps you maintain clear judgment in the workplace, cutting through external noise' },
+                    wealth: { items: 'Green Aventurine or Tiger Eye', why: 'their abundance frequency helps unlock your "I deserve this" belief system, allowing wealth to flow toward you naturally' },
+                    love: { items: 'Rose Quartz or Moonstone', why: 'their gentle frequency helps soften emotional walls, allowing love to flow freely — both giving and receiving' },
+                    health: { items: 'Amber or Amethyst', why: 'their serene frequency helps your body enter deep restoration mode, reclaiming depleted vitality' }
+                };
+                const rec = elemMap[minDim];
+                parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.06); border:1px solid rgba(200,168,78,0.15); border-radius:12px;">
+                    <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ ENERGY HARMONIZATION ◈</span>
+                    <p style="line-height:1.9;margin:0;">Based on your energy map, I recommend introducing items that resonate with your <strong style="color:var(--accent-gold)">${L[minDim]} dimension</strong> into your daily life. The best match for your current state is <strong style="color:var(--accent-gold)">${rec.items}</strong> — ${rec.why}.</p>
+                    <p style="line-height:1.9;margin:12px 0 0 0;">This isn't superstition — it's an <em>energy reminder</em>. Just as some people meditate to recalibrate their minds and others exercise to release tension, wearing natural minerals that resonate with your frequency is an ancient and effective form of energy harmonization. That gentle circle of warmth on your wrist each day silently reminds you: <strong style="color:var(--accent-gold)">you deserve better, and better is already on its way.</strong></p>
+                </div>`);
+
+                if (question) {
+                    parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.08); border-left:4px solid var(--accent-gold); border-radius:0 12px 12px 0;">
+                        <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">✦ GUIDANCE FOR YOUR QUESTION ✦</span>
+                        <p style="line-height:1.9;margin:0;">First, the fact that you're asking this question at all shows you're taking your life seriously — that's wiser and braver than most.</p>
+                        <p style="line-height:1.9;margin:12px 0 0 0;">Given your energy profile, ${dims[maxDim] > 80 ? 'the overall momentum is in your favor, and your instincts are most likely correct' : 'you\'re in a delicate transitional phase where rushing may backfire'}. My suggestion: ${score > 75 ? 'trust your judgment. When you find yourself going back and forth, the first thought that surfaces is usually closest to the answer' : 'give yourself 3-5 days of *not thinking about this question* and let your subconscious do the work. You\'ll find that the answer often becomes clear the moment you let go'}.</p>
+                        <p style="line-height:1.9;margin:12px 0 0 0;">Your <strong style="color:var(--accent-gold)">${L[maxDim]} energy</strong> is your strongest ally here — try approaching from that angle. ${dims[minDim] < 65 ? `But stay alert for unexpected variables from the ${L[minDim]} dimension; have a Plan B ready.` : 'Your dimensions are relatively balanced, so following the natural flow will serve you well.'} Remember: <em>no decision is 100% perfect</em>, but as long as the general direction is right, the universe will help you fine-tune the details.</p>
+                    </div>`);
+                }
+
+                return parts.map((p, i) => {
+                    if (typeof p === 'string' && (p.startsWith('<div') || p.startsWith('<span'))) return p;
+                    return `<p style="line-height:1.9;margin-bottom:16px;">${p}</p>`;
+                }).join('');
+            }
+        }
+
+        // --- SHOP & CART ---
+
+        function renderProducts(category = 'all') {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            const filtered = category === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === category);
+
+            filtered.forEach(p => {
+                const isRec = recommendations.includes(p.element);
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    ${isRec ? `<div class="rec-badge">${I18N[lang].recommended}</div>` : ''}
+                    <div onclick="openDetail(${p.id})" style="cursor:pointer;">
+                        <img src="${p.img}" alt="${p[lang==='zh'?'name_zh':'name_en']}" class="product-img">
+                        <div class="product-info">
+                            <div class="product-name">${p[lang==='zh'?'name_zh':'name_en']}</div>
+                            <div class="product-desc">${p[lang==='zh'?'desc_zh':'desc_en']}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div class="product-price">$${p.price.toFixed(2)}</div>
+                                <div style="font-size:0.7rem; color:var(--text-secondary)">${p[lang==='zh'?'effects_zh':'effects_en']}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:0 20px 20px;">
+                        <button class="add-cart-btn" onclick="event.stopPropagation();addToCart(${p.id})">${I18N[lang].add_to_cart}</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter events
+        document.getElementById('filter-tabs').addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                renderProducts(e.target.dataset.cat);
+            }
+        });
+
+        function addToCart(id) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty++;
+            } else {
+                const p = PRODUCTS.find(prod => prod.id === id);
+                cart.push({ ...p, qty: 1 });
+            }
+            updateCartUI();
+            toggleCart(true);
+        }
+
+        function openDetail(id) {
+            const p = PRODUCTS.find(prod => prod.id === id);
+            const s = STORIES[id];
+            if (!p) return;
+            const isZh = lang === 'zh';
+
+            document.getElementById('detail-img').src = p.img;
+            document.getElementById('detail-img').alt = p[isZh ? 'name_zh' : 'name_en'];
+
+            const body = document.getElementById('detail-body');
+            body.innerHTML = `
+                <div class="detail-title">${p[isZh ? 'name_zh' : 'name_en']}</div>
+                <div class="detail-effects">✦ ${p[isZh ? 'effects_zh' : 'effects_en']} ✦</div>
+                <div class="detail-price">$${p.price.toFixed(2)}</div>
+                <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">${p[isZh ? 'desc_zh' : 'desc_en']}</p>
+
+                ${s ? `
+                <div class="detail-meta">
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">${isZh ? '产 地' : 'ORIGIN'}</div>
+                        <div class="detail-meta-value">${s[isZh ? 'origin_zh' : 'origin_en']}</div>
+                    </div>
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">${isZh ? '对 应 脉 轮' : 'CHAKRA'}</div>
+                        <div class="detail-meta-value">${s[isZh ? 'chakra_zh' : 'chakra_en']}</div>
+                    </div>
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">${isZh ? '适 合 人 群' : 'BEST FOR'}</div>
+                        <div class="detail-meta-value" style="font-size:0.75rem;">${s[isZh ? 'suit_zh' : 'suit_en']}</div>
+                    </div>
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">${isZh ? '养 护 方 法' : 'CARE'}</div>
+                        <div class="detail-meta-value" style="font-size:0.75rem;">${s[isZh ? 'care_zh' : 'care_en']}</div>
+                    </div>
+                </div>
+
+                <div class="detail-section-title">${isZh ? '故 事 · 寓 意' : 'STORY & LORE'}</div>
+                <div class="detail-story">${s[isZh ? 'story_zh' : 'story_en']}</div>
+                ` : ''}
+
+                <button class="detail-add-btn" onclick="closeDetail();addToCart(${p.id})">
+                    ${isZh ? '✦ 加入灵力口袋 ✦' : '✦ Add to Ritual Bag ✦'}
+                </button>
+            `;
+
+            document.getElementById('detail-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetail() {
+            document.getElementById('detail-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                count += item.qty;
+
+                const el = document.createElement('div');
+                el.className = 'cart-item';
+                el.innerHTML = `
+                    <img src="${item.img}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item[lang==='zh'?'name_zh':'name_en']}</div>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                            <span style="margin-left:auto">$${(item.price * item.qty).toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+
+            document.getElementById('cart-total-val').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('cart-count').innerText = count;
+
+            // Update checkout links
+            const orderSummary = cart.map(i => `${i[lang==='zh'?'name_zh':'name_en']} x${i.qty}`).join(', ');
+            const text = encodeURIComponent(`Hello Destiny Atelier, I would like to order: ${orderSummary}. Total: $${total.toFixed(2)}`);
+            const waLink = document.getElementById('wa-link');
+            const mailLink = document.getElementById('mail-link');
+            if(waLink) waLink.href = `https://wa.me/?text=${text}`;
+            if(mailLink) mailLink.href = `mailto:347806280@qq.com?subject=New Order&body=${text}`;
+            // Update PayPal button amount
+            const ppBtn = document.getElementById('paypal-btn-area');
+            if(ppBtn) ppBtn.dataset.total = total.toFixed(2);
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+            }
+            updateCartUI();
+        }
+
+        function toggleCart(show) {
+            document.getElementById('cart-drawer').classList.toggle('active', show);
+            document.getElementById('cart-overlay').classList.toggle('active', show);
+        }
+
+        // Initialize
+        init();
+
+        // --- PayPal Integration ---
+        // NOTE: Replace YOUR_PAYPAL_CLIENT_ID with your actual PayPal sandbox/live client ID
+        // Get it from: https://developer.paypal.com/dashboard/applications
+        function loadPayPal() {
+            if (document.getElementById('paypal-sdk')) return;
+            const s = document.createElement('script');
+            s.id = 'paypal-sdk';
+            s.src = 'https://www.paypal.com/sdk/js?client-id=ARCxO_dH1PbvVVwrYVcOBkLohTjjY2zOZ64ZR8_FnNdks69vmbccQtVdvP70TVciA5RTSBwIcIk0v8bL&currency=USD&disable-funding=credit';
+            s.onload = () => initPayPalButtons();
+            document.head.appendChild(s);
+        }
+
+        function initPayPalButtons() {
+            if (typeof paypal === 'undefined') return;
+            const container = document.getElementById('paypal-button-container');
+            if (!container) return;
+            container.innerHTML = '';
+            paypal.Buttons({
+                style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 40 },
+                createOrder: function(data, actions) {
+                    const totalEl = document.getElementById('paypal-btn-area');
+                    const total = parseFloat(totalEl?.dataset?.total || '0');
+                    if (total <= 0) { alert(lang==='zh'?'购物车为空':'Cart is empty'); return; }
+                    const items = cart.map(i => ({
+                        name: i[lang==='zh'?'name_zh':'name_en'],
+                        unit_amount: { currency_code: 'USD', value: i.price.toFixed(2) },
+                        quantity: String(i.qty)
+                    }));
+                    return actions.order.create({
+                        purchase_units: [{ amount: { currency_code: 'USD', value: total, breakdown: { item_total: { currency_code:'USD', value: total } } }, items }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        const name = details.payer.name.given_name;
+                        const msg = lang==='zh' ? `谢谢你, ${name}! 订单已完成。我们会尽快安排发货。` : `Thank you, ${name}! Your order is complete. We'll arrange shipping shortly.`;
+                        alert(msg);
+                        cart = [];
+                        updateCartUI();
+                        toggleCart(false);
+                    });
+                },
+                onError: function(err) {
+                    console.error('PayPal error:', err);
+                    alert(lang==='zh'?'支付遇到问题，请重试或使用其他方式下单。':'Payment encountered an issue. Please retry or use an alternative checkout method.');
+                }
+            }).render('#paypal-button-container');
+        }
+
+        // Load PayPal SDK on first cart open
+        const origToggle = toggleCart;
+        toggleCart = function(show) {
+            origToggle(show);
+            if (show) loadPayPal();
+        };
+
+        // --- 多支付方式切换 ---
+        const USD_TO_CNY = 7.25; // 汇率
+
+        function showPayMethod(method) {
+            ['paypal','wechat','alipay'].forEach(m => {
+                const el = document.getElementById('pay-' + m);
+                const tab = document.getElementById('tab-' + m);
+                if (el) el.style.display = m === method ? 'block' : 'none';
+                if (tab) {
+                    tab.style.background = m === method ? 'rgba(200,168,78,0.15)' : 'transparent';
+                    tab.style.borderColor = m === method ? 'var(--accent-gold)' : 'var(--card-border)';
+                    tab.style.color = m === method ? 'var(--accent-gold)' : 'var(--text-secondary)';
+                }
+            });
+            // 更新人民币金额
+            const totalUSD = parseFloat(document.getElementById('paypal-btn-area')?.dataset?.total || '0');
+            const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
+            const we = document.getElementById('wechat-amount');
+            const ae = document.getElementById('alipay-amount');
+            if (we) we.textContent = '¥' + totalCNY;
+            if (ae) ae.textContent = '¥' + totalCNY;
+        }
+
+        function openWechatCS() {
+            const orderSummary = cart.map(i => `${i.name_zh} x${i.qty}`).join('，');
+            const totalUSD = cart.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
+            const msg = `【命运工坊订单】\n商品：${orderSummary}\n金额：¥${totalCNY}（$${totalUSD.toFixed(2)}）\n\n我已扫码支付，请确认订单。`;
+            // 尝试复制到剪贴板
+            navigator.clipboard.writeText(msg).then(() => {
+                alert(lang === 'zh' 
+                    ? '订单信息已复制！请打开微信发送给客服。\n\n微信号：xingxingxinghuaya' 
+                    : 'Order info copied! Please send to our WeChat: xingxingxinghuaya');
+            }).catch(() => {
+                alert(lang === 'zh'
+                    ? '请添加微信客服：xingxingxinghuaya\n发送订单截图和支付凭证'
+                    : 'Please add WeChat: xingxingxinghuaya\nSend order screenshot and payment proof');
+            });
+        }
+
+        function openAlipayCS() {
+            const orderSummary = cart.map(i => `${i.name_zh} x${i.qty}`).join('，');
+            const totalUSD = cart.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
+            const msg = `【命运工坊订单】商品：${orderSummary} 金额：¥${totalCNY}`;
+            const mailLink = `mailto:347806280@qq.com?subject=${encodeURIComponent('支付宝订单确认')}&body=${encodeURIComponent(msg + '\n\n我已通过支付宝扫码支付，请确认。')}`;
+            window.open(mailLink);
+        }
+
+        // 覆盖 updateCartUI 以同步更新人民币金额
+        const origUpdateCart = updateCartUI;
+        updateCartUI = function() {
+            origUpdateCart();
+            const totalUSD = cart.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalCNY = (totalUSD * USD_TO_CNY).toFixed(2);
+            const we = document.getElementById('wechat-amount');
+            const ae = document.getElementById('alipay-amount');
+            if (we) we.textContent = '¥' + totalCNY;
+            if (ae) ae.textContent = '¥' + totalCNY;
+        };
+    </script>
+</body>
+</html>

@@ -692,6 +692,9 @@
             margin-top: 20px;
             border-top: 1px solid var(--card-border);
             padding-top: 20px;
+            overflow-y: auto;
+            flex-shrink: 1;
+            max-height: 70vh;
         }
 
         .cart-total {
@@ -742,6 +745,7 @@
             <div class="logo">Destiny <span class="gold-text">Atelier</span></div>
             <div class="nav-actions">
                 <button class="lang-toggle" onclick="toggleLanguage()">中文 / EN</button>
+                <button class="lang-toggle" onclick="openOrderTracker()" style="font-size:0.7rem;">📦 <span data-i18n="nav_track">订单</span></button>
                 <button class="cart-icon-btn" onclick="toggleCart(true)">
                     🛒
                     <span class="cart-badge" id="cart-count">0</span>
@@ -970,9 +974,26 @@
                 <div style="font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;" id="confirm-order-id"></div>
                 <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.8;margin:12px 0;" id="confirm-msg">我们已收到您的订单，正在为您准备灵力好物。<br>如有疑问请联系微信客服：<strong style="color:var(--accent-gold);">xingxingxinghuaya</strong></p>
                 <button onclick="resetCheckout()" style="width:100%;padding:12px;background:var(--accent-gold);color:var(--bg-color);border:none;border-radius:8px;font-size:0.9rem;cursor:pointer;font-family:inherit;margin-top:10px;">继续购物 ✦</button>
-                <a href="?order" style="display:block;text-align:center;margin-top:12px;color:var(--text-secondary);font-size:0.8rem;text-decoration:none;">查询订单状态 / Track Your Order →</a>
+                <a href="javascript:void(0)" onclick="resetCheckout();openOrderTracker();" style="display:block;text-align:center;margin-top:12px;color:var(--text-secondary);font-size:0.8rem;text-decoration:none;">查询订单状态 / Track Your Order →</a>
             </div>
 
+        </div>
+    </div>
+
+    <!-- ===== 订单查询弹窗 ===== -->
+    <div id="order-tracker-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:2000;align-items:center;justify-content:center;">
+        <div style="background:#1a1a1a;border-radius:16px;border:1px solid #2a2a2a;padding:30px;width:90%;max-width:420px;max-height:85vh;overflow-y:auto;position:relative;">
+            <button onclick="closeOrderTracker()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+            <div style="text-align:center;margin-bottom:20px;">
+                <div style="font-size:1.2rem;color:#c8a84e;font-weight:bold;">📦 <span data-i18n="track_title">订单查询</span></div>
+                <div style="color:#888;font-size:0.75rem;margin-top:4px;" data-i18n="track_subtitle">输入手机号查询您的订单</div>
+            </div>
+            <div style="margin-bottom:14px;">
+                <input type="text" id="tracker-phone" placeholder="您下单时填写的手机号" style="width:100%;padding:12px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;box-sizing:border-box;text-align:center;">
+            </div>
+            <button onclick="searchMyOrders()" style="width:100%;padding:12px;background:#c8a84e;color:#0f0f0f;border:none;border-radius:8px;font-size:0.95rem;font-weight:bold;cursor:pointer;"><span data-i18n="track_btn">查询订单</span></button>
+            <div id="tracker-error" style="color:#ff6b6b;font-size:0.8rem;margin-top:10px;display:none;text-align:center;"></div>
+            <div id="tracker-results" style="margin-top:16px;"></div>
         </div>
     </div>
 
@@ -1381,7 +1402,11 @@
                 recommended: "测算推荐",
                 placeholder_question: "你想知道关于哪方面的信息？",
                 luck_colors: ["金色", "深蓝色", "森林绿", "珍珠白", "朱砂红", "紫色"],
-                luck_dirs: ["正东", "东南", "正西", "西北", "正北"]
+                luck_dirs: ["正东", "东南", "正西", "西北", "正北"],
+                nav_track: "订单",
+                track_title: "订单查询",
+                track_subtitle: "输入手机号查询您的订单",
+                track_btn: "查询订单"
             },
             en: {
                 hero_title: "Destiny Atelier",
@@ -1433,7 +1458,11 @@
                 recommended: "Recommended",
                 placeholder_question: "What's on your mind?",
                 luck_colors: ["Gold", "Deep Blue", "Forest Green", "Pearl White", "Vermilion Red", "Violet"],
-                luck_dirs: ["East", "Southeast", "West", "Northwest", "North"]
+                luck_dirs: ["East", "Southeast", "West", "Northwest", "North"],
+                nav_track: "Orders",
+                track_title: "Track Order",
+                track_subtitle: "Enter your phone number to find orders",
+                track_btn: "Track Order"
             }
         };
 
@@ -2210,6 +2239,88 @@
                 document.getElementById('checkout-step3').style.display = 'none';
             }
         };
+        // ==================== 主站订单查询弹窗 ====================
+        function openOrderTracker() {
+            document.getElementById('order-tracker-overlay').style.display = 'flex';
+            document.getElementById('tracker-results').innerHTML = '';
+            document.getElementById('tracker-error').style.display = 'none';
+            document.getElementById('tracker-phone').focus();
+        }
+        function closeOrderTracker() {
+            document.getElementById('order-tracker-overlay').style.display = 'none';
+        }
+        document.getElementById('order-tracker-overlay').addEventListener('click', function(e) {
+            if (e.target === this) closeOrderTracker();
+        });
+        document.getElementById('tracker-phone').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') searchMyOrders();
+        });
+
+        function searchMyOrders() {
+            const phone = document.getElementById('tracker-phone').value.trim();
+            const errEl = document.getElementById('tracker-error');
+            const resEl = document.getElementById('tracker-results');
+            if (!phone) {
+                errEl.textContent = lang === 'zh' ? '请输入手机号' : 'Please enter your phone number';
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+            resEl.innerHTML = '<div style="text-align:center;color:#888;padding:20px;">查询中...</div>';
+
+            fetch(ORDER_API + '?action=track_phone&phone=' + encodeURIComponent(phone))
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.orders && data.orders.length > 0) {
+                        renderTrackerResults(data.orders);
+                    } else {
+                        resEl.innerHTML = '';
+                        errEl.textContent = lang === 'zh' ? '未找到相关订单，请确认手机号是否正确' : 'No orders found. Please check your phone number.';
+                        errEl.style.display = 'block';
+                    }
+                })
+                .catch(function() {
+                    resEl.innerHTML = '';
+                    errEl.textContent = lang === 'zh' ? '网络错误，请稍后重试' : 'Network error, please try again';
+                    errEl.style.display = 'block';
+                });
+        }
+
+        function renderTrackerResults(orders) {
+            const statusMap = {
+                '待处理': { icon:'⏳', color:'#ff9800' },
+                '待确认付款': { icon:'💰', color:'#ff9800' },
+                '已支付(PayPal)': { icon:'✅', color:'#4caf50' },
+                '待发货': { icon:'📦', color:'#2196f3' },
+                '已发货': { icon:'🚚', color:'#4caf50' },
+                '已完成': { icon:'✨', color:'#2196f3' },
+                '已取消': { icon:'❌', color:'#f44336' }
+            };
+            let html = '';
+            orders.forEach(o => {
+                const si = statusMap[o.status] || { icon:'📦', color:'#888' };
+                const trackingHtml = o.tracking
+                    ? `<div style="margin-top:8px;padding:8px 10px;background:#0f0f0f;border-radius:6px;font-size:0.75rem;">
+                         <span style="color:#888;">物流单号: </span>
+                         <span style="color:#c8a84e;">${o.tracking}</span>
+                         <a href="https://www.kuaidi100.com/chaxun?nu=${encodeURIComponent(o.tracking)}" target="_blank" style="margin-left:8px;color:#c8a84e;text-decoration:underline;font-size:0.7rem;">查物流</a>
+                       </div>`
+                    : '';
+                html += `
+                <div style="background:#111;border-radius:10px;padding:16px;margin-bottom:12px;border:1px solid #2a2a2a;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span style="color:#c8a84e;font-weight:bold;font-size:0.85rem;">${o.order_id}</span>
+                        <span style="padding:3px 10px;border-radius:20px;font-size:0.7rem;background:${si.color}22;color:${si.color};border:1px solid ${si.color}55;">${si.icon} ${o.status}</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#888;margin-bottom:6px;">${o.time}</div>
+                    <div style="font-size:0.8rem;color:#ccc;margin-bottom:6px;">${o.items}</div>
+                    <div style="font-size:0.9rem;color:#c8a84e;font-weight:bold;">$${o.total_usd}</div>
+                    ${trackingHtml}
+                </div>`;
+            });
+            document.getElementById('tracker-results').innerHTML = html;
+        }
+
         // ==================== 本地订单存储 ====================
         function saveOrderLocal(orderId) {
             try {

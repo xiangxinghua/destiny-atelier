@@ -2008,6 +2008,8 @@
 
         // --- 订单系统 ---
         let currentOrderId = '';
+        const ORDER_API = 'https://script.google.com/macros/s/AKfycbwQjBsSNAQitQTFeb3GhZ2lThNE4Nd_PL5uQ1eZF3iFAixHjRw5OL0C3BF7tupcA2AM/exec';
+        const ADMIN_PWD = 'destiny2026';
 
         // 初始化 EmailJS
         (function() {
@@ -2072,6 +2074,26 @@
 
             const custEmail = document.getElementById('cust-email').value.trim();
             if (custEmail) emailParams.customer_email = custEmail;
+
+            // 同步保存订单到Google Sheets数据库
+            const orderData = {
+                action: 'new_order',
+                order_id: currentOrderId,
+                customer_name: name,
+                customer_phone: phone,
+                customer_address: address,
+                customer_email: custEmail || '',
+                order_items: cart.map(i => i.name_zh + ' × ' + i.qty).join(', '),
+                total_usd: totalUSD.toFixed(2),
+                total_cny: totalCNY,
+                payment_method: '待支付'
+            };
+            fetch(ORDER_API, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(orderData)
+            }).catch(function(e){ console.log('Sheet save error:', e); });
 
             if (typeof emailjs !== 'undefined') {
                 // 发送订单通知到QQ邮箱 + 抄送Gmail用于自动监控
@@ -2164,6 +2186,229 @@
                 document.getElementById('checkout-step3').style.display = 'none';
             }
         };
+        // ==================== 管理后台 ====================
+        (function initAdmin() {
+            if (!location.search.includes('admin')) return;
+            
+            // Hide main site
+            document.body.innerHTML = '';
+            document.body.style.background = '#0f0f0f';
+            document.body.style.color = '#e8e8e8';
+            document.body.style.fontFamily = "'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif";
+            document.body.style.margin = '0';
+            document.body.style.padding = '0';
+            
+            // Login screen
+            document.body.innerHTML = `
+            <div id="admin-login" style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f0f0f;">
+                <div style="background:#1a1a1a;padding:40px;border-radius:16px;border:1px solid #2a2a2a;text-align:center;width:90%;max-width:360px;">
+                    <div style="font-size:1.5rem;color:#c8a84e;font-weight:bold;margin-bottom:8px;">✦ 命运工坊 ✦</div>
+                    <div style="color:#888;font-size:0.85rem;margin-bottom:24px;">订单管理后台</div>
+                    <input type="password" id="admin-pwd" placeholder="请输入管理密码" style="width:100%;padding:12px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:1rem;margin-bottom:16px;box-sizing:border-box;text-align:center;">
+                    <button onclick="adminLogin()" style="width:100%;padding:12px;background:#c8a84e;color:#0f0f0f;border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;">进入后台</button>
+                    <p id="login-err" style="color:#ff6b6b;font-size:0.8rem;margin-top:10px;display:none;">密码错误</p>
+                </div>
+            </div>
+            <div id="admin-panel" style="display:none;">
+                <nav style="background:rgba(15,15,15,0.95);border-bottom:1px solid #2a2a2a;padding:0 20px;position:fixed;top:0;width:100%;z-index:1000;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;height:60px;max-width:1200px;margin:0 auto;">
+                        <div style="color:#c8a84e;font-weight:bold;font-size:1.1rem;">✦ 命运工坊 · 后台</div>
+                        <div style="display:flex;gap:12px;align-items:center;">
+                            <button onclick="loadOrders()" style="padding:6px 16px;background:transparent;border:1px solid #c8a84e;color:#c8a84e;border-radius:6px;cursor:pointer;font-size:0.8rem;">刷新</button>
+                            <button onclick="location.href=location.pathname" style="padding:6px 16px;background:transparent;border:1px solid #555;color:#888;border-radius:6px;cursor:pointer;font-size:0.8rem;">退出</button>
+                        </div>
+                    </div>
+                </nav>
+                <div style="padding:80px 20px 40px;max-width:1200px;margin:0 auto;">
+                    <div id="stats-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:30px;"></div>
+                    <div style="background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;overflow:hidden;">
+                        <div style="padding:16px 20px;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;">
+                            <span style="color:#c8a84e;font-weight:bold;">全部订单</span>
+                            <input type="text" id="order-search" oninput="filterOrders()" placeholder="搜索订单号/姓名..." style="padding:6px 12px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:6px;color:#e8e8e8;font-size:0.8rem;width:200px;">
+                        </div>
+                        <div id="orders-table" style="overflow-x:auto;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 订单详情弹窗 -->
+            <div id="order-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:2000;align-items:center;justify-content:center;">
+                <div style="background:#1a1a1a;border-radius:16px;border:1px solid #2a2a2a;padding:30px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <span style="color:#c8a84e;font-weight:bold;font-size:1.1rem;">订单详情</span>
+                        <button onclick="closeModal()" style="background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+                    </div>
+                    <div id="modal-content"></div>
+                </div>
+            </div>`;
+            
+            document.getElementById('admin-pwd').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') adminLogin();
+            });
+        })();
+        
+        let allOrders = [];
+        
+        function adminLogin() {
+            const pwd = document.getElementById('admin-pwd').value;
+            if (pwd === ADMIN_PWD) {
+                document.getElementById('admin-login').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                loadOrders();
+            } else {
+                const err = document.getElementById('login-err');
+                err.style.display = 'block';
+                err.textContent = '密码错误，请重试';
+            }
+        }
+        
+        function loadOrders() {
+            document.getElementById('orders-table').innerHTML = '<div style="padding:40px;text-align:center;color:#888;">加载中...</div>';
+            
+            // Load stats
+            fetch(ORDER_API + '?action=stats&password=' + ADMIN_PWD)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) renderStats(data.stats);
+                }).catch(e => console.log('Stats error:', e));
+            
+            // Load orders
+            fetch(ORDER_API + '?action=list&password=' + ADMIN_PWD)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        allOrders = data.orders;
+                        renderOrders(data.orders);
+                    } else {
+                        document.getElementById('orders-table').innerHTML = '<div style="padding:40px;text-align:center;color:#ff6b6b;">加载失败: ' + (data.error||'未知错误') + '</div>';
+                    }
+                }).catch(e => {
+                    document.getElementById('orders-table').innerHTML = '<div style="padding:40px;text-align:center;color:#ff6b6b;">网络错误，请刷新重试</div>';
+                });
+        }
+        
+        function renderStats(s) {
+            document.getElementById('stats-row').innerHTML = [
+                {label:'总订单', value: s.total, color:'#c8a84e'},
+                {label:'待处理', value: s.pending, color:'#ff9800'},
+                {label:'已发货', value: s.shipped, color:'#4caf50'},
+                {label:'已完成', value: s.completed, color:'#2196f3'},
+                {label:'总收入', value: '$'+s.totalRevenue, color:'#c8a84e'},
+                {label:'今日订单', value: s.todayOrders, color:'#9c27b0'}
+            ].map(c => `
+                <div style="background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;padding:20px;text-align:center;">
+                    <div style="font-size:2rem;font-weight:bold;color:${c.color};">${c.value}</div>
+                    <div style="font-size:0.8rem;color:#888;margin-top:4px;">${c.label}</div>
+                </div>
+            `).join('');
+        }
+        
+        function renderOrders(orders) {
+            if (!orders.length) {
+                document.getElementById('orders-table').innerHTML = '<div style="padding:40px;text-align:center;color:#888;">暂无订单</div>';
+                return;
+            }
+            
+            const statusColors = {'待处理':'#ff9800','已发货':'#4caf50','已完成':'#2196f3','已取消':'#f44336'};
+            
+            let html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">';
+            html += '<thead><tr style="background:#111;color:#c8a84e;text-align:left;">';
+            html += '<th style="padding:12px 16px;">订单号</th><th style="padding:12px;">时间</th><th style="padding:12px;">客户</th><th style="padding:12px;">商品</th><th style="padding:12px;">金额</th><th style="padding:12px;">状态</th><th style="padding:12px;">操作</th>';
+            html += '</tr></thead><tbody>';
+            
+            orders.forEach((o, i) => {
+                const bg = i % 2 === 0 ? '#1a1a1a' : '#151515';
+                const sc = statusColors[o['订单状态']] || '#888';
+                const time = String(o['下单时间']).substring(5, 16);
+                const items = String(o['商品明细']).substring(0, 30) + (String(o['商品明细']).length > 30 ? '...' : '');
+                html += `<tr style="background:${bg};border-bottom:1px solid #222;">
+                    <td style="padding:10px 16px;color:#c8a84e;font-weight:bold;white-space:nowrap;">${o['订单号']}</td>
+                    <td style="padding:10px 12px;color:#888;white-space:nowrap;">${time}</td>
+                    <td style="padding:10px 12px;">${o['客户姓名']}</td>
+                    <td style="padding:10px 12px;color:#aaa;">${items}</td>
+                    <td style="padding:10px 12px;color:#c8a84e;">$${o['总金额USD']}</td>
+                    <td style="padding:10px 12px;"><span style="padding:3px 10px;border-radius:20px;font-size:0.75rem;background:${sc}22;color:${sc};border:1px solid ${sc}55;">${o['订单状态']}</span></td>
+                    <td style="padding:10px 12px;"><button onclick='showOrder(${JSON.stringify(o).replace(/'/g,"&#39;")})' style="padding:4px 12px;background:transparent;border:1px solid #555;color:#aaa;border-radius:4px;cursor:pointer;font-size:0.75rem;">详情</button></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('orders-table').innerHTML = html;
+        }
+        
+        function filterOrders() {
+            const q = document.getElementById('order-search').value.toLowerCase();
+            if (!q) { renderOrders(allOrders); return; }
+            const filtered = allOrders.filter(o => 
+                String(o['订单号']).toLowerCase().includes(q) || 
+                String(o['客户姓名']).toLowerCase().includes(q) ||
+                String(o['手机号']).includes(q)
+            );
+            renderOrders(filtered);
+        }
+        
+        function showOrder(o) {
+            const modal = document.getElementById('order-modal');
+            modal.style.display = 'flex';
+            
+            const statusOpts = ['待处理','已发货','已完成','已取消'].map(s => 
+                `<option value="${s}" ${o['订单状态']===s?'selected':''}>${s}</option>`
+            ).join('');
+            
+            document.getElementById('modal-content').innerHTML = `
+                <div style="space-y:12px;">
+                    <div style="margin-bottom:16px;">
+                        <div style="color:#888;font-size:0.75rem;">订单号</div>
+                        <div style="color:#c8a84e;font-size:1.1rem;font-weight:bold;">${o['订单号']}</div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="color:#888;font-size:0.75rem;">下单时间</div>
+                        <div>${o['下单时间']}</div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="color:#888;font-size:0.75rem;">客户信息</div>
+                        <div>${o['客户姓名']} · ${o['手机号']}</div>
+                        <div style="color:#aaa;font-size:0.85rem;margin-top:4px;">${o['收货地址']}</div>
+                        ${o['客户邮箱'] ? '<div style="color:#aaa;font-size:0.85rem;">'+o['客户邮箱']+'</div>' : ''}
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="color:#888;font-size:0.75rem;">商品明细</div>
+                        <div style="background:#0f0f0f;padding:10px;border-radius:8px;margin-top:4px;font-size:0.85rem;">${o['商品明细']}</div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="color:#888;font-size:0.75rem;">订单金额</div>
+                        <div style="color:#c8a84e;font-size:1.2rem;font-weight:bold;">$${o['总金额USD']} <span style="color:#888;font-size:0.85rem;">/ ¥${o['总金额CNY']}</span></div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div style="color:#888;font-size:0.75rem;margin-bottom:6px;">修改状态</div>
+                        <select id="modal-status" style="width:100%;padding:8px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:6px;color:#e8e8e8;font-size:0.85rem;">${statusOpts}</select>
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <div style="color:#888;font-size:0.75rem;margin-bottom:6px;">快递单号</div>
+                        <input type="text" id="modal-tracking" value="${o['快递单号']||''}" placeholder="输入快递单号" style="width:100%;padding:8px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:6px;color:#e8e8e8;font-size:0.85rem;box-sizing:border-box;">
+                    </div>
+                    <button onclick="updateOrderStatus('${o['订单号']}')" style="width:100%;padding:12px;background:#c8a84e;color:#0f0f0f;border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;">保存修改</button>
+                </div>
+            `;
+        }
+        
+        function closeModal() {
+            document.getElementById('order-modal').style.display = 'none';
+        }
+        
+        function updateOrderStatus(orderId) {
+            const status = document.getElementById('modal-status').value;
+            const tracking = document.getElementById('modal-tracking').value;
+            
+            fetch(ORDER_API + '?action=update&password=' + ADMIN_PWD + '&order_id=' + encodeURIComponent(orderId) + '&status=' + encodeURIComponent(status) + '&tracking=' + encodeURIComponent(tracking))
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal();
+                        loadOrders();
+                    } else {
+                        alert('更新失败: ' + (data.error || '未知错误'));
+                    }
+                }).catch(e => alert('网络错误'));
+        }
     </script>
 </body>
 </html>

@@ -2074,18 +2074,21 @@
             if (custEmail) emailParams.customer_email = custEmail;
 
             if (typeof emailjs !== 'undefined') {
+                // 发送订单通知到QQ邮箱 + 抄送Gmail用于自动监控
                 emailjs.send('service_20w4jm4', 'template_jjj882q', emailParams)
                     .then(function() {
-                        console.log('Order email sent');
+                        console.log('Order email sent to QQ');
+                        // 同时用Gmail服务发一份副本用于自动监控
+                        return emailjs.send('service_2v2yenj', 'template_jjj882q', emailParams).catch(function(){});
+                    })
+                    .then(function() {
                         showStep2();
                     })
                     .catch(function(err) {
                         console.error('EmailJS error:', err);
-                        // 邮件发送失败也继续流程，不影响客户下单
                         showStep2();
                     });
             } else {
-                // EmailJS 未加载，直接继续
                 showStep2();
             }
         }

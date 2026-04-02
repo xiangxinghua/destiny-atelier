@@ -3,7 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Destiny Atelier | 命运工坊</title>
+    <title>Destiny Atelier | 命运工坊 - Personalized Crystal Energy Readings</title>
+    <meta name="description" content="Discover your cosmic energy through BaZi, MBTI & crystal wisdom. Get personalized readings and find your perfect healing crystal bracelet, necklace, or spiritual accessory.">
+    <meta name="keywords" content="crystal healing, energy reading, spiritual jewelry, crystal bracelet, fortune telling, BaZi, MBTI, 水晶手串, 命理测算, 灵性饰品, 能量水晶">
+    <link rel="canonical" href="https://xiangxinghua.github.io/destiny-atelier/">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Destiny Atelier | 命运工坊">
+    <meta property="og:description" content="Personalized crystal energy readings based on your birth chart & MBTI. Find the crystals that resonate with your unique energy.">
+    <meta property="og:url" content="https://xiangxinghua.github.io/destiny-atelier/">
+    <meta property="og:image" content="https://sc02.alicdn.com/kf/Abbff0e9d57544ef1aa70536edf279ab3w.png">
+    <meta property="og:site_name" content="Destiny Atelier">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:locale:alternate" content="en_US">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Destiny Atelier | 命运工坊">
+    <meta name="twitter:description" content="Discover your cosmic energy & find your perfect healing crystal.">
+    <meta name="twitter:image" content="https://sc02.alicdn.com/kf/Abbff0e9d57544ef1aa70536edf279ab3w.png">
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Destiny Atelier 命运工坊",
+      "description": "Personalized crystal energy readings and curated spiritual items",
+      "url": "https://xiangxinghua.github.io/destiny-atelier/",
+      "image": "https://sc02.alicdn.com/kf/Abbff0e9d57544ef1aa70536edf279ab3w.png",
+      "priceRange": "$8.99 - $23.99",
+      "currenciesAccepted": "USD, CNY",
+      "paymentAccepted": "PayPal, WeChat Pay, Alipay"
+    }
+    </script>
     <style>
         :root {
             --bg-color: #0f0f0f;
@@ -723,6 +754,62 @@
             font-size: 0.8rem;
         }
 
+        /* Scroll Animations */
+        .product-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease;
+        }
+        .product-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-title {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .section-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Image lazy load fade-in */
+        .product-img {
+            transition: opacity 0.4s ease;
+        }
+        .product-img[data-src] {
+            opacity: 0;
+        }
+
+        /* Back to Top Button */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 46px;
+            height: 46px;
+            background: var(--accent-gold);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(200, 168, 78, 0.3);
+        }
+        #back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(200, 168, 78, 0.4);
+        }
+
         /* Mobile Adjustments */
         @media (max-width: 600px) {
             #hero h1 { font-size: 2rem; }
@@ -734,6 +821,7 @@
             .reading-form { padding: 20px; }
             .energy-header { flex-direction: column; }
             .cart-drawer { width: 100%; max-width: none; }
+            #back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -877,6 +965,9 @@
         <p>&copy; 2026 Destiny Atelier / 命运工坊. <span data-i18n="footer_rights">All rights reserved.</span></p>
     </footer>
 
+    <!-- Back to Top -->
+    <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to Top">↑</button>
+
     <!-- Cart UI -->
     <!-- Product Detail Modal -->
     <div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
@@ -1004,161 +1095,161 @@
                 id: 1, name_zh: "黑曜石手串", name_en: "Black Obsidian Bracelet",
                 desc_zh: "强力护身石，净化负能量，增强气场", desc_en: "Powerful protection stone. Cleanses negative energy and strengthens your aura.",
                 price: 12.99, category: "bracelets", element: "water",
-                img: "https://sc02.alicdn.com/kf/Abbff0e9d57544ef1aa70536edf279ab3w.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01zf7OvV1vullJiClB0_!!2355596233-0-cib.jpg",
                 effects_zh: "辟邪 · 安神 · 增强气场", effects_en: "Protection · Calm · Aura"
             },
             {
                 id: 2, name_zh: "粉水晶手串", name_en: "Rose Quartz Bracelet",
                 desc_zh: "爱情之石，旺桃花，增强人缘魅力", desc_en: "Stone of love. Attracts romance and enhances personal charm.",
                 price: 14.99, category: "bracelets", element: "fire",
-                img: "https://sc02.alicdn.com/kf/A0503a744c9384852800d68c46b2274c4u.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01aWvVmE27u6TQmTDpl_!!2218417157856-0-cib.jpg",
                 effects_zh: "旺桃花 · 增人缘 · 促感情", effects_en: "Romance · Charm · Love"
             },
             {
                 id: 3, name_zh: "绿幽灵水晶手串", name_en: "Green Aventurine Bracelet",
                 desc_zh: "财富之石，招财旺事业，促进成长", desc_en: "Stone of wealth. Attracts prosperity and career growth.",
                 price: 16.99, category: "bracelets", element: "wood",
-                img: "https://sc02.alicdn.com/kf/A1e83ae62d55a4c39a57430d02b366d7fj.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01aiJ1on2GdSWluL6QO_!!2216055239038-0-cib.jpg",
                 effects_zh: "招财 · 旺事业 · 促成长", effects_en: "Wealth · Career · Growth"
             },
             {
                 id: 4, name_zh: "虎眼石手串", name_en: "Tiger Eye Bracelet",
                 desc_zh: "勇气之石，增强信心与行动力", desc_en: "Stone of courage. Boosts confidence and decisiveness.",
                 price: 13.99, category: "bracelets", element: "earth",
-                img: "https://sc02.alicdn.com/kf/A1c10a63ef83d48219091db75d8e4e7f0d.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01N1Exaz27Dy6CGalOR_!!2219431277764-0-cib.jpg",
                 effects_zh: "增勇气 · 助事业 · 辟邪", effects_en: "Courage · Career · Protection"
             },
             {
                 id: 5, name_zh: "紫水晶手串", name_en: "Amethyst Bracelet",
                 desc_zh: "智慧之石，安神助眠，提升灵性", desc_en: "Stone of wisdom. Promotes calm sleep and spiritual growth.",
                 price: 15.99, category: "bracelets", element: "fire",
-                img: "https://sc02.alicdn.com/kf/A35ca6ce3ad1c4b299f50d5a6275e89b0Y.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01zjVVJ41amQdlwnOVE_!!2218851323372-0-cib.jpg",
                 effects_zh: "安神 · 助眠 · 增智慧", effects_en: "Calm · Sleep · Wisdom"
             },
             {
                 id: 6, name_zh: "琥珀手串", name_en: "Amber Bracelet",
                 desc_zh: "千年松脂，温润养人，安神定气", desc_en: "Ancient tree resin. Warm healing energy, calms the spirit.",
                 price: 19.99, category: "bracelets", element: "earth",
-                img: "https://sc02.alicdn.com/kf/Aef7c25e9dfce43d399aa9bc4ef24d263a.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01VWfm4V23yRpwObCBS_!!333577324.jpg",
                 effects_zh: "养人 · 安神 · 增免疫", effects_en: "Healing · Calm · Immunity"
             },
             {
                 id: 7, name_zh: "月光石项链", name_en: "Moonstone Pendant Necklace",
                 desc_zh: "月光能量，增强直觉，调节情绪", desc_en: "Moonlight energy. Enhances intuition and emotional balance.",
                 price: 18.99, category: "necklaces", element: "water",
-                img: "https://sc02.alicdn.com/kf/A7b46aef4d5bb42dda7a408747bccc50e4.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01FKWI7D2Eh0Lvu9VGd_!!971898775-0-cib.jpg",
                 effects_zh: "增直觉 · 调情绪 · 助好梦", effects_en: "Intuition · Balance · Dreams"
             },
             {
                 id: 8, name_zh: "翡翠平安扣项链", name_en: "Jade Peace Pendant Necklace",
                 desc_zh: "平安富贵，温润养人，旺运护身", desc_en: "Symbol of peace and fortune. Jade nurtures body and spirit.",
                 price: 22.99, category: "necklaces", element: "wood",
-                img: "https://sc02.alicdn.com/kf/Afca402cc14af471c945a1a729757382fk.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01SM8fmP1sUG0jSnPzv_!!2221253075769-0-cib.jpg",
                 effects_zh: "保平安 · 养人 · 旺运", effects_en: "Peace · Nurture · Fortune"
             },
             {
                 id: 9, name_zh: "青金石项链", name_en: "Lapis Lazuli Pendant Necklace",
                 desc_zh: "智慧之石，促进表达，减轻压力", desc_en: "Stone of truth. Promotes self-expression and stress relief.",
                 price: 17.99, category: "necklaces", element: "water",
-                img: "https://sc02.alicdn.com/kf/A21623ce174af4442b16379f9ef50381dL.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01zukgTK21RLuLFbanp_!!4218476981-0-cib.jpg",
                 effects_zh: "增智慧 · 促表达 · 减压", effects_en: "Wisdom · Expression · Relief"
             },
             {
                 id: 10, name_zh: "招财猫摆件", name_en: "Lucky Cat Figurine (Maneki-neko)",
                 desc_zh: "日式招财猫，招财纳福，可爱吉祥物", desc_en: "Japanese lucky cat. Attracts wealth and good fortune.",
                 price: 9.99, category: "decor", element: "earth",
-                img: "https://sc02.alicdn.com/kf/Ac3c956f54b8843ebb868f83de1da9f4bT.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01pzPomk2CEwhGUtLMr_!!2212802788443-0-cib.jpg",
                 effects_zh: "招财 · 纳福 · 好运", effects_en: "Wealth · Fortune · Luck"
             },
             {
                 id: 11, name_zh: "水晶球摆件", name_en: "Crystal Ball with Stand",
                 desc_zh: "天然水晶球，净化空间，增强灵感", desc_en: "Natural crystal sphere. Purifies space and boosts inspiration.",
                 price: 14.99, category: "decor", element: "metal",
-                img: "https://sc02.alicdn.com/kf/Af15cedd4d56c4b8b8de8d5f83532a324K.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01pZbgkD1xR7MxpjJb3_!!2220272406439-0-cib.jpg",
                 effects_zh: "净化 · 增灵感 · 冥想", effects_en: "Purify · Inspire · Meditate"
             },
             {
                 id: 12, name_zh: "貔貅红绳手链", name_en: "Pixiu Lucky Red String Bracelet",
                 desc_zh: "招财神兽，红绳辟邪，双重守护", desc_en: "Mythical fortune beast on red string. Dual protection and wealth attraction.",
                 price: 8.99, category: "accessories", element: "fire",
-                img: "https://sc02.alicdn.com/kf/Ab64ec4fbd93a4f1ba7fc57ad29e772d4I.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01IzssJO23lAHRpDOsn_!!1005647295-0-cib.jpg",
                 effects_zh: "招财 · 辟邪 · 双重守护", effects_en: "Wealth · Protection · Guard"
             },
             {
                 id: 13, name_zh: "黄水晶招财手串", name_en: "Citrine Wealth Bracelet",
                 desc_zh: "商人之石，增强财运，激发自信与创造力", desc_en: "Merchant's stone. Amplifies wealth energy, boosts confidence and creativity.",
                 price: 17.99, category: "bracelets", element: "earth",
-                img: "https://sc02.alicdn.com/kf/A2d4858350acb435fa642ee1e590311ba4.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01ge70vO2DhAthvDTaP_!!3887268640-0-cib.jpg",
                 effects_zh: "招财 · 自信 · 创造力", effects_en: "Wealth · Confidence · Creativity"
             },
             {
                 id: 14, name_zh: "红玛瑙护身手串", name_en: "Red Agate Protection Bracelet",
                 desc_zh: "热情之石，增强活力与行动力，稳固情感", desc_en: "Stone of passion. Enhances vitality, courage, and emotional stability.",
                 price: 13.99, category: "bracelets", element: "fire",
-                img: "https://sc02.alicdn.com/kf/A2590c54439054b5fba3fe6cbe099f1a0T.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01UTd6lZ2HHlbjV1QJl_!!2218207309126-0-cib.jpg",
                 effects_zh: "活力 · 勇气 · 稳定", effects_en: "Vitality · Courage · Stability"
             },
             {
                 id: 15, name_zh: "月光石灵感手串", name_en: "Moonstone Intuition Bracelet",
                 desc_zh: "月亮之石，增强直觉力与女性能量，安抚情绪", desc_en: "Moon's stone. Enhances intuition and feminine energy, soothes emotions.",
                 price: 18.99, category: "bracelets", element: "water",
-                img: "https://sc02.alicdn.com/kf/Acd7ba58d8c3648a5988ae3e5fe71ba1er.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01Hy7Wmn1G4BvtF0ouD_!!3418530568-0-cib.jpg",
                 effects_zh: "直觉 · 柔和 · 安抚", effects_en: "Intuition · Grace · Soothe"
             },
             {
                 id: 16, name_zh: "虎眼石勇气手串", name_en: "Tiger Eye Courage Bracelet",
                 desc_zh: "王者之眼，增强意志力与决断力，化解恐惧", desc_en: "King's eye. Strengthens willpower and decisiveness, dissolves fear.",
                 price: 14.99, category: "bracelets", element: "earth",
-                img: "https://sc02.alicdn.com/kf/Acce8b60c24254943b502640958fdba64y.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01GXTyqi1bQH0ZEmloV_!!2212405073459-0-cib.jpg",
                 effects_zh: "勇气 · 决断 · 自信", effects_en: "Courage · Decision · Confidence"
             },
             {
                 id: 17, name_zh: "白水晶灵摆吊坠", name_en: "Clear Quartz Crystal Pendant",
                 desc_zh: "万能水晶之王，放大能量，净化身心，提升灵性", desc_en: "King of all crystals. Amplifies energy, purifies body and mind, elevates spirituality.",
                 price: 21.99, category: "necklaces", element: "metal",
-                img: "https://sc02.alicdn.com/kf/A124d68ccb7c84ce69f64450d538b3a78X.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01YyaeuJ2JXuP8mBOrc_!!2210862439432-0-cib.jpg",
                 effects_zh: "净化 · 放大 · 灵性", effects_en: "Purify · Amplify · Spirit"
             },
             {
                 id: 18, name_zh: "青金石智慧手串", name_en: "Lapis Lazuli Wisdom Bracelet",
                 desc_zh: "皇家之石，激发智慧与洞察力，增强沟通表达", desc_en: "Royal stone. Activates wisdom and insight, enhances communication and expression.",
                 price: 19.99, category: "bracelets", element: "water",
-                img: "https://sc02.alicdn.com/kf/A3d9a79af45c94815b12191e88605a864k.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01FRYJsr1cisRSSLs4V_!!2213331843635-0-cib.jpg",
                 effects_zh: "智慧 · 洞察 · 表达", effects_en: "Wisdom · Insight · Expression"
             },
             {
                 id: 19, name_zh: "东陵玉好运手串", name_en: "Green Aventurine Lucky Bracelet",
                 desc_zh: "机遇之石，吸引好运与贵人，缓解焦虑", desc_en: "Stone of opportunity. Attracts luck and helpful people, eases anxiety.",
                 price: 12.99, category: "bracelets", element: "wood",
-                img: "https://sc02.alicdn.com/kf/Aa22452cdcf9c4676bd7bb05951678c169.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01YXrkNu1fbxVpqFLvF_!!942624026-0-cib.jpg",
                 effects_zh: "好运 · 贵人 · 安心", effects_en: "Luck · Support · Peace"
             },
             {
                 id: 20, name_zh: "紫晶洞摆件", name_en: "Amethyst Geode Cluster",
                 desc_zh: "风水镇宅之宝，净化空间磁场，招财聚气", desc_en: "Feng shui treasure. Purifies space energy, attracts wealth and harmony.",
                 price: 22.99, category: "decor", element: "fire",
-                img: "https://sc02.alicdn.com/kf/Aa29c15adb0d547b69fdd47bbfffac476T.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01SVB1fy1xLcWG4PPak_!!2214471506427-0-cib.jpg",
                 effects_zh: "镇宅 · 净化 · 聚气", effects_en: "Protect · Purify · Harmonize"
             },
             {
                 id: 21, name_zh: "七脉轮能量套装", name_en: "Seven Chakra Crystal Set",
                 desc_zh: "七种天然水晶对应七大脉轮，全面平衡身心能量", desc_en: "Seven natural crystals for seven chakras. Comprehensive body-mind energy balance.",
                 price: 23.99, category: "decor", element: "metal",
-                img: "https://sc02.alicdn.com/kf/A0b2d6137b502494383d884a51c5fef83N.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01RUFHLF1x3IkoMMc6X_!!2216025096387-0-cib.jpg",
                 effects_zh: "平衡 · 疗愈 · 全面", effects_en: "Balance · Healing · Complete"
             },
             {
                 id: 22, name_zh: "黑曜石貔貅手串", name_en: "Obsidian Pixiu Wealth Bracelet",
                 desc_zh: "双重招财辟邪，黑曜石搭配金貔貅，至强守护", desc_en: "Double protection & wealth. Black obsidian with golden Pixiu charm, ultimate guardian.",
                 price: 16.99, category: "bracelets", element: "water",
-                img: "https://sc02.alicdn.com/kf/A54de8b1eac8a474d8e521d3e4f74a74cW.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01WyW5zy1J7nfGAg5wP_!!2212705130982-0-cib.jpg",
                 effects_zh: "招财 · 辟邪 · 至强守护", effects_en: "Wealth · Shield · Guardian"
             },
             {
                 id: 23, name_zh: "玫瑰石英美容套装", name_en: "Rose Quartz Beauty Set",
                 desc_zh: "天然粉水晶刮痧板+美容滚轮，美容养颜，提升爱情能量", desc_en: "Natural rose quartz gua sha + facial roller. Beauty care and love energy amplifier.",
                 price: 19.99, category: "accessories", element: "fire",
-                img: "https://sc02.alicdn.com/kf/Ad71cf5815857406ba5ebfa6e8ed954a0T.png",
+                img: "https://cbu01.alicdn.com/img/ibank/O1CN01HzUlxG1VmMRH85VwJ_!!2219490052695-0-cib.jpg",
                 effects_zh: "美容 · 爱情 · 滋养", effects_en: "Beauty · Love · Nourish"
             }
         ];
@@ -1472,6 +1563,21 @@
         let lang = 'zh';
         let cart = [];
         let recommendations = [];
+        const USD_TO_CNY = 7.25;
+
+        // --- 价格格式化：中文=人民币，英文=美元 ---
+        function formatPrice(usdPrice) {
+            if (lang === 'zh') {
+                return '¥' + (usdPrice * USD_TO_CNY).toFixed(0);
+            }
+            return '$' + usdPrice.toFixed(2);
+        }
+        function formatTotal(usdTotal) {
+            if (lang === 'zh') {
+                return '¥' + (usdTotal * USD_TO_CNY).toFixed(2);
+            }
+            return '$' + usdTotal.toFixed(2);
+        }
 
         // --- CORE FUNCTIONS ---
 
@@ -1769,19 +1875,20 @@
 
             const filtered = category === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === category);
 
-            filtered.forEach(p => {
+            filtered.forEach((p, idx) => {
                 const isRec = recommendations.includes(p.element);
                 const card = document.createElement('div');
                 card.className = 'product-card';
+                card.style.transitionDelay = (idx * 0.08) + 's';
                 card.innerHTML = `
                     ${isRec ? `<div class="rec-badge">${I18N[lang].recommended}</div>` : ''}
                     <div onclick="openDetail(${p.id})" style="cursor:pointer;">
-                        <img src="${p.img}" alt="${p[lang==='zh'?'name_zh':'name_en']}" class="product-img">
+                        <img data-src="${p.img}" alt="${p[lang==='zh'?'name_zh':'name_en']}" class="product-img" loading="lazy">
                         <div class="product-info">
                             <div class="product-name">${p[lang==='zh'?'name_zh':'name_en']}</div>
                             <div class="product-desc">${p[lang==='zh'?'desc_zh':'desc_en']}</div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div class="product-price">$${p.price.toFixed(2)}</div>
+                                <div class="product-price">${formatPrice(p.price)}</div>
                                 <div style="font-size:0.7rem; color:var(--text-secondary)">${p[lang==='zh'?'effects_zh':'effects_en']}</div>
                             </div>
                         </div>
@@ -1792,6 +1899,9 @@
                 `;
                 grid.appendChild(card);
             });
+            // Trigger lazy load & scroll animations
+            lazyLoadImages();
+            observeCards();
         }
 
         // Filter events
@@ -1828,7 +1938,7 @@
             body.innerHTML = `
                 <div class="detail-title">${p[isZh ? 'name_zh' : 'name_en']}</div>
                 <div class="detail-effects">✦ ${p[isZh ? 'effects_zh' : 'effects_en']} ✦</div>
-                <div class="detail-price">$${p.price.toFixed(2)}</div>
+                <div class="detail-price">${formatPrice(p.price)}</div>
                 <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">${p[isZh ? 'desc_zh' : 'desc_en']}</p>
 
                 ${s ? `
@@ -1889,19 +1999,19 @@
                             <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
                             <span>${item.qty}</span>
                             <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-                            <span style="margin-left:auto">$${(item.price * item.qty).toFixed(2)}</span>
+                            <span style="margin-left:auto">${formatTotal(item.price * item.qty)}</span>
                         </div>
                     </div>
                 `;
                 container.appendChild(el);
             });
 
-            document.getElementById('cart-total-val').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('cart-total-val').innerText = formatTotal(total);
             document.getElementById('cart-count').innerText = count;
 
             // Update checkout links
             const orderSummary = cart.map(i => `${i[lang==='zh'?'name_zh':'name_en']} x${i.qty}`).join(', ');
-            const text = encodeURIComponent(`Hello Destiny Atelier, I would like to order: ${orderSummary}. Total: $${total.toFixed(2)}`);
+            const text = encodeURIComponent(`Hello Destiny Atelier, I would like to order: ${orderSummary}. Total: ${formatTotal(total)}`);
             const waLink = document.getElementById('wa-link');
             const mailLink = document.getElementById('mail-link');
             if(waLink) waLink.href = `https://wa.me/?text=${text}`;
@@ -2061,7 +2171,6 @@
         };
 
         // --- 多支付方式切换 ---
-        const USD_TO_CNY = 7.25; // 汇率
 
         function showPayMethod(method) {
             ['paypal','wechat','alipay'].forEach(m => {
@@ -2158,7 +2267,7 @@
 
             // 构建商品明细
             const itemsHtml = cart.map(i => 
-                `<li>${i[isZh?'name_zh':'name_en']} × ${i.qty} — $${(i.price*i.qty).toFixed(2)}</li>`
+                `<li>${i[isZh?'name_zh':'name_en']} × ${i.qty} — ${formatTotal(i.price*i.qty)}</li>`
             ).join('');
 
             // 发送邮件通知
@@ -2172,7 +2281,7 @@
                 customer_phone: phone,
                 customer_address: address,
                 payment_method: '待支付',
-                order_total: `$${totalUSD.toFixed(2)} (¥${totalCNY})`,
+                order_total: `${formatTotal(totalUSD)} (${lang==='zh' ? '$'+totalUSD.toFixed(2) : '¥'+totalCNY})`,
                 order_items: `<ul>${itemsHtml}</ul>`
             };
 
@@ -2380,7 +2489,7 @@
                     </div>
                     <div style="font-size:0.75rem;color:#888;margin-bottom:6px;">${o.time}</div>
                     <div style="font-size:0.8rem;color:#ccc;margin-bottom:6px;">${o.items}</div>
-                    <div style="font-size:0.9rem;color:#c8a84e;font-weight:bold;">$${o.total_usd}</div>
+                    <div style="font-size:0.9rem;color:#c8a84e;font-weight:bold;">${lang==='zh' ? '¥'+(o.total_usd*USD_TO_CNY).toFixed(0) : '$'+o.total_usd}</div>
                     ${trackingHtml}
                 </div>`;
             });
@@ -2520,7 +2629,7 @@
                     </div>
                     <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
                         <span style="color:#888;font-size:0.8rem;">金额</span>
-                        <span style="color:#c8a84e;font-weight:bold;">$${o.total_usd}</span>
+                        <span style="color:#c8a84e;font-weight:bold;">${lang==='zh' ? '¥'+(o.total_usd*USD_TO_CNY).toFixed(0) : '$'+o.total_usd}</span>
                     </div>
                 </div>
                 ${trackingHtml}
@@ -2737,6 +2846,67 @@
         function closeModal() {
             document.getElementById('order-modal').style.display = 'none';
         }
+
+        // ==================== 滚动动画 & 懒加载 & 返回顶部 ====================
+        // Intersection Observer for product cards
+        var cardObserver = null;
+        function observeCards() {
+            if (cardObserver) cardObserver.disconnect();
+            cardObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        cardObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.product-card').forEach(function(card) {
+                cardObserver.observe(card);
+            });
+        }
+
+        // Section title animations
+        var titleObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    titleObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+        document.querySelectorAll('.section-title').forEach(function(t) {
+            titleObserver.observe(t);
+        });
+
+        // Lazy load images
+        function lazyLoadImages() {
+            var imgObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        var img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            img.onload = function() { img.style.opacity = '1'; };
+                        }
+                        imgObserver.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '200px' });
+            document.querySelectorAll('img[data-src]').forEach(function(img) {
+                imgObserver.observe(img);
+            });
+        }
+
+        // Back to top button
+        var backToTop = document.getElementById('back-to-top');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
         
         function updateOrderStatus(orderId) {
             const status = document.getElementById('modal-status').value;

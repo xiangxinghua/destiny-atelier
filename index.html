@@ -2177,6 +2177,10 @@
             if (we) we.textContent = '¥' + totalCNY;
             if (ae) ae.textContent = '¥' + totalCNY;
 
+            // 同步PayPal金额到data-total
+            const ppArea = document.getElementById('paypal-btn-area');
+            if (ppArea) ppArea.dataset.total = totalUSD.toFixed(2);
+
             // 默认显示 PayPal
             showPayMethod('paypal');
             // PayPal按钮需要在容器可见后重新渲染

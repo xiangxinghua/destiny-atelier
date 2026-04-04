@@ -2210,7 +2210,7 @@
 
         // --- 订单系统 ---
         let currentOrderId = '';
-        const ORDER_API = 'https://script.google.com/macros/s/AKfycbwQjBsSNAQitQTFeb3GhZ2lThNE4Nd_PL5uQ1eZF3iFAixHjRw5OL0C3BF7tupcA2AM/exec';
+        const ORDER_API = 'https://script.google.com/macros/s/AKfycbwPvEcxWmlv0AeHHcc0OWKgbtKq5y6RZjIZmYOG0q8ofGbDPW3E5XgLwhPvqdCQd4oD/exec';
         const ADMIN_PWD = 'destiny2026';
 
         // 初始化 EmailJS
@@ -2655,20 +2655,28 @@
                 <nav style="background:rgba(15,15,15,0.95);border-bottom:1px solid #2a2a2a;padding:0 20px;position:fixed;top:0;width:100%;z-index:1000;">
                     <div style="display:flex;justify-content:space-between;align-items:center;height:60px;max-width:1200px;margin:0 auto;">
                         <div style="color:#c8a84e;font-weight:bold;font-size:1.1rem;">✦ 命运工坊 · 后台</div>
-                        <div style="display:flex;gap:12px;align-items:center;">
-                            <button onclick="loadOrders()" style="padding:6px 16px;background:transparent;border:1px solid #c8a84e;color:#c8a84e;border-radius:6px;cursor:pointer;font-size:0.8rem;">刷新</button>
-                            <button onclick="location.href=location.pathname" style="padding:6px 16px;background:transparent;border:1px solid #555;color:#888;border-radius:6px;cursor:pointer;font-size:0.8rem;">退出</button>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <button id="tab-orders-btn" onclick="switchAdminTab('orders')" style="padding:6px 14px;background:#c8a84e;border:1px solid #c8a84e;color:#0f0f0f;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:bold;">订单</button>
+                            <button id="tab-traffic-btn" onclick="switchAdminTab('traffic')" style="padding:6px 14px;background:transparent;border:1px solid #555;color:#888;border-radius:6px;cursor:pointer;font-size:0.8rem;">📊 流量</button>
+                            <button onclick="location.href=location.pathname" style="padding:6px 14px;background:transparent;border:1px solid #555;color:#888;border-radius:6px;cursor:pointer;font-size:0.8rem;">退出</button>
                         </div>
                     </div>
                 </nav>
                 <div style="padding:80px 20px 40px;max-width:1200px;margin:0 auto;">
-                    <div id="stats-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:30px;"></div>
-                    <div style="background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;overflow:hidden;">
-                        <div style="padding:16px 20px;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;">
-                            <span style="color:#c8a84e;font-weight:bold;">全部订单</span>
-                            <input type="text" id="order-search" oninput="filterOrders()" placeholder="搜索订单号/姓名..." style="padding:6px 12px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:6px;color:#e8e8e8;font-size:0.8rem;width:200px;">
+                    <!-- 订单Tab -->
+                    <div id="tab-orders">
+                        <div id="stats-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:30px;"></div>
+                        <div style="background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;overflow:hidden;">
+                            <div style="padding:16px 20px;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;">
+                                <span style="color:#c8a84e;font-weight:bold;">全部订单</span>
+                                <input type="text" id="order-search" oninput="filterOrders()" placeholder="搜索订单号/姓名..." style="padding:6px 12px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:6px;color:#e8e8e8;font-size:0.8rem;width:200px;">
+                            </div>
+                            <div id="orders-table" style="overflow-x:auto;"></div>
                         </div>
-                        <div id="orders-table" style="overflow-x:auto;"></div>
+                    </div>
+                    <!-- 流量Tab -->
+                    <div id="tab-traffic" style="display:none;">
+                        <div id="traffic-panel"></div>
                     </div>
                 </div>
             </div>
@@ -2689,6 +2697,41 @@
         })();
         
         let allOrders = [];
+        var trafficLoaded = false;
+
+        function switchAdminTab(tab) {
+            var ordersTab = document.getElementById('tab-orders');
+            var trafficTab = document.getElementById('tab-traffic');
+            var ordersBtn = document.getElementById('tab-orders-btn');
+            var trafficBtn = document.getElementById('tab-traffic-btn');
+            if (tab === 'orders') {
+                ordersTab.style.display = 'block';
+                trafficTab.style.display = 'none';
+                ordersBtn.style.background = '#c8a84e';
+                ordersBtn.style.color = '#0f0f0f';
+                ordersBtn.style.borderColor = '#c8a84e';
+                ordersBtn.style.fontWeight = 'bold';
+                trafficBtn.style.background = 'transparent';
+                trafficBtn.style.color = '#888';
+                trafficBtn.style.borderColor = '#555';
+                trafficBtn.style.fontWeight = 'normal';
+            } else {
+                ordersTab.style.display = 'none';
+                trafficTab.style.display = 'block';
+                trafficBtn.style.background = '#c8a84e';
+                trafficBtn.style.color = '#0f0f0f';
+                trafficBtn.style.borderColor = '#c8a84e';
+                trafficBtn.style.fontWeight = 'bold';
+                ordersBtn.style.background = 'transparent';
+                ordersBtn.style.color = '#888';
+                ordersBtn.style.borderColor = '#555';
+                ordersBtn.style.fontWeight = 'normal';
+                if (!trafficLoaded) {
+                    trafficLoaded = true;
+                    loadTrafficStats();
+                }
+            }
+        }
         
         function adminLogin() {
             const pwd = document.getElementById('admin-pwd').value;
@@ -2911,6 +2954,119 @@
                         alert('更新失败: ' + (data.error || '未知错误'));
                     }
                 }).catch(e => alert('网络错误'));
+        }
+        // ==================== 流量追踪 ====================
+        (function() {
+            // 生成或读取访客唯一ID
+            var vid = localStorage.getItem('da_vid');
+            if (!vid) {
+                vid = 'V' + Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+                localStorage.setItem('da_vid', vid);
+            }
+            var isNew = !localStorage.getItem('da_visited');
+            if (isNew) localStorage.setItem('da_visited', '1');
+
+            // 收集访问数据
+            var td = {
+                action: 'track_visit',
+                vid: vid,
+                is_new: isNew ? 1 : 0,
+                page: location.pathname + location.search.replace(/[\?&]admin\b/, ''),
+                ref: document.referrer || 'direct',
+                lang: lang,
+                ua: navigator.userAgent.substring(0, 120),
+                sw: screen.width,
+                sh: screen.height,
+                ts: new Date().toISOString()
+            };
+
+            // 发送（不阻塞页面加载）
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(ORDER_API, JSON.stringify(td));
+            } else {
+                fetch(ORDER_API, { method: 'POST', body: JSON.stringify(td), keepalive: true }).catch(function(){});
+            }
+        })();
+
+        // ==================== 流量统计面板（Admin） ====================
+        function loadTrafficStats() {
+            var container = document.getElementById('traffic-panel');
+            if (!container) return;
+            container.innerHTML = '<div style="padding:40px;text-align:center;color:#888;">加载流量数据中...</div>';
+            
+            fetch(ORDER_API + '?action=traffic_stats&password=' + ADMIN_PWD)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (!data.success) {
+                        container.innerHTML = '<div style="padding:40px;text-align:center;color:#ff6b6b;">流量数据暂不可用<br><span style="font-size:0.8rem;color:#888;">请先更新 Google Apps Script</span></div>';
+                        return;
+                    }
+                    renderTrafficDashboard(data, container);
+                })
+                .catch(function(e) {
+                    container.innerHTML = '<div style="padding:40px;text-align:center;color:#ff6b6b;">网络错误，请刷新重试</div>';
+                });
+        }
+
+        function renderTrafficDashboard(data, container) {
+            var s = data.stats;
+            var daily = data.daily || [];
+
+            // 概览卡片
+            var cards = [
+                { label: '今日 PV', value: s.today_pv || 0, color: '#c8a84e' },
+                { label: '今日 UV', value: s.today_uv || 0, color: '#9c27b0' },
+                { label: '7日 PV', value: s.week_pv || 0, color: '#2196f3' },
+                { label: '7日 UV', value: s.week_uv || 0, color: '#4caf50' },
+                { label: '总 PV', value: s.total_pv || 0, color: '#ff9800' },
+                { label: '总 UV', value: s.total_uv || 0, color: '#e91e63' }
+            ];
+
+            var html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:24px;">';
+            cards.forEach(function(c) {
+                html += '<div style="background:#1a1a1a;border-radius:10px;border:1px solid #2a2a2a;padding:16px;text-align:center;">';
+                html += '<div style="font-size:1.8rem;font-weight:bold;color:' + c.color + ';">' + c.value + '</div>';
+                html += '<div style="font-size:0.75rem;color:#888;margin-top:4px;">' + c.label + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+
+            // 7日趋势（简易条形图）
+            if (daily.length > 0) {
+                var maxPV = Math.max.apply(null, daily.map(function(d) { return d.pv || 0; })) || 1;
+                html += '<div style="background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;padding:20px;margin-bottom:24px;">';
+                html += '<div style="color:#c8a84e;font-weight:bold;margin-bottom:16px;">📈 近7日趋势</div>';
+                html += '<div style="display:flex;align-items:flex-end;gap:8px;height:160px;padding-bottom:30px;position:relative;">';
+                daily.forEach(function(d) {
+                    var pct = Math.max(((d.pv || 0) / maxPV) * 100, 4);
+                    var dateLabel = (d.date || '').substring(5);
+                    html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">';
+                    html += '<div style="font-size:0.7rem;color:#c8a84e;">' + (d.pv || 0) + '</div>';
+                    html += '<div style="width:100%;max-width:40px;height:' + pct + '%;background:linear-gradient(to top,#c8a84e,#d4a843);border-radius:4px 4px 0 0;min-height:4px;"></div>';
+                    html += '<div style="font-size:0.65rem;color:#888;position:absolute;bottom:4px;">' + dateLabel + '</div>';
+                    html += '</div>';
+                });
+                html += '</div></div>';
+            }
+
+            // 来源渠道
+            if (data.referrers && data.referrers.length > 0) {
+                html += '<div style="background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;padding:20px;margin-bottom:24px;">';
+                html += '<div style="color:#c8a84e;font-weight:bold;margin-bottom:12px;">🌐 流量来源 (近7日)</div>';
+                var totalRef = data.referrers.reduce(function(a, r) { return a + r.count; }, 0) || 1;
+                data.referrers.slice(0, 10).forEach(function(r) {
+                    var pct = ((r.count / totalRef) * 100).toFixed(1);
+                    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">';
+                    html += '<div style="width:100px;font-size:0.8rem;color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + r.source + '">' + r.source + '</div>';
+                    html += '<div style="flex:1;background:#222;border-radius:4px;height:14px;overflow:hidden;">';
+                    html += '<div style="width:' + pct + '%;height:100%;background:#c8a84e;border-radius:4px;min-width:2px;"></div></div>';
+                    html += '<div style="width:60px;text-align:right;font-size:0.75rem;color:#888;">' + r.count + ' (' + pct + '%)</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
         }
     </script>
 </body>

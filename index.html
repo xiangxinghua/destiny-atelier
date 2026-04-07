@@ -36,6 +36,15 @@
     }
     </script>
     <style>
+        .spinner-small {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(200, 168, 78, 0.1);
+            border-top: 2px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         :root {
             --bg-color: #0f0f0f;
             --card-bg: #1a1a1a;
@@ -812,6 +821,37 @@
             .cart-drawer { width: 100%; max-width: none; }
             #back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1rem; }
         }
+        /* PayPal UI refinements */
+        #paypal-button-container {
+            margin-top: 15px;
+            min-height: 45px;
+        }
+        .paypal-loader-error {
+            background: rgba(200, 168, 78, 0.1);
+            border: 1px dashed var(--accent-gold);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+        .paypal-retry-btn {
+            background: var(--accent-gold);
+            color: var(--bg-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        .paypal-retry-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -1020,7 +1060,7 @@
                 <div id="pay-wechat" style="display:none;text-align:center;padding:15px 0;">
                     <div style="background:#2a2a2a;border-radius:12px;padding:20px;display:inline-block;">
                         <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
-                            <img src="https://sc01.alicdn.com/kf/Ab951043291954da182c48f9f9560d478A.jpg" alt="微信支付" style="width:100%;height:100%;object-fit:cover;">
+                            <img src="https://sc01.alicdn.com/kf/S2bba115233b74b83bfa4e268904753c5r.png" alt="微信支付" style="width:100%;height:100%;object-fit:cover;">
                         </div>
                         <p style="color:var(--accent-gold);font-size:0.9rem;margin-bottom:6px;">微信扫码支付</p>
                         <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:var(--accent-gold);font-size:1.1rem;" id="wechat-amount">¥0</strong></p>
@@ -1035,7 +1075,7 @@
                 <div id="pay-alipay" style="display:none;text-align:center;padding:15px 0;">
                     <div style="background:#2a2a2a;border-radius:12px;padding:20px;display:inline-block;">
                         <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
-                            <img src="https://sc01.alicdn.com/kf/A23158c62dbb3409892b30609e90de80bV.jpg" alt="支付宝支付" style="width:100%;height:100%;object-fit:cover;">
+                            <img src="https://sc01.alicdn.com/kf/S6dc9c0d10e244369a4b30342c8b56e8cx.png" alt="支付宝支付" style="width:100%;height:100%;object-fit:cover;">
                         </div>
                         <p style="color:#1677FF;font-size:0.9rem;margin-bottom:6px;">支付宝扫码支付</p>
                         <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:#1677FF;font-size:1.1rem;" id="alipay-amount">¥0</strong></p>
@@ -1448,17 +1488,17 @@
                 opt_none: "未知",
                 label_question: "你想问的问题 (可选)",
                 reveal_btn: "揭示我的命运",
-                overall_energy: "综合能量分",
-                energy_desc: "你当前的宇宙共鸣水平。",
+                overall_energy: "固有能量频率",
+                energy_desc: "这是你与生俱来的宇宙共鸣底色。",
                 career: "事业",
                 wealth: "财运",
                 love: "感情",
                 health: "健康",
-                reading_narrative_title: "你的能量解读",
-                lucky_color: "幸运色",
-                lucky_number: "幸运数字",
-                lucky_direction: "幸运方位",
-                shop_transition: "为了平衡你的能量，我们建议：",
+                reading_narrative_title: "来自时空坐标的私语",
+                lucky_color: "建议色系",
+                lucky_number: "灵感数字",
+                lucky_direction: "磁场方位",
+                shop_transition: "发现了一些能帮你校准频率的小物：",
                 see_recs: "查看推荐好物",
                 shop_title: "能量好物",
                 cat_all: "全部",
@@ -1699,7 +1739,7 @@
             document.getElementById(`bar-${id}`).style.width = val + '%';
         }
 
-        function generateNarrative(score, dims, mbti, question) {
+                function generateNarrative(score, dims, mbti, question) {
             const maxDim = Object.keys(dims).reduce((a, b) => dims[a] > dims[b] ? a : b);
             const minDim = Object.keys(dims).reduce((a, b) => dims[a] < dims[b] ? a : b);
             const sorted = Object.entries(dims).sort((a,b) => b[1] - a[1]);
@@ -1731,62 +1771,60 @@
             if (lang === 'zh') {
                 const L = { career:'事业', wealth:'财运', love:'感情', health:'健康' };
                 let parts = [];
-
-                // === 第一段：命格总论（模棱两可 + 正向） ===
-                const p1Variants = [
-                    `从你出生那一刻起，宇宙就为你写下了一段独特的密码。你的综合能量指数为 <strong style="color:var(--accent-gold)">${score}</strong>，这个数字并非偶然——它暗示着你身上蕴藏着某种<em>尚未被完全释放的力量</em>。在我接触过的众多能量场中，你的频率有一种罕见的特质：它不是那种张扬外放的强大，而是一种内敛深沉的潜力，像是还没有破土的种子，一旦找到合适的土壤和阳光，就会以令人惊叹的速度绽放。`,
-                    `你的综合能量指数达到了 <strong style="color:var(--accent-gold)">${score}</strong>。说实话，这个数字一出现，我就感受到了一些不寻常的信号——你的命格中有一种很少见的"双重特质"：一面是理性的、克制的、深思熟虑的你；另一面则是感性的、直觉敏锐的、充满想象力的你。大多数人只拥有其中一面，而你两者兼具。这种内在的张力，恰恰是你最大的优势，也是你偶尔感到矛盾和纠结的根源。`,
-                    `综合能量扫描显示，你的频率为 <strong style="color:var(--accent-gold)">${score}</strong>。有趣的是，这个数字透露了一个你可能自己都没意识到的真相——你比你以为的自己要强大得多。你身上有一种"隐藏buff"：当你真正投入一件事的时候，你的能量场会自发地进入一种高度集中的状态，效率和灵感都会成倍增长。问题只在于，你并不总是相信自己有这样的力量。`
+                
+                // --- 第一段：开场白 ---
+                const intros = [
+                    `宝贝，我仔细看了下你的频率坐标。其实，每个人出生时都自带一份独特的【能量频率】。有时候不是你不够好，而是你的【固有磁场】需要一点小小的“频率校准”。✨`,
+                    `真的……被这个频率准到了。我根据你的时空坐标推导了一下，你的生命底色里藏着一些很有意思的波动，那是独属于你的“隐藏buff”。🍃`,
+                    `欢迎来到你的能量自留地。这不是那种硬邦邦的报告，而是一份关于你“出厂设置”的温润私语。让我们来看看，宇宙在你身上留下了哪些痕迹。🔮`
                 ];
-                parts.push(p1Variants[seed % 3]);
+                parts.push(intros[seed % 3]);
 
-                // === 第二段：维度解读（给人"被看透"的感觉） ===
-                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ 维 度 解 析 ◈</span>在你的能量版图中，<strong style="color:var(--accent-gold)">${L[maxDim]}</strong>维度最为亮眼，达到了 ${dims[maxDim]} 分。这说明你在${L[maxDim]}方面有着天然的敏锐度和好运加持——你可能已经感受到了，在这个领域，你的直觉往往比分析更准确，你的努力往往比别人更容易看到回报。这并不是运气，而是你的能量磁场在这个方向上天然地强大。`);
+                // --- 第二段：维度分析 ---
+                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ 维 度 解 析 ◈</span>你的<strong style="color:var(--accent-gold)">${L[maxDim]}维度</strong>表现特别亮眼，简直就是你生命里的阳光区，那种从内而外透出来的生命力真的很迷人。而在<strong style="color:var(--accent-gold)">${L[minDim]}维度</strong>，你可能会偶尔觉得有些“频率卡顿”，那种莫名其妙的内耗和疲惫，往往就是从这个缺口透进来的。`);
 
-                parts.push(`相比之下，<strong>${L[minDim]}</strong>维度暂时处于 ${dims[minDim]} 分的位置，这并不是说你在这方面"不行"——恰恰相反，它说明你在${L[minDim]}领域有<em>巨大的上升空间</em>。就像一根弹簧被压到最低点，蓄积的势能反而最大。你可能最近在${L[minDim]}方面遇到了一些让你感到困惑或不安的事情，别着急，这正是宇宙在提醒你：是时候给这个维度"充电"了。${L[secondDim]}（${sorted[1][1]}分）和${L[thirdDim]}（${sorted[2][1]}分）处于稳健区间，稍加调整即可更上一层楼。`);
-
-                // === 第三段：心理安抚（说到心坎里） ===
-                const comfortVariants = [
-                    `我能感受到，你可能是一个习惯性"内耗"的人——外人看到的你总是从容不迫，但只有你自己知道，那些深夜辗转反侧的时刻，那些不断质疑自己"是不是还不够好"的瞬间，消耗了你多少能量。我想告诉你的是：<strong style="color:var(--accent-gold)">你已经做得够好了</strong>。你不需要成为别人期待中的样子，你只需要成为你自己——那个有时候很强大、有时候也会脆弱，但永远在努力往前走的你。宇宙看到了你的每一份坚持，即使你觉得"好像什么都没发生"，种子其实早就在地下生根了。`,
-                    `看到你的能量数据，有一些话我忍不住想对你说——你是不是经常觉得"自己不被理解"？你身边的人可能欣赏你、依赖你，但真正懂你内心深处那些微妙感受的人，似乎总是很少。这不是你的问题，而是你的频率确实比较独特。<strong style="color:var(--accent-gold)">独特从来不是缺陷，而是天赋</strong>。你不需要降低自己的频率去迎合别人。对的人和对的事，会在正确的时间走向你——而你现在要做的，就是保持住自己的光芒。`,
-                    `如果我没有猜错的话，你最近可能正处于一个"看起来一切正常，但内心有点迷茫"的状态。这种感觉并不是坏事——它恰恰说明你的灵魂在寻找更高层次的意义。<strong style="color:var(--accent-gold)">你不是在原地打转，你是在螺旋上升</strong>。你正站在一个重要的十字路口，过去的你已经完成了它的使命，新的你正在酝酿。给自己一些时间和耐心，蝴蝶不会在茧里就长出翅膀——它需要等待那个属于它的时刻。`
+                // --- 第三段：心理慰藉 ---
+                const comforts = [
+                    `有时候真的不要再内耗自己了。在这个频率波动的时空里，你已经做得很好了。你要相信，那些你觉得跨不过去的坎，其实只是你能量正在经历的一次微小的“系统升级”。在这个世界上，你不需要为了迎合谁而改变自己的底色。`,
+                    `你是我见过的，极少数能把细腻和坚韧融合得这么好的人。不要因为偶尔的低谷就怀疑自己的频率。在这个宇宙的交响乐里，你的每一个波动都是不可或缺的音符。给自己一点时间，允许自己在这个嘈杂的世界里，慢一点，再慢一点。`,
+                    `你正在经历一场非常奇妙的“频率蜕变”。那些你曾觉得遗憾、失落的瞬间，其实都是在为你接下来的高频爆发蓄能。别急着去推那扇还没打开的门，先回过头来，抱抱那个一直在努力的自己。`
                 ];
-                parts.push(comfortVariants[(seed + dims[maxDim]) % 3]);
+                parts.push(comforts[(seed + dims[maxDim]) % 3]);
 
-                // === 第四段：正向指引 ===
-                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ 未 来 指 引 ◈</span>从能量走势来看，你接下来的3-6个月将进入一个${score > 70 ? '逐渐上行的通道' : '触底反弹的转折期'}。${L[maxDim]}维度会继续保持强势，可能会有${maxDim === 'career' ? '升职加薪或重要合作的机会出现' : maxDim === 'wealth' ? '意想不到的财运或投资回报' : maxDim === 'love' ? '一段深刻的情感连接或关系升温' : '身心状态明显改善的转折点'}。而${L[minDim]}维度，只要你主动去调和——${minDim === 'career' ? '大胆表达自己的想法，不要总是退让' : minDim === 'wealth' ? '重新审视你和金钱的关系，允许自己"值得"拥有更多' : minDim === 'love' ? '试着打开心门，不要用坚硬的壳保护柔软的自己' : '放慢脚步，倾听身体的声音，它比你想象中更诚实'}——你会发现，改变来得比你想象的要快。`);
+                // --- 第四段：未来导向 ---
+                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ 未 来 指 引 ◈</span>接下来的这段时间，试着把重心稍微往<strong style="color:var(--accent-gold)">${L[secondDim]}</strong>和<strong style="color:var(--accent-gold)">${L[thirdDim]}</strong>这两个领域移一移，你会发现那种久违的“顺畅感”会慢慢回来。不要试图去掌控所有变量，宇宙自有它的节奏，而你需要做的，就是保持自己的频率不乱。`);
 
-                // === 第五段：MBTI 深度人格洞察 ===
+                // --- 第五段：MBTI 联动 ---
                 if (mbti && mbtiInsights[mbti]) {
                     parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.06); border:1px solid rgba(200,168,78,0.15); border-radius:12px;">
-                        <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ ${mbti} · 人 格 能 量 洞 察 ◈</span>
-                        <p style="line-height:1.9;margin:0;">${mbtiInsights[mbti].zh}</p>
-                        <p style="line-height:1.9;margin:12px 0 0 0;">当你的${mbti}性格与${L[maxDim]}维度的强势能量结合时，你会在这个领域展现出${mbti.includes('E') ? '极具感染力的领导力和号召力' : '深邃独到的洞察力和判断力'}。而在${L[minDim]}方面，你的${mbti.includes('F') ? '敏感细腻可能会让你过度在意外界的评价' : '理性克制可能会让你忽视内心真实的声音'}——尝试${mbti.includes('J') ? '放下一些控制欲，允许生活有一些意外和惊喜' : '给自己的生活建立一些小小的仪式感和秩序感'}，你会找到新的平衡。</p>
-                    </div>`);
+                    <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ ${mbti} · 频率深度共鸣 ◈</span>
+                    <p style="line-height:1.9;margin:0;">${mbtiInsights[mbti].zh}</p>
+                    <p style="line-height:1.9;margin:12px 0 0 0;">当你的${mbti}特质遇上${L[maxDim]}的高频能量，你就像自带了一个“发光模组”。但也要留意在${L[minDim]}方面，${mbti.includes('F') ? '太细微的情绪波动可能会让你偶尔丢失重心' : '理性的外壳有时会让你觉得有一点点孤独'}。试着${mbti.includes('J') ? '放下一份完美的执念' : '给自己定一个小小的秩序'}，你会感到更自由。</p>
+                </div>`);
                 }
 
-                // === 第六段：能量调和 → 软营销 ===
+                // --- 第六段：能量调和 ---
                 const elemMap = {
-                    career: { items: '黑曜石或水晶球', why: '它们的沉稳频率能帮助你在职场中保持清醒的判断力，不被外界的噪音干扰' },
-                    wealth: { items: '绿幽灵或虎眼石', why: '它们的丰盛频率能帮助你打开"值得拥有"的信念，让财富更自然地流向你' },
-                    love: { items: '粉水晶或月光石', why: '它们的温柔频率能帮助你软化心墙，让爱更容易流动——无论是给予还是接受' },
-                    health: { items: '琥珀或紫水晶', why: '它们的安宁频率能帮助你的身体进入深度修复模式，找回被消耗的元气' }
+                    career: { items: '黑曜石或水晶球', why: '帮你在喧嚣里守住那一分清醒和果敢，不被噪音带节奏' },
+                    wealth: { items: '绿幽灵或虎眼石', why: '帮你打开那种“我值得拥有”的磁场开关，让丰盛感自然涌入' },
+                    love: { items: '粉水晶或月光石', why: '温柔地软化心墙，让爱和善意能像水一样自由进出你的世界' },
+                    health: { items: '琥珀或紫水晶', why: '让身体进入一种深度休整的频率，找回那种被耗尽的元气感' }
                 };
                 const rec = elemMap[minDim];
                 parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.06); border:1px solid rgba(200,168,78,0.15); border-radius:12px;">
-                    <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ 能 量 调 和 方 案 ◈</span>
-                    <p style="line-height:1.9;margin:0;">根据你的能量版图，我建议你在日常生活中引入一些与<strong style="color:var(--accent-gold)">${L[minDim]}维度</strong>共振的能量物件。最匹配你当前状态的是<strong style="color:var(--accent-gold)">${rec.items}</strong>——${rec.why}。</p>
-                    <p style="line-height:1.9;margin:12px 0 0 0;">这不是"迷信"，而是一种<em>能量提醒</em>。就像有些人通过冥想来校准心境，有些人通过运动来释放压力，佩戴与自己频率共振的天然矿石，是一种古老而有效的能量调和方式。每天手腕上的那一圈温润，会在无形中提醒你：<strong style="color:var(--accent-gold)">你值得更好的，而更好的正在来的路上。</strong></p>
-                </div>`);
+                <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">◈ 频率校准私语 ◈</span>
+                <p style="line-height:1.9;margin:0;">我最近发现，通过引入一点跟<strong style="color:var(--accent-gold)">${L[minDim]}维度</strong>共鸣的能量小物，对校准整体频率特别有帮助。最适合你目前状态的是<strong style="color:var(--accent-gold)">${rec.items}</strong>——${rec.why}。</p>
+                <p style="line-height:1.9;margin:12px 0 0 0;">这真的不是那种“玄学”，而是一种<em>心理上的能量暗示</em>。当你手腕上多了一圈温润的共鸣，每当你看到它，都是在提醒自己：<strong style="color:var(--accent-gold)">慢慢来，最好的频率，正在来的路上。</strong></p>
+            </div>`);
 
-                // === 第七段：问题专区 ===
+                // --- 第七段：问题专区 ---
                 if (question) {
                     parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.08); border-left:4px solid var(--accent-gold); border-radius:0 12px 12px 0;">
-                        <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">✦ 关 于 你 的 提 问 ✦</span>
-                        <p style="line-height:1.9;margin:0;">首先，你会把这个问题提出来，本身就说明你已经在认真对待自己的人生——这比很多人都更有智慧和勇气。</p>
-                        <p style="line-height:1.9;margin:12px 0 0 0;">综合你的能量格局，${dims[maxDim] > 80 ? '当前整体势能向好，你的直觉大概率是对的' : '目前正处于一个微妙的过渡期，急于求成反而可能事与愿违'}。我的建议是：${score > 75 ? '相信自己的判断，当你反复犹豫的时候，第一个冒出来的念头往往最接近答案' : '给自己三到五天的时间"不思考这个问题"，让潜意识替你工作。你会发现，答案往往在你放手的那一刻清晰起来'}。</p>
-                        <p style="line-height:1.9;margin:12px 0 0 0;">你的<strong style="color:var(--accent-gold)">${L[maxDim]}能量</strong>是你面对这个问题时最强的助力——试着从这个方向切入。${dims[minDim] < 65 ? `但也请留意${L[minDim]}维度可能带来的意外变量，提前做好Plan B。` : '各维度能量相对均衡，顺势而为即可。'}记住，<em>没有任何一个决定是100%完美的</em>，但只要方向大致正确，宇宙会帮你修正细节。</p>
-                    </div>`);
+                    <span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:12px;">✦ 关于你的小困惑 ✦</span>
+                    <p style="line-height:1.9;margin:0;">宝贝，你能把这个困惑写下来，说明你的直觉已经在帮你寻找出口了。</p>
+                    <p style="line-height:1.9;margin:12px 0 0 0;">综合看你的能量板图，${dims[maxDim] > 80 ? '你当下的势能其实很强，相信第一个冒出来的直觉就好' : '目前还在一个微妙的过渡期，别逼自己马上做决定'}。我的建议是：${score > 75 ? '当你犹豫不决的时候，那个最让你感到“轻松”的选择，往往就是正确的频率' : '试着把这个问题先丢给宇宙，给自己三天“不思考时间”，答案会在不经意间浮现'}。</p>
+                    <p style="line-height:1.9;margin:12px 0 0 0;">别忘了，你的<strong style="color:var(--accent-gold)">${L[maxDim]}能量</strong>是你最强的底牌。${dims[minDim] < 65 ? `虽然${L[minDim]}方面还有一点点小杂音需要留意，但主旋律是稳的。` : '整体节奏很平衡，顺着心走就行。'}记住，<em>没有绝对完美的决定</em>，只有最契合当下频率的选择。</p>
+                </div>`);
                 }
 
                 return parts.map((p, i) => {
@@ -1817,7 +1855,7 @@
                 ];
                 parts.push(comfortVariants[(seed + dims[maxDim]) % 3]);
 
-                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ FUTURE GUIDANCE ◈</span>Based on your energy trajectory, the next 3-6 months will be ${score > 70 ? 'a gradually ascending channel' : 'a turning point after hitting bottom'}. Your ${L[maxDim]} dimension will continue its strong momentum — ${maxDim === 'career' ? 'expect opportunities for advancement or significant partnerships' : maxDim === 'wealth' ? 'watch for unexpected financial gains or investment returns' : maxDim === 'love' ? 'a profound emotional connection or deepening relationship may emerge' : 'a noticeable turning point in your physical and mental wellbeing'}. As for ${L[minDim]}, if you actively harmonize it — ${minDim === 'career' ? 'speak up boldly; stop always deferring to others' : minDim === 'wealth' ? 'reexamine your relationship with money; allow yourself to believe you *deserve* more' : minDim === 'love' ? 'try opening your heart; stop protecting your softness with hard walls' : 'slow down and listen to your body; it\'s more honest than you think'} — you'll find that change comes faster than you expected.`);
+                parts.push(`<span style="color:var(--accent-gold);font-size:0.85rem;letter-spacing:2px;display:block;margin-bottom:8px;">◈ FUTURE GUIDANCE ◈</span>Based on your energy trajectory, the next 3-6 months will be ${score > 70 ? 'a gradually ascending channel' : 'a turning point after hitting bottom'}. Your ${L[maxDim]} dimension will continue its strong momentum — ${maxDim === 'career' ? 'expect opportunities for advancement or significant partnerships' : maxDim === 'wealth' ? 'watch for unexpected financial gains or investment returns' : maxDim === 'love' ? 'a profound emotional connection or deepening relationship may emerge' : 'a noticeable turning point in your physical and mental wellbeing'}. As for ${L[minDim]}, if you actively harmonize it — ${minDim === 'career' ? 'speak up boldly; stop always deferring to others' : minDim === 'wealth' ? 'reexamine your relationship with money; allow yourself to believe you *deserve* more' : minDim === 'love' ? 'try opening your heart; stop protecting your softness with hard walls' : 'slow down and listen to your body; it\'s more honest than you think'} — you\'ll find that change comes faster than you expected.`);
 
                 if (mbti && mbtiInsights[mbti]) {
                     parts.push(`<div style="margin-top:20px; padding:22px; background:rgba(200,168,78,0.06); border:1px solid rgba(200,168,78,0.15); border-radius:12px;">
@@ -1855,6 +1893,7 @@
                 }).join('');
             }
         }
+
 
         // --- SHOP & CART ---
 
@@ -2047,8 +2086,11 @@
             if (old) old.remove();
 
             var container = document.getElementById('paypal-button-container');
-            if (container) container.innerHTML = '<div style="text-align:center;padding:15px;color:#888;font-size:0.8rem;">' +
-                (lang==='zh' ? '正在加载 PayPal...' : 'Loading PayPal...') + '</div>';
+            if (container) {
+                container.innerHTML = '<div style="text-align:center;padding:20px;color:#888;font-size:0.85rem;display:flex;flex-direction:column;align-items:center;">' +
+                    '<div class="spinner-small" style="margin-bottom:12px;"></div>' + 
+                    (lang==='zh' ? '正在安全连接支付模块...' : 'Securely connecting to PayPal...') + '</div>';
+            }
 
             var s = document.createElement('script');
             s.id = 'paypal-sdk';
@@ -2087,13 +2129,14 @@
             var container = document.getElementById('paypal-button-container');
             if (!container) return;
             var isZh = lang === 'zh';
-            container.innerHTML = '<div style="text-align:center;padding:20px;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:10px;">' +
-                '<div style="font-size:1.5rem;margin-bottom:8px;">⚠️</div>' +
-                '<div style="color:#ff6b6b;font-size:0.85rem;margin-bottom:10px;">' +
-                    (isZh ? 'PayPal 加载失败' : 'PayPal failed to load') +
+            container.innerHTML = '<div style="text-align:center;padding:24px;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.2);border-radius:16px;">' +
+                '<div style="font-size:1.8rem;margin-bottom:12px;">⚠️</div>' +
+                '<div style="color:#ff6b6b;font-size:0.95rem;font-weight:600;margin-bottom:12px;">' +
+                    (isZh ? '支付模块连接受阻' : 'Payment Connection Blocked') +
                 '</div>' +
-                '<div style="color:#888;font-size:0.75rem;margin-bottom:14px;line-height:1.6;">' +
-                    (isZh ? '可能因网络环境受限（如VPN/代理），请尝试：' : 'This may be due to network restrictions. Please try:') +
+                '<div style="color:#999;font-size:0.8rem;margin-bottom:18px;line-height:1.7;">' +
+                    (isZh ? '由于您当前的网络环境（如VPN或代理设置），PayPal 可能无法正常加载。您可以尝试关闭代理后刷新，或直接使用下方扫码支付：' : 
+                           'PayPal is restricted in your current network (likely due to VPN/Proxy). Try disabling your proxy or use the QR code payments below:') +
                 '</div>' +
                 '<button onclick="paypalRetries=0;loadPayPal();" style="padding:8px 20px;background:var(--accent-gold);color:#0f0f0f;border:none;border-radius:6px;font-size:0.8rem;cursor:pointer;margin-bottom:10px;font-family:inherit;">' +
                     (isZh ? '🔄 重新加载 PayPal' : '🔄 Retry PayPal') +

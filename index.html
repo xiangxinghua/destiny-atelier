@@ -1059,8 +1059,8 @@
                 <!-- 微信支付区 -->
                 <div id="pay-wechat" style="display:none;text-align:center;padding:15px 0;">
                     <div style="background:#2a2a2a;border-radius:12px;padding:20px;display:inline-block;">
-                        <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
-                            <img src="https://sc01.alicdn.com/kf/Ac26caa474f6649b18a731c73d9b1cae57.jpg" alt="微信支付" style="width:100%;height:100%;object-fit:cover;">
+                        <div style="width:200px;height:260px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
+                            <img src="https://sc01.alicdn.com/kf/Ac26caa474f6649b18a731c73d9b1cae57.jpg" alt="微信支付" style="width:100%;height:100%;object-fit:contain;">
                         </div>
                         <p style="color:var(--accent-gold);font-size:0.9rem;margin-bottom:6px;">微信扫码支付</p>
                         <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:var(--accent-gold);font-size:1.1rem;" id="wechat-amount">¥0</strong></p>
@@ -1074,8 +1074,8 @@
                 <!-- 支付宝区 -->
                 <div id="pay-alipay" style="display:none;text-align:center;padding:15px 0;">
                     <div style="background:#2a2a2a;border-radius:12px;padding:20px;display:inline-block;">
-                        <div style="width:180px;height:180px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
-                            <img src="https://sc01.alicdn.com/kf/A7d96f57ef69d41aaa0486d464ec62b0f4.jpg" alt="支付宝支付" style="width:100%;height:100%;object-fit:cover;">
+                        <div style="width:200px;height:260px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden;">
+                            <img src="https://sc01.alicdn.com/kf/A7d96f57ef69d41aaa0486d464ec62b0f4.jpg" alt="支付宝支付" style="width:100%;height:100%;object-fit:contain;">
                         </div>
                         <p style="color:#1677FF;font-size:0.9rem;margin-bottom:6px;">支付宝扫码支付</p>
                         <p style="color:var(--text-secondary);font-size:0.75rem;">支付金额：<strong style="color:#1677FF;font-size:1.1rem;" id="alipay-amount">¥0</strong></p>
@@ -2986,17 +2986,35 @@
         function updateOrderStatus(orderId) {
             const status = document.getElementById('modal-status').value;
             const tracking = document.getElementById('modal-tracking').value;
+            const btn = document.querySelector('#order-modal button[onclick*="updateOrderStatus"]');
+            if (btn) { btn.disabled = true; btn.textContent = '保存中...'; btn.style.opacity = '0.6'; }
             
             fetch(ORDER_API + '?action=update&password=' + ADMIN_PWD + '&order_id=' + encodeURIComponent(orderId) + '&status=' + encodeURIComponent(status) + '&tracking=' + encodeURIComponent(tracking))
                 .then(r => r.json())
                 .then(data => {
                     if (data.success) {
+                        // 本地更新，不重新拉取全部订单
+                        if (allOrders && allOrders.length) {
+                            const idx = allOrders.findIndex(o => o['订单号'] === orderId);
+                            if (idx >= 0) {
+                                allOrders[idx]['订单状态'] = status;
+                                allOrders[idx]['物流单号'] = tracking;
+                            }
+                            renderOrders(allOrders);
+                        }
                         closeModal();
-                        loadOrders();
+                        // 后台刷新统计（不阻塞）
+                        fetch(ORDER_API + '?action=stats&password=' + ADMIN_PWD)
+                            .then(r => r.json())
+                            .then(d => { if (d.success) renderStats(d.stats); })
+                            .catch(() => {});
                     } else {
                         alert('更新失败: ' + (data.error || '未知错误'));
                     }
-                }).catch(e => alert('网络错误'));
+                }).catch(e => alert('网络错误'))
+                .finally(() => {
+                    if (btn) { btn.disabled = false; btn.textContent = '保存修改'; btn.style.opacity = '1'; }
+                });
         }
         // ==================== 流量追踪 ====================
         (function() {

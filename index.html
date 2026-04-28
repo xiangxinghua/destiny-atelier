@@ -1879,6 +1879,11 @@
         let lang = 'en';
         let cart = [];
         let recommendations = [];
+        // Palm reading state (declared early to avoid TDZ when updateLanguage runs at init)
+        let palmImageBase64 = null;
+        let palmCurrentMode = 'photo';
+        let palmCurrentReading = null;
+        let palmCurrentTier = 'free';
         const USD_TO_CNY = 7.25;
 
         // --- 价格格式化：中文=人民币，英文=美元 ---
@@ -1962,9 +1967,12 @@
             updateCartUI();
 
             // If a palm reading is already on screen, ask to regenerate in new language
-            if (palmCurrentReading && document.getElementById('palm-result').style.display !== 'none') {
-                if (confirm(palmT('lang_switch_confirm'))) {
-                    palmRegenerateInNewLang();
+            if (palmCurrentReading) {
+                const palmEl = document.getElementById('palm-result');
+                if (palmEl && palmEl.style.display !== 'none') {
+                    if (confirm(palmT('lang_switch_confirm'))) {
+                        palmRegenerateInNewLang();
+                    }
                 }
             }
         }
@@ -2607,10 +2615,7 @@
         const ADMIN_PWD = 'destiny2026';
 
         // ==================== 🖐️ AI Palm Reading ====================
-        let palmImageBase64 = null;
-        let palmCurrentMode = 'photo';
-        let palmCurrentReading = null;
-        let palmCurrentTier = 'free';
+        // (state vars declared in --- STATE --- block at top of script)
 
         // Bilingual labels for dynamically injected palm reading content
         const PALM_TXT = {

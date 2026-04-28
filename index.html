@@ -926,7 +926,10 @@
     <header id="hero">
         <h1 data-i18n="hero_title">Destiny Atelier</h1>
         <p data-i18n="hero_tagline">Discover Your Energy · Find Your Balance</p>
-        <button class="cta-btn" onclick="scrollToId('reading')" data-i18n="start_btn">Start Your Reading</button>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+            <button class="cta-btn" onclick="scrollToId('reading')" data-i18n="start_btn">Start Your Reading</button>
+            <button class="cta-btn" onclick="scrollToId('palm-reading')" style="background:transparent;border:1px solid #c8a84e;color:#c8a84e;">🖐️ AI Palm Reading</button>
+        </div>
     </header>
 
     <main class="container">
@@ -1019,6 +1022,127 @@
                     <div style="text-align: center; margin-top: 40px;">
                         <p data-i18n="shop_transition" style="margin-bottom: 20px;">To harmonize your energy, we recommend:</p>
                         <button class="cta-btn" onclick="scrollToId('shop')" data-i18n="see_recs">View Recommended Items</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🖐️ Palm Reading Section (AI-powered) -->
+        <section id="palm-reading">
+            <h2 class="section-title">🖐️ AI Palm Reading</h2>
+            <p style="text-align:center;color:#a89878;font-size:0.95rem;letter-spacing:1px;margin-top:-15px;margin-bottom:30px;font-style:italic;">Decode your soul's blueprint — in mystic & psychological voices.</p>
+
+            <div class="palm-form" style="max-width:680px;margin:0 auto;background:linear-gradient(180deg,#1a1a1a,#0f0f0f);border:1px solid #2a2a2a;border-radius:20px;padding:32px;">
+                <!-- Mode toggle -->
+                <div id="palm-mode-tabs" style="display:flex;gap:8px;margin-bottom:24px;background:#0f0f0f;padding:6px;border-radius:12px;">
+                    <button class="palm-tab-btn active" data-mode="photo" onclick="palmSwitchMode('photo')" style="flex:1;padding:10px;background:#c8a84e;color:#0f0f0f;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">📸 Upload Photo</button>
+                    <button class="palm-tab-btn" data-mode="manual" onclick="palmSwitchMode('manual')" style="flex:1;padding:10px;background:transparent;color:#888;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;">✍️ Describe Manually</button>
+                </div>
+
+                <!-- Photo upload pane -->
+                <div id="palm-pane-photo">
+                    <p style="color:#888;font-size:0.85rem;line-height:1.6;margin-bottom:16px;">Take a clear photo of your <strong style="color:#c8a84e;">dominant hand's palm</strong> in good lighting. Lines should be visible.</p>
+                    <label for="palm-file-input" style="display:block;border:2px dashed #c8a84e;border-radius:14px;padding:40px 20px;text-align:center;cursor:pointer;background:#0a0a0a;transition:all .2s;">
+                        <div style="font-size:3rem;margin-bottom:12px;">📷</div>
+                        <div style="color:#c8a84e;font-size:0.9rem;letter-spacing:1px;">Tap to take or upload photo</div>
+                        <div style="color:#666;font-size:0.75rem;margin-top:6px;">JPG/PNG · max 4MB</div>
+                    </label>
+                    <input type="file" id="palm-file-input" accept="image/*" capture="environment" style="display:none;" onchange="palmHandleFile(event)">
+                    <div id="palm-preview-wrap" style="display:none;margin-top:16px;text-align:center;">
+                        <img id="palm-preview-img" style="max-width:100%;max-height:240px;border-radius:12px;border:1px solid #2a2a2a;">
+                        <button onclick="palmClearImage()" style="display:block;margin:10px auto 0;background:transparent;border:none;color:#888;font-size:0.8rem;cursor:pointer;">✕ Choose another</button>
+                    </div>
+                </div>
+
+                <!-- Manual pane -->
+                <div id="palm-pane-manual" style="display:none;">
+                    <p style="color:#888;font-size:0.85rem;line-height:1.6;margin-bottom:16px;">No photo? Describe what you see on your palm.</p>
+                    <div class="palm-field" style="margin-bottom:14px;">
+                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">LIFE LINE (curves around thumb)</label>
+                        <select id="palm-life-line" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
+                            <option value="long and deep">Long & deep</option>
+                            <option value="short and faint">Short & faint</option>
+                            <option value="broken or chained">Broken / chained</option>
+                            <option value="curved widely">Curved widely (vital)</option>
+                        </select>
+                    </div>
+                    <div class="palm-field" style="margin-bottom:14px;">
+                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HEART LINE (top horizontal)</label>
+                        <select id="palm-heart-line" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
+                            <option value="long and curved upward">Long, curving upward</option>
+                            <option value="short and straight">Short & straight</option>
+                            <option value="ends between index & middle finger">Ends between index & middle</option>
+                            <option value="forked or branched">Forked / branched</option>
+                        </select>
+                    </div>
+                    <div class="palm-field" style="margin-bottom:14px;">
+                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HEAD LINE (middle horizontal)</label>
+                        <select id="palm-head-line" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
+                            <option value="straight and clear">Straight & clear</option>
+                            <option value="curved downward">Curved downward (creative)</option>
+                            <option value="forked at end">Forked at end (writer's fork)</option>
+                            <option value="short">Short</option>
+                        </select>
+                    </div>
+                    <div class="palm-field" style="margin-bottom:14px;">
+                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HAND SHAPE</label>
+                        <select id="palm-hand-shape" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
+                            <option value="square (earth)">Square — Earth</option>
+                            <option value="rectangular with long fingers (air)">Rectangular w/ long fingers — Air</option>
+                            <option value="conical with shorter fingers (water)">Conical — Water</option>
+                            <option value="spatulate, flared (fire)">Spatulate / flared — Fire</option>
+                        </select>
+                    </div>
+                    <div class="palm-field">
+                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">DOMINANT HAND</label>
+                        <select id="palm-dominant" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
+                            <option value="right">Right</option>
+                            <option value="left">Left</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="palm-submit-btn" onclick="palmSubmit()" style="width:100%;margin-top:24px;padding:14px;background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;border-radius:10px;color:#0f0f0f;font-weight:bold;font-size:1rem;letter-spacing:2px;cursor:pointer;">✦ READ MY PALM ✦</button>
+
+                <p style="text-align:center;color:#666;font-size:0.7rem;margin-top:14px;letter-spacing:1px;">Free preview · Premium unlock $1.99</p>
+            </div>
+
+            <!-- Loading state -->
+            <div id="palm-loading" style="display:none;text-align:center;padding:50px 20px;">
+                <div style="display:inline-block;width:50px;height:50px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div>
+                <p style="color:#c8a84e;margin-top:20px;letter-spacing:2px;font-size:0.9rem;">Reading the lines of your soul...</p>
+                <p style="color:#666;font-size:0.75rem;margin-top:6px;">This may take 10-20 seconds</p>
+            </div>
+
+            <!-- Result -->
+            <div id="palm-result" style="display:none;max-width:780px;margin:30px auto 0;">
+                <div style="background:linear-gradient(180deg,#1a1a1a,#0f0f0f);border:1px solid #c8a84e;border-radius:20px;padding:36px;">
+                    <h3 id="palm-headline" style="color:#c8a84e;text-align:center;font-size:1.5rem;line-height:1.4;margin:0 0 16px;font-style:italic;"></h3>
+                    <p id="palm-summary" style="color:#d8d8d8;text-align:center;line-height:1.7;font-size:1rem;margin:0 0 32px;"></p>
+
+                    <div id="palm-lines-container"></div>
+
+                    <!-- Locked premium teaser -->
+                    <div id="palm-locked-teaser" style="margin-top:32px;padding:28px;border-radius:16px;border:1px dashed #c8a84e;background:radial-gradient(circle at top,rgba(200,168,78,0.08),transparent);text-align:center;">
+                        <div style="font-size:2rem;margin-bottom:10px;">🔒</div>
+                        <div style="color:#c8a84e;letter-spacing:2px;font-size:0.8rem;margin-bottom:14px;">PREMIUM INSIGHTS LOCKED</div>
+                        <p id="palm-tease" style="color:#d8d8d8;font-style:italic;line-height:1.7;margin:0 0 20px;"></p>
+                        <ul style="text-align:left;color:#a89878;font-size:0.85rem;line-height:2;list-style:none;padding:0;max-width:400px;margin:0 auto 24px;">
+                            <li>🔮 Your personalized Crystal Prescription</li>
+                            <li>🌙 12-Month Energy Forecast</li>
+                            <li>💞 Compatibility Map (best & challenge match)</li>
+                            <li>👁 Shadow Aspects to Watch</li>
+                            <li>✨ Daily Affirmation tuned to your palm</li>
+                        </ul>
+                        <button onclick="palmUnlock()" style="background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:14px 36px;border-radius:10px;color:#0f0f0f;font-weight:bold;letter-spacing:2px;cursor:pointer;font-size:0.95rem;">🔓 UNLOCK FULL READING — $1.99</button>
+                        <p style="color:#666;font-size:0.7rem;margin-top:10px;">One-time payment · Secure via PayPal</p>
+                    </div>
+
+                    <!-- Premium content (hidden by default) -->
+                    <div id="palm-premium" style="display:none;margin-top:32px;"></div>
+
+                    <div style="text-align:center;margin-top:32px;">
+                        <button onclick="palmReset()" style="background:transparent;border:1px solid #555;color:#888;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:0.85rem;">↻ Read Another Palm</button>
                     </div>
                 </div>
             </div>
@@ -2353,6 +2477,279 @@
         let currentOrderId = '';
         const ORDER_API = 'https://script.google.com/macros/s/AKfycbwPvEcxWmlv0AeHHcc0OWKgbtKq5y6RZjIZmYOG0q8ofGbDPW3E5XgLwhPvqdCQd4oD/exec';
         const ADMIN_PWD = 'destiny2026';
+
+        // ==================== 🖐️ AI Palm Reading ====================
+        let palmImageBase64 = null;
+        let palmCurrentMode = 'photo';
+        let palmCurrentReading = null;
+
+        function palmSwitchMode(mode) {
+            palmCurrentMode = mode;
+            document.querySelectorAll('.palm-tab-btn').forEach(b => {
+                const isActive = b.dataset.mode === mode;
+                b.style.background = isActive ? '#c8a84e' : 'transparent';
+                b.style.color = isActive ? '#0f0f0f' : '#888';
+                b.style.fontWeight = isActive ? 'bold' : 'normal';
+                b.classList.toggle('active', isActive);
+            });
+            document.getElementById('palm-pane-photo').style.display = mode === 'photo' ? 'block' : 'none';
+            document.getElementById('palm-pane-manual').style.display = mode === 'manual' ? 'block' : 'none';
+        }
+
+        function palmHandleFile(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+            if (file.size > 4 * 1024 * 1024) {
+                alert('Image too large. Please use a photo under 4MB.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                palmImageBase64 = e.target.result;
+                document.getElementById('palm-preview-img').src = palmImageBase64;
+                document.getElementById('palm-preview-wrap').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function palmClearImage() {
+            palmImageBase64 = null;
+            document.getElementById('palm-file-input').value = '';
+            document.getElementById('palm-preview-wrap').style.display = 'none';
+        }
+
+        async function palmSubmit() {
+            // Validate
+            if (palmCurrentMode === 'photo' && !palmImageBase64) {
+                alert('Please upload a photo of your palm first, or switch to "Describe Manually".');
+                return;
+            }
+
+            const payload = { action: 'palm_reading', tier: 'free' };
+            if (palmCurrentMode === 'photo') {
+                payload.image = palmImageBase64;
+            } else {
+                payload.manual = {
+                    life_line: document.getElementById('palm-life-line').value,
+                    heart_line: document.getElementById('palm-heart-line').value,
+                    head_line: document.getElementById('palm-head-line').value,
+                    hand_shape: document.getElementById('palm-hand-shape').value,
+                    dominant_hand: document.getElementById('palm-dominant').value
+                };
+            }
+
+            // Show loading
+            document.querySelector('.palm-form').style.display = 'none';
+            document.getElementById('palm-loading').style.display = 'block';
+            document.getElementById('palm-result').style.display = 'none';
+
+            try {
+                const res = await fetch(ORDER_API, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'text/plain' }  // avoid CORS preflight on GAS
+                });
+                const data = await res.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Reading failed');
+                }
+
+                palmCurrentReading = data.reading;
+                palmRenderResult(data.reading);
+            } catch (err) {
+                alert('The cosmos is silent right now. Please try again. (' + err.message + ')');
+                document.querySelector('.palm-form').style.display = 'block';
+                document.getElementById('palm-loading').style.display = 'none';
+            }
+        }
+
+        function palmRenderResult(reading) {
+            document.getElementById('palm-loading').style.display = 'none';
+            document.getElementById('palm-headline').textContent = reading.headline || '';
+            document.getElementById('palm-summary').textContent = reading.summary || '';
+            document.getElementById('palm-tease').textContent = reading.preview_locked || '';
+
+            // Render lines (life / heart / head)
+            const lineLabels = {
+                life: '🌿 LIFE LINE',
+                heart: '💗 HEART LINE',
+                head: '🧠 HEAD LINE'
+            };
+            const container = document.getElementById('palm-lines-container');
+            container.innerHTML = '';
+            ['life', 'heart', 'head'].forEach(key => {
+                const lineData = reading.lines && reading.lines[key];
+                if (!lineData) return;
+                const block = document.createElement('div');
+                block.style.cssText = 'margin-bottom:24px;padding:20px;background:#0f0f0f;border-radius:12px;border-left:3px solid #c8a84e;';
+                block.innerHTML = `
+                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;font-weight:bold;">${lineLabels[key]}</div>
+                    <div style="display:grid;grid-template-columns:1fr;gap:16px;">
+                        <div>
+                            <div style="color:#a89878;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🌙 MYSTIC VOICE</div>
+                            <p style="color:#e8e8e8;line-height:1.7;font-size:0.92rem;margin:0;font-style:italic;">${lineData.mystic || ''}</p>
+                        </div>
+                        <div>
+                            <div style="color:#888;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🧠 PSYCHOLOGY LENS</div>
+                            <p style="color:#c8c8c8;line-height:1.7;font-size:0.9rem;margin:0;">${lineData.psychology || ''}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(block);
+            });
+
+            // Reset locked / premium states
+            document.getElementById('palm-locked-teaser').style.display = 'block';
+            document.getElementById('palm-premium').style.display = 'none';
+            document.getElementById('palm-result').style.display = 'block';
+            document.getElementById('palm-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        async function palmUnlock() {
+            // Trigger PayPal $1.99 payment
+            if (typeof paypal === 'undefined') {
+                // Fallback: prompt to use PayPal.me (simpler, no SDK conflict)
+                const proceed = confirm('To unlock the full reading, you will be redirected to PayPal to complete a one-time $1.99 payment. Continue?');
+                if (!proceed) return;
+                // Open PayPal.me (you can change this to your real PayPal.me link)
+                const paypalMeUrl = 'https://www.paypal.com/paypalme/destinyatelier/1.99';
+                const paymentWin = window.open(paypalMeUrl, '_blank');
+                // Prompt user to confirm payment
+                setTimeout(() => {
+                    const ok = confirm('After completing payment in the new tab, click OK to unlock your premium reading.');
+                    if (ok) palmFetchPremium();
+                }, 2000);
+                return;
+            }
+            // If you later wire a proper PayPal Smart Button, hook it here.
+            palmFetchPremium();
+        }
+
+        async function palmFetchPremium() {
+            document.getElementById('palm-locked-teaser').innerHTML = '<div style="text-align:center;padding:30px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#c8a84e;margin-top:16px;">Unlocking your full reading...</p></div>';
+
+            const payload = { action: 'palm_reading', tier: 'premium' };
+            if (palmImageBase64) payload.image = palmImageBase64;
+            else payload.manual = {
+                life_line: document.getElementById('palm-life-line').value,
+                heart_line: document.getElementById('palm-heart-line').value,
+                head_line: document.getElementById('palm-head-line').value,
+                hand_shape: document.getElementById('palm-hand-shape').value,
+                dominant_hand: document.getElementById('palm-dominant').value
+            };
+
+            try {
+                const res = await fetch(ORDER_API, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'text/plain' }
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Failed');
+                palmRenderPremium(data.reading);
+            } catch (err) {
+                document.getElementById('palm-locked-teaser').innerHTML = '<p style="color:#ff6b6b;text-align:center;">Failed to load premium reading. Please refresh and try again.</p>';
+            }
+        }
+
+        function palmRenderPremium(reading) {
+            document.getElementById('palm-locked-teaser').style.display = 'none';
+            const p = reading.premium || {};
+            const cp = p.crystal_prescription || {};
+
+            // Map crystal → product (you can refine these IDs to match your shop products)
+            const crystalMap = {
+                'rose quartz': { emoji: '🌸', color: '#f4c2c2' },
+                'amethyst': { emoji: '💜', color: '#9966cc' },
+                'black obsidian': { emoji: '⚫', color: '#1a1a1a' },
+                'citrine': { emoji: '💛', color: '#e4d00a' }
+            };
+            const crystalKey = (cp.primary_crystal || '').toLowerCase();
+            const crystalMeta = crystalMap[crystalKey] || { emoji: '✨', color: '#c8a84e' };
+
+            const html = `
+                <div style="text-align:center;margin-bottom:30px;">
+                    <div style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg,#c8a84e,#a8862e);color:#0f0f0f;border-radius:20px;font-size:0.7rem;letter-spacing:2px;font-weight:bold;">✦ PREMIUM READING UNLOCKED ✦</div>
+                </div>
+
+                <!-- Fate line (additional) -->
+                ${reading.lines && reading.lines.fate ? `
+                <div style="margin-bottom:24px;padding:20px;background:#0f0f0f;border-radius:12px;border-left:3px solid #c8a84e;">
+                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;font-weight:bold;">🌟 FATE LINE</div>
+                    <div style="display:grid;grid-template-columns:1fr;gap:16px;">
+                        <div><div style="color:#a89878;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🌙 MYSTIC VOICE</div><p style="color:#e8e8e8;line-height:1.7;font-size:0.92rem;margin:0;font-style:italic;">${reading.lines.fate.mystic}</p></div>
+                        <div><div style="color:#888;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🧠 PSYCHOLOGY LENS</div><p style="color:#c8c8c8;line-height:1.7;font-size:0.9rem;margin:0;">${reading.lines.fate.psychology}</p></div>
+                    </div>
+                </div>` : ''}
+
+                <!-- Crystal Prescription -->
+                <div style="margin-bottom:24px;padding:28px;background:linear-gradient(135deg,${crystalMeta.color}22,#0f0f0f);border-radius:16px;border:1px solid ${crystalMeta.color}55;text-align:center;">
+                    <div style="font-size:3.5rem;margin-bottom:10px;">${crystalMeta.emoji}</div>
+                    <div style="color:#a89878;font-size:0.7rem;letter-spacing:2px;margin-bottom:6px;">YOUR CRYSTAL PRESCRIPTION</div>
+                    <h4 style="color:#c8a84e;font-size:1.4rem;margin:0 0 16px;letter-spacing:1px;">${cp.primary_crystal || ''}</h4>
+                    <p style="color:#e8e8e8;line-height:1.7;font-size:0.95rem;margin:0 0 14px;">${cp.why || ''}</p>
+                    <p style="color:#a89878;line-height:1.6;font-size:0.85rem;margin:0 0 20px;font-style:italic;">💎 How to use: ${cp.how_to_use || ''}</p>
+                    <button onclick="scrollToId('shop')" style="background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:12px 30px;border-radius:8px;color:#0f0f0f;font-weight:bold;letter-spacing:1.5px;cursor:pointer;font-size:0.85rem;">→ FIND THIS IN OUR SHOP</button>
+                </div>
+
+                <!-- 12-month forecast -->
+                <div style="margin-bottom:24px;padding:24px;background:#0f0f0f;border-radius:12px;border:1px solid #2a2a2a;">
+                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:12px;">🌙 12-MONTH ENERGY FORECAST</div>
+                    <p style="color:#e8e8e8;line-height:1.8;font-style:italic;margin:0;">${p.energy_forecast_12mo || ''}</p>
+                </div>
+
+                <!-- Compatibility -->
+                ${p.compatibility ? `
+                <div style="margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div style="padding:20px;background:#0f0f0f;border-radius:12px;border:1px solid #2a8a4e;">
+                        <div style="color:#2a8a4e;letter-spacing:1.5px;font-size:0.7rem;margin-bottom:10px;">💞 BEST MATCH</div>
+                        <p style="color:#e8e8e8;line-height:1.6;font-size:0.88rem;margin:0;">${p.compatibility.best_match || ''}</p>
+                    </div>
+                    <div style="padding:20px;background:#0f0f0f;border-radius:12px;border:1px solid #8a2a2a;">
+                        <div style="color:#cc6666;letter-spacing:1.5px;font-size:0.7rem;margin-bottom:10px;">⚡ CHALLENGE MATCH</div>
+                        <p style="color:#e8e8e8;line-height:1.6;font-size:0.88rem;margin:0;">${p.compatibility.challenge_match || ''}</p>
+                    </div>
+                </div>` : ''}
+
+                <!-- Shadow aspects -->
+                <div style="margin-bottom:24px;padding:24px;background:#0f0f0f;border-radius:12px;border:1px dashed #888;">
+                    <div style="color:#888;letter-spacing:2px;font-size:0.75rem;margin-bottom:12px;">👁 SHADOW ASPECTS TO WATCH</div>
+                    <p style="color:#c8c8c8;line-height:1.8;margin:0;">${p.shadow_aspects || ''}</p>
+                </div>
+
+                <!-- Affirmation -->
+                <div style="padding:30px;background:radial-gradient(circle,rgba(200,168,78,0.15),transparent);border-radius:16px;text-align:center;">
+                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;">✨ YOUR DAILY AFFIRMATION</div>
+                    <p style="color:#e8e8e8;font-size:1.15rem;line-height:1.7;font-style:italic;margin:0;font-weight:300;">"${p.affirmation || ''}"</p>
+                </div>
+            `;
+            const premiumDiv = document.getElementById('palm-premium');
+            premiumDiv.innerHTML = html;
+            premiumDiv.style.display = 'block';
+            premiumDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function palmReset() {
+            palmImageBase64 = null;
+            palmCurrentReading = null;
+            document.getElementById('palm-file-input').value = '';
+            document.getElementById('palm-preview-wrap').style.display = 'none';
+            document.getElementById('palm-result').style.display = 'none';
+            document.querySelector('.palm-form').style.display = 'block';
+            document.getElementById('palm-reading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Inject @keyframes spin if not already present
+        (function ensureSpinKeyframes() {
+            if (!document.getElementById('spin-kf')) {
+                const s = document.createElement('style');
+                s.id = 'spin-kf';
+                s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+                document.head.appendChild(s);
+            }
+        })();
+        // ==================== End Palm Reading ====================
 
         // 初始化 EmailJS
         (function() {

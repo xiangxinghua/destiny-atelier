@@ -2643,7 +2643,17 @@
                 shadow_label: '👁 需要警觉的影子面',
                 affirm_label: '✨ 你的每日肯定语',
                 copy_ok: '已复制订单信息！请打开微信发送给客服。',
-                lang_switch_confirm: '切换语言会重新生成已有解读，是否继续？'
+                lang_switch_confirm: '切换语言会重新生成已有解读，是否继续？',
+                pay_title: '解锁完整命运解读',
+                pay_amount: '$1.99 USD（约 ¥14）一次性付款',
+                pay_desc: '完成 PayPal 安全支付后，AI 将立即生成你的水晶处方、12 个月能量预测、影子面分析与每日肯定语。',
+                pay_cancel: '取消',
+                pay_loading: '正在加载安全支付模块…',
+                pay_sdk_failed: 'PayPal 加载失败。请关闭代理/VPN 后刷新页面，或检查网络。',
+                payment_verifying: '正在验证付款…',
+                payment_verify_failed: '付款验证失败。如果你已扣款，请联系客服微信 xingxingxinghuaya 并提供订单号。',
+                pay_secure_note: '🔒 由 PayPal 安全担保 · 我们不接触你的支付信息',
+                pay_processing: '正在处理付款，请稍候…'
             },
             en: {
                 err_no_photo: 'Please upload a photo of your palm first, or switch to "Describe Manually".',
@@ -2669,7 +2679,17 @@
                 shadow_label: '👁 SHADOW ASPECTS TO WATCH',
                 affirm_label: '✨ YOUR DAILY AFFIRMATION',
                 copy_ok: 'Order info copied! Please send to our WeChat: xingxingxinghuaya',
-                lang_switch_confirm: 'Switching language will regenerate your existing reading. Continue?'
+                lang_switch_confirm: 'Switching language will regenerate your existing reading. Continue?',
+                pay_title: 'Unlock Your Premium Reading',
+                pay_amount: '$1.99 USD · One-time payment',
+                pay_desc: 'After secure PayPal checkout, our AI will instantly generate your crystal prescription, 12-month forecast, shadow work, and daily affirmation.',
+                pay_cancel: 'Cancel',
+                pay_loading: 'Loading secure payment module…',
+                pay_sdk_failed: 'PayPal failed to load. Please disable any VPN/proxy and refresh, or check your network.',
+                payment_verifying: 'Verifying your payment…',
+                payment_verify_failed: 'Payment verification failed. If you were charged, please contact us at WeChat: xingxingxinghuaya with your order ID.',
+                pay_secure_note: '🔒 Secured by PayPal · We never touch your payment info',
+                pay_processing: 'Processing your payment, please wait…'
             }
         };
         function palmT(key) { return (PALM_TXT[lang] || PALM_TXT.en)[key] || PALM_TXT.en[key] || key; }
@@ -2798,31 +2818,136 @@
             document.getElementById('palm-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        async function palmUnlock() {
-            // Trigger PayPal $1.99 payment
-            if (typeof paypal === 'undefined') {
-                // Fallback: prompt to use PayPal.me (simpler, no SDK conflict)
-                const proceed = confirm(palmT('unlock_confirm'));
-                if (!proceed) return;
-                // Open PayPal.me (you can change this to your real PayPal.me link)
-                const paypalMeUrl = 'https://www.paypal.com/paypalme/xiangxinghua/1.99';
-                const paymentWin = window.open(paypalMeUrl, '_blank');
-                // Prompt user to confirm payment
-                setTimeout(() => {
-                    const ok = confirm(palmT('payment_done'));
-                    if (ok) palmFetchPremium();
-                }, 2000);
-                return;
-            }
-            // If you later wire a proper PayPal Smart Button, hook it here.
-            palmFetchPremium();
+        // ==================== PayPal Smart Buttons for Palm Premium ====================
+        function palmUnlock() {
+            palmOpenPayModal();
         }
 
-        async function palmFetchPremium() {
+        function palmOpenPayModal() {
+            // Build modal if not exists
+            let modal = document.getElementById('palm-pay-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'palm-pay-modal';
+                modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);';
+                modal.innerHTML = `
+                    <div style="max-width:440px;width:100%;background:linear-gradient(135deg,#1a1a1a,#0f0f0f);border:1px solid rgba(200,168,78,0.3);border-radius:20px;padding:32px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+                        <button id="palm-pay-close" style="position:absolute;top:14px;right:14px;background:transparent;border:none;color:#888;font-size:1.6rem;cursor:pointer;line-height:1;padding:4px 10px;border-radius:50%;">×</button>
+                        <div style="text-align:center;margin-bottom:24px;">
+                            <div style="font-size:2.4rem;margin-bottom:10px;">✨</div>
+                            <h3 id="palm-pay-title" style="color:#c8a84e;font-size:1.3rem;margin:0 0 8px;letter-spacing:1px;font-weight:600;">${palmT('pay_title')}</h3>
+                            <div id="palm-pay-amount" style="color:#e8e8e8;font-size:1.05rem;font-weight:600;margin-bottom:14px;">${palmT('pay_amount')}</div>
+                            <p id="palm-pay-desc" style="color:#a89878;font-size:0.85rem;line-height:1.7;margin:0;">${palmT('pay_desc')}</p>
+                        </div>
+                        <div id="palm-pay-buttons-area" style="min-height:120px;">
+                            <div style="text-align:center;padding:30px 10px;color:#888;font-size:0.85rem;">
+                                <div style="display:inline-block;width:32px;height:32px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:14px;"></div>
+                                <div id="palm-pay-loading-text">${palmT('pay_loading')}</div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;margin-top:18px;color:#666;font-size:0.7rem;letter-spacing:0.5px;" id="palm-pay-secure">${palmT('pay_secure_note')}</div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                document.getElementById('palm-pay-close').onclick = palmClosePayModal;
+                modal.addEventListener('click', function(e) { if (e.target === modal) palmClosePayModal(); });
+            } else {
+                // Refresh i18n labels (in case lang switched)
+                document.getElementById('palm-pay-title').textContent = palmT('pay_title');
+                document.getElementById('palm-pay-amount').textContent = palmT('pay_amount');
+                document.getElementById('palm-pay-desc').textContent = palmT('pay_desc');
+                document.getElementById('palm-pay-secure').textContent = palmT('pay_secure_note');
+                modal.style.display = 'flex';
+                document.getElementById('palm-pay-buttons-area').innerHTML = `
+                    <div style="text-align:center;padding:30px 10px;color:#888;font-size:0.85rem;">
+                        <div style="display:inline-block;width:32px;height:32px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:14px;"></div>
+                        <div>${palmT('pay_loading')}</div>
+                    </div>
+                `;
+            }
+
+            // Ensure PayPal SDK is loaded, then render buttons
+            if (typeof paypal !== 'undefined' && paypal.Buttons) {
+                palmRenderPayPalButtons();
+            } else {
+                // Try to load via the existing global loader (already exists for cart)
+                if (typeof loadPayPal === 'function') {
+                    loadPayPal();
+                    // Poll for SDK availability
+                    let attempts = 0;
+                    const poll = setInterval(function() {
+                        attempts++;
+                        if (typeof paypal !== 'undefined' && paypal.Buttons) {
+                            clearInterval(poll);
+                            palmRenderPayPalButtons();
+                        } else if (attempts > 30) { // 15 seconds
+                            clearInterval(poll);
+                            document.getElementById('palm-pay-buttons-area').innerHTML =
+                                '<div style="text-align:center;padding:24px;color:#ff6b6b;font-size:0.85rem;line-height:1.7;">' + palmT('pay_sdk_failed') + '</div>';
+                        }
+                    }, 500);
+                } else {
+                    document.getElementById('palm-pay-buttons-area').innerHTML =
+                        '<div style="text-align:center;padding:24px;color:#ff6b6b;font-size:0.85rem;line-height:1.7;">' + palmT('pay_sdk_failed') + '</div>';
+                }
+            }
+        }
+
+        function palmClosePayModal() {
+            const modal = document.getElementById('palm-pay-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function palmRenderPayPalButtons() {
+            const area = document.getElementById('palm-pay-buttons-area');
+            if (!area) return;
+            area.innerHTML = '<div id="palm-paypal-btn-container"></div>';
+            try {
+                paypal.Buttons({
+                    style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', height: 42 },
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                description: 'Destiny Atelier - Premium Palm Reading',
+                                amount: { currency_code: 'USD', value: '1.99' }
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        // Show processing UI immediately
+                        area.innerHTML = '<div style="text-align:center;padding:24px;"><div style="display:inline-block;width:32px;height:32px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:14px;"></div><div style="color:#c8a84e;font-size:0.9rem;">' + palmT('pay_processing') + '</div></div>';
+                        return actions.order.capture().then(function(details) {
+                            const orderID = details.id || data.orderID;
+                            // Brief delay then close modal + fetch premium
+                            setTimeout(function() {
+                                palmClosePayModal();
+                                palmFetchPremium(orderID);
+                            }, 600);
+                        });
+                    },
+                    onCancel: function() {
+                        // User cancelled — do nothing, modal stays open so they can retry
+                    },
+                    onError: function(err) {
+                        console.error('PayPal Smart Button error:', err);
+                        area.innerHTML = '<div style="text-align:center;padding:20px;color:#ff6b6b;font-size:0.85rem;line-height:1.7;">' +
+                            (lang === 'zh' ? '支付遇到问题，请重试' : 'Payment error, please retry') +
+                            '<br><button onclick="palmRenderPayPalButtons()" style="margin-top:12px;background:#c8a84e;color:#0f0f0f;border:none;padding:8px 18px;border-radius:6px;font-size:0.8rem;cursor:pointer;font-family:inherit;">' +
+                            (lang === 'zh' ? '重试' : 'Retry') + '</button></div>';
+                    }
+                }).render('#palm-paypal-btn-container');
+            } catch (e) {
+                console.error('Render PayPal buttons failed:', e);
+                area.innerHTML = '<div style="text-align:center;padding:24px;color:#ff6b6b;font-size:0.85rem;">' + palmT('pay_sdk_failed') + '</div>';
+            }
+        }
+
+        async function palmFetchPremium(paypalOrderID) {
             palmCurrentTier = 'premium';
-            document.getElementById('palm-locked-teaser').innerHTML = '<div style="text-align:center;padding:30px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#c8a84e;margin-top:16px;">' + palmT('unlocking') + '</p></div>';
+            document.getElementById('palm-locked-teaser').innerHTML = '<div style="text-align:center;padding:30px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#c8a84e;margin-top:16px;">' + palmT('payment_verifying') + '</p></div>';
 
             const payload = { action: 'palm_reading', tier: 'premium', language: lang };
+            if (paypalOrderID) payload.paypalOrderID = paypalOrderID;
             if (palmImageBase64) payload.image = palmImageBase64;
             else payload.manual = {
                 life_line: document.getElementById('palm-life-line').value,
@@ -2839,7 +2964,13 @@
                     headers: { 'Content-Type': 'text/plain' }
                 });
                 const data = await res.json();
-                if (!data.success) throw new Error(data.error || 'Failed');
+                if (!data.success) {
+                    if (data.code === 'PAYMENT_NOT_VERIFIED' || data.code === 'NO_PP_CREDS') {
+                        document.getElementById('palm-locked-teaser').innerHTML = '<div style="text-align:center;padding:24px;color:#ff6b6b;font-size:0.9rem;line-height:1.8;">' + palmT('payment_verify_failed') + '<div style="color:#888;font-size:0.7rem;margin-top:10px;">Order: ' + (paypalOrderID || 'N/A') + '</div></div>';
+                        return;
+                    }
+                    throw new Error(data.error || 'Failed');
+                }
                 palmRenderPremium(data.reading);
             } catch (err) {
                 document.getElementById('palm-locked-teaser').innerHTML = '<p style="color:#ff6b6b;text-align:center;">' + palmT('err_premium') + '</p>';

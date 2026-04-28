@@ -928,7 +928,7 @@
         <p data-i18n="hero_tagline">Discover Your Energy · Find Your Balance</p>
         <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
             <button class="cta-btn" onclick="scrollToId('reading')" data-i18n="start_btn">Start Your Reading</button>
-            <button class="cta-btn" onclick="scrollToId('palm-reading')" style="background:transparent;border:1px solid #c8a84e;color:#c8a84e;">🖐️ AI Palm Reading</button>
+            <button class="cta-btn" onclick="scrollToId('palm-reading')" data-i18n="hero_palm_btn" style="background:transparent;border:1px solid #c8a84e;color:#c8a84e;">🖐️ AI Palm Reading</button>
         </div>
     </header>
 
@@ -1029,89 +1029,89 @@
 
         <!-- 🖐️ Palm Reading Section (AI-powered) -->
         <section id="palm-reading">
-            <h2 class="section-title">🖐️ AI Palm Reading</h2>
-            <p style="text-align:center;color:#a89878;font-size:0.95rem;letter-spacing:1px;margin-top:-15px;margin-bottom:30px;font-style:italic;">Decode your soul's blueprint — in mystic & psychological voices.</p>
+            <h2 class="section-title" data-i18n="palm_title">🖐️ AI Palm Reading</h2>
+            <p data-i18n="palm_subtitle" style="text-align:center;color:#a89878;font-size:0.95rem;letter-spacing:1px;margin-top:-15px;margin-bottom:30px;font-style:italic;">Decode your soul's blueprint — in mystic & psychological voices.</p>
 
             <div class="palm-form" style="max-width:680px;margin:0 auto;background:linear-gradient(180deg,#1a1a1a,#0f0f0f);border:1px solid #2a2a2a;border-radius:20px;padding:32px;">
                 <!-- Mode toggle -->
                 <div id="palm-mode-tabs" style="display:flex;gap:8px;margin-bottom:24px;background:#0f0f0f;padding:6px;border-radius:12px;">
-                    <button class="palm-tab-btn active" data-mode="photo" onclick="palmSwitchMode('photo')" style="flex:1;padding:10px;background:#c8a84e;color:#0f0f0f;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">📸 Upload Photo</button>
-                    <button class="palm-tab-btn" data-mode="manual" onclick="palmSwitchMode('manual')" style="flex:1;padding:10px;background:transparent;color:#888;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;">✍️ Describe Manually</button>
+                    <button class="palm-tab-btn active" data-mode="photo" onclick="palmSwitchMode('photo')" style="flex:1;padding:10px;background:#c8a84e;color:#0f0f0f;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;"><span data-i18n="palm_tab_photo">📸 Upload Photo</span></button>
+                    <button class="palm-tab-btn" data-mode="manual" onclick="palmSwitchMode('manual')" style="flex:1;padding:10px;background:transparent;color:#888;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;"><span data-i18n="palm_tab_manual">✍️ Describe Manually</span></button>
                 </div>
 
                 <!-- Photo upload pane -->
                 <div id="palm-pane-photo">
-                    <p style="color:#888;font-size:0.85rem;line-height:1.6;margin-bottom:16px;">Take a clear photo of your <strong style="color:#c8a84e;">dominant hand's palm</strong> in good lighting. Lines should be visible.</p>
+                    <p data-i18n="palm_photo_hint" style="color:#888;font-size:0.85rem;line-height:1.6;margin-bottom:16px;">Take a clear photo of your dominant hand's palm in good lighting. Lines should be visible.</p>
                     <label for="palm-file-input" style="display:block;border:2px dashed #c8a84e;border-radius:14px;padding:40px 20px;text-align:center;cursor:pointer;background:#0a0a0a;transition:all .2s;">
                         <div style="font-size:3rem;margin-bottom:12px;">📷</div>
-                        <div style="color:#c8a84e;font-size:0.9rem;letter-spacing:1px;">Tap to take or upload photo</div>
-                        <div style="color:#666;font-size:0.75rem;margin-top:6px;">JPG/PNG · max 4MB</div>
+                        <div data-i18n="palm_photo_upload" style="color:#c8a84e;font-size:0.9rem;letter-spacing:1px;">Tap to take or upload photo</div>
+                        <div data-i18n="palm_photo_specs" style="color:#666;font-size:0.75rem;margin-top:6px;">JPG/PNG · max 4MB</div>
                     </label>
                     <input type="file" id="palm-file-input" accept="image/*" capture="environment" style="display:none;" onchange="palmHandleFile(event)">
                     <div id="palm-preview-wrap" style="display:none;margin-top:16px;text-align:center;">
                         <img id="palm-preview-img" style="max-width:100%;max-height:240px;border-radius:12px;border:1px solid #2a2a2a;">
-                        <button onclick="palmClearImage()" style="display:block;margin:10px auto 0;background:transparent;border:none;color:#888;font-size:0.8rem;cursor:pointer;">✕ Choose another</button>
+                        <button onclick="palmClearImage()" data-i18n="palm_choose_another" style="display:block;margin:10px auto 0;background:transparent;border:none;color:#888;font-size:0.8rem;cursor:pointer;">✕ Choose another</button>
                     </div>
                 </div>
 
                 <!-- Manual pane -->
                 <div id="palm-pane-manual" style="display:none;">
-                    <p style="color:#888;font-size:0.85rem;line-height:1.6;margin-bottom:16px;">No photo? Describe what you see on your palm.</p>
+                    <p data-i18n="palm_manual_hint" style="color:#888;font-size:0.85rem;line-height:1.6;margin-bottom:16px;">No photo? Describe what you see on your palm.</p>
                     <div class="palm-field" style="margin-bottom:14px;">
-                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">LIFE LINE (curves around thumb)</label>
+                        <label data-i18n="palm_label_life" style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">LIFE LINE (curves around thumb)</label>
                         <select id="palm-life-line" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
-                            <option value="long and deep">Long & deep</option>
-                            <option value="short and faint">Short & faint</option>
-                            <option value="broken or chained">Broken / chained</option>
-                            <option value="curved widely">Curved widely (vital)</option>
+                            <option value="long and deep" data-i18n="palm_life_1">Long & deep</option>
+                            <option value="short and faint" data-i18n="palm_life_2">Short & faint</option>
+                            <option value="broken or chained" data-i18n="palm_life_3">Broken / chained</option>
+                            <option value="curved widely" data-i18n="palm_life_4">Curved widely (vital)</option>
                         </select>
                     </div>
                     <div class="palm-field" style="margin-bottom:14px;">
-                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HEART LINE (top horizontal)</label>
+                        <label data-i18n="palm_label_heart" style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HEART LINE (top horizontal)</label>
                         <select id="palm-heart-line" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
-                            <option value="long and curved upward">Long, curving upward</option>
-                            <option value="short and straight">Short & straight</option>
-                            <option value="ends between index & middle finger">Ends between index & middle</option>
-                            <option value="forked or branched">Forked / branched</option>
+                            <option value="long and curved upward" data-i18n="palm_heart_1">Long, curving upward</option>
+                            <option value="short and straight" data-i18n="palm_heart_2">Short & straight</option>
+                            <option value="ends between index & middle finger" data-i18n="palm_heart_3">Ends between index & middle</option>
+                            <option value="forked or branched" data-i18n="palm_heart_4">Forked / branched</option>
                         </select>
                     </div>
                     <div class="palm-field" style="margin-bottom:14px;">
-                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HEAD LINE (middle horizontal)</label>
+                        <label data-i18n="palm_label_head" style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HEAD LINE (middle horizontal)</label>
                         <select id="palm-head-line" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
-                            <option value="straight and clear">Straight & clear</option>
-                            <option value="curved downward">Curved downward (creative)</option>
-                            <option value="forked at end">Forked at end (writer's fork)</option>
-                            <option value="short">Short</option>
+                            <option value="straight and clear" data-i18n="palm_head_1">Straight & clear</option>
+                            <option value="curved downward" data-i18n="palm_head_2">Curved downward (creative)</option>
+                            <option value="forked at end" data-i18n="palm_head_3">Forked at end (writer's fork)</option>
+                            <option value="short" data-i18n="palm_head_4">Short</option>
                         </select>
                     </div>
                     <div class="palm-field" style="margin-bottom:14px;">
-                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HAND SHAPE</label>
+                        <label data-i18n="palm_label_shape" style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">HAND SHAPE</label>
                         <select id="palm-hand-shape" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
-                            <option value="square (earth)">Square — Earth</option>
-                            <option value="rectangular with long fingers (air)">Rectangular w/ long fingers — Air</option>
-                            <option value="conical with shorter fingers (water)">Conical — Water</option>
-                            <option value="spatulate, flared (fire)">Spatulate / flared — Fire</option>
+                            <option value="square (earth)" data-i18n="palm_shape_1">Square — Earth</option>
+                            <option value="rectangular with long fingers (air)" data-i18n="palm_shape_2">Rectangular w/ long fingers — Air</option>
+                            <option value="conical with shorter fingers (water)" data-i18n="palm_shape_3">Conical — Water</option>
+                            <option value="spatulate, flared (fire)" data-i18n="palm_shape_4">Spatulate / flared — Fire</option>
                         </select>
                     </div>
                     <div class="palm-field">
-                        <label style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">DOMINANT HAND</label>
+                        <label data-i18n="palm_label_dom" style="display:block;color:#c8a84e;font-size:0.8rem;letter-spacing:1.5px;margin-bottom:6px;">DOMINANT HAND</label>
                         <select id="palm-dominant" style="width:100%;padding:10px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#e8e8e8;font-size:0.9rem;">
-                            <option value="right">Right</option>
-                            <option value="left">Left</option>
+                            <option value="right" data-i18n="palm_dom_right">Right</option>
+                            <option value="left" data-i18n="palm_dom_left">Left</option>
                         </select>
                     </div>
                 </div>
 
-                <button id="palm-submit-btn" onclick="palmSubmit()" style="width:100%;margin-top:24px;padding:14px;background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;border-radius:10px;color:#0f0f0f;font-weight:bold;font-size:1rem;letter-spacing:2px;cursor:pointer;">✦ READ MY PALM ✦</button>
+                <button id="palm-submit-btn" onclick="palmSubmit()" data-i18n="palm_submit_btn" style="width:100%;margin-top:24px;padding:14px;background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;border-radius:10px;color:#0f0f0f;font-weight:bold;font-size:1rem;letter-spacing:2px;cursor:pointer;">✦ READ MY PALM ✦</button>
 
-                <p style="text-align:center;color:#666;font-size:0.7rem;margin-top:14px;letter-spacing:1px;">Free preview · Premium unlock $1.99</p>
+                <p data-i18n="palm_pricing_note" style="text-align:center;color:#666;font-size:0.7rem;margin-top:14px;letter-spacing:1px;">Free preview · Premium unlock $1.99</p>
             </div>
 
             <!-- Loading state -->
             <div id="palm-loading" style="display:none;text-align:center;padding:50px 20px;">
                 <div style="display:inline-block;width:50px;height:50px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div>
-                <p style="color:#c8a84e;margin-top:20px;letter-spacing:2px;font-size:0.9rem;">Reading the lines of your soul...</p>
-                <p style="color:#666;font-size:0.75rem;margin-top:6px;">This may take 10-20 seconds</p>
+                <p data-i18n="palm_loading_main" style="color:#c8a84e;margin-top:20px;letter-spacing:2px;font-size:0.9rem;">Reading the lines of your soul...</p>
+                <p data-i18n="palm_loading_sub" style="color:#666;font-size:0.75rem;margin-top:6px;">This may take 10-20 seconds</p>
             </div>
 
             <!-- Result -->
@@ -1125,24 +1125,24 @@
                     <!-- Locked premium teaser -->
                     <div id="palm-locked-teaser" style="margin-top:32px;padding:28px;border-radius:16px;border:1px dashed #c8a84e;background:radial-gradient(circle at top,rgba(200,168,78,0.08),transparent);text-align:center;">
                         <div style="font-size:2rem;margin-bottom:10px;">🔒</div>
-                        <div style="color:#c8a84e;letter-spacing:2px;font-size:0.8rem;margin-bottom:14px;">PREMIUM INSIGHTS LOCKED</div>
+                        <div data-i18n="palm_locked_label" style="color:#c8a84e;letter-spacing:2px;font-size:0.8rem;margin-bottom:14px;">PREMIUM INSIGHTS LOCKED</div>
                         <p id="palm-tease" style="color:#d8d8d8;font-style:italic;line-height:1.7;margin:0 0 20px;"></p>
                         <ul style="text-align:left;color:#a89878;font-size:0.85rem;line-height:2;list-style:none;padding:0;max-width:400px;margin:0 auto 24px;">
-                            <li>🔮 Your personalized Crystal Prescription</li>
-                            <li>🌙 12-Month Energy Forecast</li>
-                            <li>💞 Compatibility Map (best & challenge match)</li>
-                            <li>👁 Shadow Aspects to Watch</li>
-                            <li>✨ Daily Affirmation tuned to your palm</li>
+                            <li data-i18n="palm_perk_1">🔮 Your personalized Crystal Prescription</li>
+                            <li data-i18n="palm_perk_2">🌙 12-Month Energy Forecast</li>
+                            <li data-i18n="palm_perk_3">💞 Compatibility Map (best & challenge match)</li>
+                            <li data-i18n="palm_perk_4">👁 Shadow Aspects to Watch</li>
+                            <li data-i18n="palm_perk_5">✨ Daily Affirmation tuned to your palm</li>
                         </ul>
-                        <button onclick="palmUnlock()" style="background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:14px 36px;border-radius:10px;color:#0f0f0f;font-weight:bold;letter-spacing:2px;cursor:pointer;font-size:0.95rem;">🔓 UNLOCK FULL READING — $1.99</button>
-                        <p style="color:#666;font-size:0.7rem;margin-top:10px;">One-time payment · Secure via PayPal</p>
+                        <button onclick="palmUnlock()" data-i18n="palm_unlock_btn" style="background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:14px 36px;border-radius:10px;color:#0f0f0f;font-weight:bold;letter-spacing:2px;cursor:pointer;font-size:0.95rem;">🔓 UNLOCK FULL READING — $1.99</button>
+                        <p data-i18n="palm_unlock_note" style="color:#666;font-size:0.7rem;margin-top:10px;">One-time payment · Secure via PayPal</p>
                     </div>
 
                     <!-- Premium content (hidden by default) -->
                     <div id="palm-premium" style="display:none;margin-top:32px;"></div>
 
                     <div style="text-align:center;margin-top:32px;">
-                        <button onclick="palmReset()" style="background:transparent;border:1px solid #555;color:#888;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:0.85rem;">↻ Read Another Palm</button>
+                        <button onclick="palmReset()" data-i18n="palm_reset_btn" style="background:transparent;border:1px solid #555;color:#888;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:0.85rem;">↻ Read Another Palm</button>
                     </div>
                 </div>
             </div>
@@ -1718,7 +1718,53 @@
                 nav_track: "订单",
                 track_title: "订单查询",
                 track_subtitle: "输入手机号查询您的订单",
-                track_btn: "查询订单"
+                track_btn: "查询订单",
+                hero_palm_btn: "🖐️ AI 看手相",
+                palm_title: "🖐️ AI 看手相",
+                palm_subtitle: "解读你灵魂的蓝图 — 玄学与心理学双声道。",
+                palm_tab_photo: "📸 上传照片",
+                palm_tab_manual: "✍️ 手动描述",
+                palm_photo_hint: "请在光线充足的环境下，拍一张你惯用手手掌的清晰照片，确保掌纹清晰可见。",
+                palm_photo_upload: "点击拍照或上传照片",
+                palm_photo_specs: "JPG/PNG · 最大 4MB",
+                palm_choose_another: "✕ 重新选择",
+                palm_manual_hint: "没有照片？描述你看到的掌纹特征。",
+                palm_label_life: "生命线（环绕拇指的弧线）",
+                palm_life_1: "深长清晰",
+                palm_life_2: "短而浅淡",
+                palm_life_3: "断裂或链状",
+                palm_life_4: "弧度宽阔（生命力旺盛）",
+                palm_label_heart: "感情线（最上方横线）",
+                palm_heart_1: "长且向上弯曲",
+                palm_heart_2: "短而笔直",
+                palm_heart_3: "止于食指与中指之间",
+                palm_heart_4: "末端分叉",
+                palm_label_head: "智慧线（中间横线）",
+                palm_head_1: "笔直清晰",
+                palm_head_2: "向下弯曲（富创造力）",
+                palm_head_3: "末端分叉（作家叉）",
+                palm_head_4: "短促",
+                palm_label_shape: "手型",
+                palm_shape_1: "方形 — 土",
+                palm_shape_2: "长方形带长指 — 风",
+                palm_shape_3: "圆锥形 — 水",
+                palm_shape_4: "铲形外扩 — 火",
+                palm_label_dom: "惯用手",
+                palm_dom_right: "右手",
+                palm_dom_left: "左手",
+                palm_submit_btn: "✦ 解读我的手相 ✦",
+                palm_pricing_note: "免费预览 · 解锁完整报告 ¥14",
+                palm_loading_main: "正在解读你灵魂的纹路…",
+                palm_loading_sub: "大约需要 10-20 秒",
+                palm_locked_label: "完整解读已锁定",
+                palm_perk_1: "🔮 你的专属水晶处方",
+                palm_perk_2: "🌙 未来 12 个月能量预测",
+                palm_perk_3: "💞 灵魂兼容性图谱（最佳与挑战配对）",
+                palm_perk_4: "👁 需要警觉的影子面",
+                palm_perk_5: "✨ 为你掌纹定制的每日肯定语",
+                palm_unlock_btn: "🔓 解锁完整解读 — ¥14",
+                palm_unlock_note: "一次性付款 · PayPal 安全支付",
+                palm_reset_btn: "↻ 解读另一只手"
             },
             en: {
                 hero_title: "Destiny Atelier",
@@ -1777,7 +1823,53 @@
                 nav_track: "Orders",
                 track_title: "Track Order",
                 track_subtitle: "Enter your phone number to find orders",
-                track_btn: "Track Order"
+                track_btn: "Track Order",
+                hero_palm_btn: "🖐️ AI Palm Reading",
+                palm_title: "🖐️ AI Palm Reading",
+                palm_subtitle: "Decode your soul's blueprint — in mystic & psychological voices.",
+                palm_tab_photo: "📸 Upload Photo",
+                palm_tab_manual: "✍️ Describe Manually",
+                palm_photo_hint: "Take a clear photo of your dominant hand's palm in good lighting. Lines should be visible.",
+                palm_photo_upload: "Tap to take or upload photo",
+                palm_photo_specs: "JPG/PNG · max 4MB",
+                palm_choose_another: "✕ Choose another",
+                palm_manual_hint: "No photo? Describe what you see on your palm.",
+                palm_label_life: "LIFE LINE (curves around thumb)",
+                palm_life_1: "Long & deep",
+                palm_life_2: "Short & faint",
+                palm_life_3: "Broken / chained",
+                palm_life_4: "Curved widely (vital)",
+                palm_label_heart: "HEART LINE (top horizontal)",
+                palm_heart_1: "Long, curving upward",
+                palm_heart_2: "Short & straight",
+                palm_heart_3: "Ends between index & middle",
+                palm_heart_4: "Forked / branched",
+                palm_label_head: "HEAD LINE (middle horizontal)",
+                palm_head_1: "Straight & clear",
+                palm_head_2: "Curved downward (creative)",
+                palm_head_3: "Forked at end (writer's fork)",
+                palm_head_4: "Short",
+                palm_label_shape: "HAND SHAPE",
+                palm_shape_1: "Square — Earth",
+                palm_shape_2: "Rectangular w/ long fingers — Air",
+                palm_shape_3: "Conical — Water",
+                palm_shape_4: "Spatulate / flared — Fire",
+                palm_label_dom: "DOMINANT HAND",
+                palm_dom_right: "Right",
+                palm_dom_left: "Left",
+                palm_submit_btn: "✦ READ MY PALM ✦",
+                palm_pricing_note: "Free preview · Premium unlock $1.99",
+                palm_loading_main: "Reading the lines of your soul...",
+                palm_loading_sub: "This may take 10-20 seconds",
+                palm_locked_label: "PREMIUM INSIGHTS LOCKED",
+                palm_perk_1: "🔮 Your personalized Crystal Prescription",
+                palm_perk_2: "🌙 12-Month Energy Forecast",
+                palm_perk_3: "💞 Compatibility Map (best & challenge match)",
+                palm_perk_4: "👁 Shadow Aspects to Watch",
+                palm_perk_5: "✨ Daily Affirmation tuned to your palm",
+                palm_unlock_btn: "🔓 UNLOCK FULL READING — $1.99",
+                palm_unlock_note: "One-time payment · Secure via PayPal",
+                palm_reset_btn: "↻ Read Another Palm"
             }
         };
 
@@ -1868,6 +1960,42 @@
             });
             renderProducts(); // Refresh buttons/badges
             updateCartUI();
+
+            // If a palm reading is already on screen, ask to regenerate in new language
+            if (palmCurrentReading && document.getElementById('palm-result').style.display !== 'none') {
+                if (confirm(palmT('lang_switch_confirm'))) {
+                    palmRegenerateInNewLang();
+                }
+            }
+        }
+
+        async function palmRegenerateInNewLang() {
+            // Re-fetch reading in current `lang` from backend
+            const payload = { action: 'palm_reading', tier: palmCurrentTier || 'free', language: lang };
+            if (palmImageBase64) payload.image = palmImageBase64;
+            else payload.manual = {
+                life_line: document.getElementById('palm-life-line').value,
+                heart_line: document.getElementById('palm-heart-line').value,
+                head_line: document.getElementById('palm-head-line').value,
+                hand_shape: document.getElementById('palm-hand-shape').value,
+                dominant_hand: document.getElementById('palm-dominant').value
+            };
+
+            document.getElementById('palm-result').style.display = 'none';
+            document.getElementById('palm-loading').style.display = 'block';
+
+            try {
+                const res = await fetch(ORDER_API, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain' } });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Reading failed');
+                palmCurrentReading = data.reading;
+                palmRenderResult(data.reading);
+                if (palmCurrentTier === 'premium') palmRenderPremium(data.reading);
+            } catch (err) {
+                alert(palmT('err_silent') + err.message + ')');
+                document.getElementById('palm-loading').style.display = 'none';
+                document.getElementById('palm-result').style.display = 'block';
+            }
         }
 
         function scrollToId(id) {
@@ -2482,6 +2610,64 @@
         let palmImageBase64 = null;
         let palmCurrentMode = 'photo';
         let palmCurrentReading = null;
+        let palmCurrentTier = 'free';
+
+        // Bilingual labels for dynamically injected palm reading content
+        const PALM_TXT = {
+            zh: {
+                err_no_photo: '请先上传一张手掌照片，或切换到"手动描述"模式。',
+                err_too_large: '图片过大。请使用 4MB 以内的照片。',
+                err_silent: '宇宙暂时沉默了，请稍后再试。（错误：',
+                err_premium: '加载完整解读失败，请刷新页面后重试。',
+                unlock_confirm: '即将跳转到 PayPal 完成 ¥14（$1.99）的一次性付款，是否继续？',
+                payment_done: '付款完成后，请点击"确定"以解锁你的完整解读。',
+                unlocking: '正在解锁完整解读…',
+                premium_unlocked: '✦ 完整解读已解锁 ✦',
+                line_life: '🌿 生命线',
+                line_heart: '💗 感情线',
+                line_head: '🧠 智慧线',
+                line_fate: '🌟 命运线',
+                voice_mystic: '🌙 玄学之声',
+                voice_psych: '🧠 心理学视角',
+                rx_label: '你的水晶处方',
+                rx_howto: '💎 使用方式：',
+                rx_find_btn: '→ 在商店中寻找',
+                forecast_label: '🌙 未来 12 个月能量预测',
+                best_match: '💞 最佳契合',
+                challenge_match: '⚡ 挑战配对',
+                shadow_label: '👁 需要警觉的影子面',
+                affirm_label: '✨ 你的每日肯定语',
+                copy_ok: '已复制订单信息！请打开微信发送给客服。',
+                lang_switch_confirm: '切换语言会重新生成已有解读，是否继续？'
+            },
+            en: {
+                err_no_photo: 'Please upload a photo of your palm first, or switch to "Describe Manually".',
+                err_too_large: 'Image too large. Please use a photo under 4MB.',
+                err_silent: 'The cosmos is silent right now. Please try again. (',
+                err_premium: 'Failed to load premium reading. Please refresh and try again.',
+                unlock_confirm: 'To unlock the full reading, you will be redirected to PayPal to complete a one-time $1.99 payment. Continue?',
+                payment_done: 'After completing payment in the new tab, click OK to unlock your premium reading.',
+                unlocking: 'Unlocking your full reading...',
+                premium_unlocked: '✦ PREMIUM READING UNLOCKED ✦',
+                line_life: '🌿 LIFE LINE',
+                line_heart: '💗 HEART LINE',
+                line_head: '🧠 HEAD LINE',
+                line_fate: '🌟 FATE LINE',
+                voice_mystic: '🌙 MYSTIC VOICE',
+                voice_psych: '🧠 PSYCHOLOGY LENS',
+                rx_label: 'YOUR CRYSTAL PRESCRIPTION',
+                rx_howto: '💎 How to use: ',
+                rx_find_btn: '→ FIND THIS IN OUR SHOP',
+                forecast_label: '🌙 12-MONTH ENERGY FORECAST',
+                best_match: '💞 BEST MATCH',
+                challenge_match: '⚡ CHALLENGE MATCH',
+                shadow_label: '👁 SHADOW ASPECTS TO WATCH',
+                affirm_label: '✨ YOUR DAILY AFFIRMATION',
+                copy_ok: 'Order info copied! Please send to our WeChat: xingxingxinghuaya',
+                lang_switch_confirm: 'Switching language will regenerate your existing reading. Continue?'
+            }
+        };
+        function palmT(key) { return (PALM_TXT[lang] || PALM_TXT.en)[key] || PALM_TXT.en[key] || key; }
 
         function palmSwitchMode(mode) {
             palmCurrentMode = mode;
@@ -2500,7 +2686,7 @@
             const file = evt.target.files[0];
             if (!file) return;
             if (file.size > 4 * 1024 * 1024) {
-                alert('Image too large. Please use a photo under 4MB.');
+                alert(palmT('err_too_large'));
                 return;
             }
             const reader = new FileReader();
@@ -2521,11 +2707,12 @@
         async function palmSubmit() {
             // Validate
             if (palmCurrentMode === 'photo' && !palmImageBase64) {
-                alert('Please upload a photo of your palm first, or switch to "Describe Manually".');
+                alert(palmT('err_no_photo'));
                 return;
             }
 
-            const payload = { action: 'palm_reading', tier: 'free' };
+            palmCurrentTier = 'free';
+            const payload = { action: 'palm_reading', tier: 'free', language: lang };
             if (palmCurrentMode === 'photo') {
                 payload.image = palmImageBase64;
             } else {
@@ -2558,7 +2745,7 @@
                 palmCurrentReading = data.reading;
                 palmRenderResult(data.reading);
             } catch (err) {
-                alert('The cosmos is silent right now. Please try again. (' + err.message + ')');
+                alert(palmT('err_silent') + err.message + ')');
                 document.querySelector('.palm-form').style.display = 'block';
                 document.getElementById('palm-loading').style.display = 'none';
             }
@@ -2572,9 +2759,9 @@
 
             // Render lines (life / heart / head)
             const lineLabels = {
-                life: '🌿 LIFE LINE',
-                heart: '💗 HEART LINE',
-                head: '🧠 HEAD LINE'
+                life: palmT('line_life'),
+                heart: palmT('line_heart'),
+                head: palmT('line_head')
             };
             const container = document.getElementById('palm-lines-container');
             container.innerHTML = '';
@@ -2587,11 +2774,11 @@
                     <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;font-weight:bold;">${lineLabels[key]}</div>
                     <div style="display:grid;grid-template-columns:1fr;gap:16px;">
                         <div>
-                            <div style="color:#a89878;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🌙 MYSTIC VOICE</div>
+                            <div style="color:#a89878;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">${palmT('voice_mystic')}</div>
                             <p style="color:#e8e8e8;line-height:1.7;font-size:0.92rem;margin:0;font-style:italic;">${lineData.mystic || ''}</p>
                         </div>
                         <div>
-                            <div style="color:#888;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🧠 PSYCHOLOGY LENS</div>
+                            <div style="color:#888;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">${palmT('voice_psych')}</div>
                             <p style="color:#c8c8c8;line-height:1.7;font-size:0.9rem;margin:0;">${lineData.psychology || ''}</p>
                         </div>
                     </div>
@@ -2610,14 +2797,14 @@
             // Trigger PayPal $1.99 payment
             if (typeof paypal === 'undefined') {
                 // Fallback: prompt to use PayPal.me (simpler, no SDK conflict)
-                const proceed = confirm('To unlock the full reading, you will be redirected to PayPal to complete a one-time $1.99 payment. Continue?');
+                const proceed = confirm(palmT('unlock_confirm'));
                 if (!proceed) return;
                 // Open PayPal.me (you can change this to your real PayPal.me link)
                 const paypalMeUrl = 'https://www.paypal.com/paypalme/destinyatelier/1.99';
                 const paymentWin = window.open(paypalMeUrl, '_blank');
                 // Prompt user to confirm payment
                 setTimeout(() => {
-                    const ok = confirm('After completing payment in the new tab, click OK to unlock your premium reading.');
+                    const ok = confirm(palmT('payment_done'));
                     if (ok) palmFetchPremium();
                 }, 2000);
                 return;
@@ -2627,9 +2814,10 @@
         }
 
         async function palmFetchPremium() {
-            document.getElementById('palm-locked-teaser').innerHTML = '<div style="text-align:center;padding:30px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#c8a84e;margin-top:16px;">Unlocking your full reading...</p></div>';
+            palmCurrentTier = 'premium';
+            document.getElementById('palm-locked-teaser').innerHTML = '<div style="text-align:center;padding:30px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#c8a84e;margin-top:16px;">' + palmT('unlocking') + '</p></div>';
 
-            const payload = { action: 'palm_reading', tier: 'premium' };
+            const payload = { action: 'palm_reading', tier: 'premium', language: lang };
             if (palmImageBase64) payload.image = palmImageBase64;
             else payload.manual = {
                 life_line: document.getElementById('palm-life-line').value,
@@ -2649,7 +2837,7 @@
                 if (!data.success) throw new Error(data.error || 'Failed');
                 palmRenderPremium(data.reading);
             } catch (err) {
-                document.getElementById('palm-locked-teaser').innerHTML = '<p style="color:#ff6b6b;text-align:center;">Failed to load premium reading. Please refresh and try again.</p>';
+                document.getElementById('palm-locked-teaser').innerHTML = '<p style="color:#ff6b6b;text-align:center;">' + palmT('err_premium') + '</p>';
             }
         }
 
@@ -2670,32 +2858,32 @@
 
             const html = `
                 <div style="text-align:center;margin-bottom:30px;">
-                    <div style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg,#c8a84e,#a8862e);color:#0f0f0f;border-radius:20px;font-size:0.7rem;letter-spacing:2px;font-weight:bold;">✦ PREMIUM READING UNLOCKED ✦</div>
+                    <div style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg,#c8a84e,#a8862e);color:#0f0f0f;border-radius:20px;font-size:0.7rem;letter-spacing:2px;font-weight:bold;">${palmT('premium_unlocked')}</div>
                 </div>
 
                 <!-- Fate line (additional) -->
                 ${reading.lines && reading.lines.fate ? `
                 <div style="margin-bottom:24px;padding:20px;background:#0f0f0f;border-radius:12px;border-left:3px solid #c8a84e;">
-                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;font-weight:bold;">🌟 FATE LINE</div>
+                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;font-weight:bold;">${palmT('line_fate')}</div>
                     <div style="display:grid;grid-template-columns:1fr;gap:16px;">
-                        <div><div style="color:#a89878;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🌙 MYSTIC VOICE</div><p style="color:#e8e8e8;line-height:1.7;font-size:0.92rem;margin:0;font-style:italic;">${reading.lines.fate.mystic}</p></div>
-                        <div><div style="color:#888;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">🧠 PSYCHOLOGY LENS</div><p style="color:#c8c8c8;line-height:1.7;font-size:0.9rem;margin:0;">${reading.lines.fate.psychology}</p></div>
+                        <div><div style="color:#a89878;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">${palmT('voice_mystic')}</div><p style="color:#e8e8e8;line-height:1.7;font-size:0.92rem;margin:0;font-style:italic;">${reading.lines.fate.mystic}</p></div>
+                        <div><div style="color:#888;font-size:0.7rem;letter-spacing:1.5px;margin-bottom:6px;">${palmT('voice_psych')}</div><p style="color:#c8c8c8;line-height:1.7;font-size:0.9rem;margin:0;">${reading.lines.fate.psychology}</p></div>
                     </div>
                 </div>` : ''}
 
                 <!-- Crystal Prescription -->
                 <div style="margin-bottom:24px;padding:28px;background:linear-gradient(135deg,${crystalMeta.color}22,#0f0f0f);border-radius:16px;border:1px solid ${crystalMeta.color}55;text-align:center;">
                     <div style="font-size:3.5rem;margin-bottom:10px;">${crystalMeta.emoji}</div>
-                    <div style="color:#a89878;font-size:0.7rem;letter-spacing:2px;margin-bottom:6px;">YOUR CRYSTAL PRESCRIPTION</div>
+                    <div style="color:#a89878;font-size:0.7rem;letter-spacing:2px;margin-bottom:6px;">${palmT('rx_label')}</div>
                     <h4 style="color:#c8a84e;font-size:1.4rem;margin:0 0 16px;letter-spacing:1px;">${cp.primary_crystal || ''}</h4>
                     <p style="color:#e8e8e8;line-height:1.7;font-size:0.95rem;margin:0 0 14px;">${cp.why || ''}</p>
-                    <p style="color:#a89878;line-height:1.6;font-size:0.85rem;margin:0 0 20px;font-style:italic;">💎 How to use: ${cp.how_to_use || ''}</p>
-                    <button onclick="scrollToId('shop')" style="background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:12px 30px;border-radius:8px;color:#0f0f0f;font-weight:bold;letter-spacing:1.5px;cursor:pointer;font-size:0.85rem;">→ FIND THIS IN OUR SHOP</button>
+                    <p style="color:#a89878;line-height:1.6;font-size:0.85rem;margin:0 0 20px;font-style:italic;">${palmT('rx_howto')}${cp.how_to_use || ''}</p>
+                    <button onclick="scrollToId('shop')" style="background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:12px 30px;border-radius:8px;color:#0f0f0f;font-weight:bold;letter-spacing:1.5px;cursor:pointer;font-size:0.85rem;">${palmT('rx_find_btn')}</button>
                 </div>
 
                 <!-- 12-month forecast -->
                 <div style="margin-bottom:24px;padding:24px;background:#0f0f0f;border-radius:12px;border:1px solid #2a2a2a;">
-                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:12px;">🌙 12-MONTH ENERGY FORECAST</div>
+                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:12px;">${palmT('forecast_label')}</div>
                     <p style="color:#e8e8e8;line-height:1.8;font-style:italic;margin:0;">${p.energy_forecast_12mo || ''}</p>
                 </div>
 
@@ -2703,24 +2891,24 @@
                 ${p.compatibility ? `
                 <div style="margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <div style="padding:20px;background:#0f0f0f;border-radius:12px;border:1px solid #2a8a4e;">
-                        <div style="color:#2a8a4e;letter-spacing:1.5px;font-size:0.7rem;margin-bottom:10px;">💞 BEST MATCH</div>
+                        <div style="color:#2a8a4e;letter-spacing:1.5px;font-size:0.7rem;margin-bottom:10px;">${palmT('best_match')}</div>
                         <p style="color:#e8e8e8;line-height:1.6;font-size:0.88rem;margin:0;">${p.compatibility.best_match || ''}</p>
                     </div>
                     <div style="padding:20px;background:#0f0f0f;border-radius:12px;border:1px solid #8a2a2a;">
-                        <div style="color:#cc6666;letter-spacing:1.5px;font-size:0.7rem;margin-bottom:10px;">⚡ CHALLENGE MATCH</div>
+                        <div style="color:#cc6666;letter-spacing:1.5px;font-size:0.7rem;margin-bottom:10px;">${palmT('challenge_match')}</div>
                         <p style="color:#e8e8e8;line-height:1.6;font-size:0.88rem;margin:0;">${p.compatibility.challenge_match || ''}</p>
                     </div>
                 </div>` : ''}
 
                 <!-- Shadow aspects -->
                 <div style="margin-bottom:24px;padding:24px;background:#0f0f0f;border-radius:12px;border:1px dashed #888;">
-                    <div style="color:#888;letter-spacing:2px;font-size:0.75rem;margin-bottom:12px;">👁 SHADOW ASPECTS TO WATCH</div>
+                    <div style="color:#888;letter-spacing:2px;font-size:0.75rem;margin-bottom:12px;">${palmT('shadow_label')}</div>
                     <p style="color:#c8c8c8;line-height:1.8;margin:0;">${p.shadow_aspects || ''}</p>
                 </div>
 
                 <!-- Affirmation -->
                 <div style="padding:30px;background:radial-gradient(circle,rgba(200,168,78,0.15),transparent);border-radius:16px;text-align:center;">
-                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;">✨ YOUR DAILY AFFIRMATION</div>
+                    <div style="color:#c8a84e;letter-spacing:2px;font-size:0.75rem;margin-bottom:14px;">${palmT('affirm_label')}</div>
                     <p style="color:#e8e8e8;font-size:1.15rem;line-height:1.7;font-style:italic;margin:0;font-weight:300;">"${p.affirmation || ''}"</p>
                 </div>
             `;

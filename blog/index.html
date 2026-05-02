@@ -12,17 +12,22 @@
 <meta property="og:url" content="https://xiangxinghua.github.io/destiny-atelier/blog/">
 <meta property="og:image" content="https://xiangxinghua.github.io/destiny-atelier/blog/assets/images/og-default.jpg">
 <link rel="canonical" href="https://xiangxinghua.github.io/destiny-atelier/blog/">
+<link rel="alternate" type="application/rss+xml" title="Destiny Atelier RSS" href="rss.xml">
 <style>
 :root { --bg:#0f0f0f; --card:#1a1a1a; --border:rgba(200,168,78,0.15); --gold:#c8a84e; --text:#e8e8e8; --muted:#a89878; }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Georgia',serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+body{font-family:'Georgia','Songti SC','SimSun',serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
 a{color:var(--gold);text-decoration:none}a:hover{text-decoration:underline}
 .container{max-width:980px;margin:0 auto;padding:40px 24px}
-header{text-align:center;padding:30px 0 50px;border-bottom:1px solid var(--border);margin-bottom:50px}
+header{text-align:center;padding:30px 0 50px;border-bottom:1px solid var(--border);margin-bottom:50px;position:relative}
 header h1{font-size:2.2rem;color:var(--gold);letter-spacing:3px;font-weight:300;margin-bottom:10px}
 header p{color:var(--muted);font-size:0.95rem;font-style:italic}
 nav{margin-top:18px;font-size:0.85rem}
 nav a{margin:0 12px;letter-spacing:1px}
+.lang-switch{position:absolute;top:0;right:0;font-size:0.78rem;letter-spacing:1px}
+.lang-switch button{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;cursor:pointer;border-radius:4px;font-family:inherit;transition:all .2s}
+.lang-switch button:hover{border-color:var(--gold);color:var(--gold)}
+.lang-switch button.active{background:var(--gold);color:#0f0f0f;border-color:var(--gold)}
 .intro{text-align:center;color:var(--muted);font-size:1rem;margin-bottom:50px;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.9}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
 .post-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;transition:transform .2s, border-color .2s}
@@ -33,81 +38,108 @@ nav a{margin:0 12px;letter-spacing:1px}
 .post-card .excerpt{color:var(--muted);font-size:0.85rem;line-height:1.7;margin-bottom:14px}
 .post-card .meta{font-size:0.7rem;color:#666;letter-spacing:1px}
 footer{margin-top:80px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:#666;font-size:0.75rem;letter-spacing:1px}
-@media (max-width:600px){header h1{font-size:1.6rem}nav a{display:block;margin:6px 0}}
+@media (max-width:600px){header h1{font-size:1.6rem}nav a{display:block;margin:6px 0}.lang-switch{position:static;text-align:center;margin-bottom:20px}}
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>DESTINY ATELIER</h1>
-    <p>Crystal Wisdom Journal</p>
+    <div class="lang-switch">
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+      <button id="btn-zh" onclick="setLang('zh')">中文</button>
+    </div>
+    <h1 data-en="DESTINY ATELIER" data-zh="命运工坊">DESTINY ATELIER</h1>
+    <p data-en="Crystal Wisdom Journal" data-zh="水晶智慧日志">Crystal Wisdom Journal</p>
     <nav>
-      <a href="../">← Shop</a>
-      <a href="../#palm-reading">AI Palm Reading</a>
+      <a href="../" data-en="← Shop" data-zh="← 商店">← Shop</a>
+      <a href="../#palm-reading" data-en="AI Palm Reading" data-zh="AI 手相">AI Palm Reading</a>
       <a href="rss.xml">RSS</a>
     </nav>
   </header>
 
-  <p class="intro">A free library of in-depth guides on crystal healing, MBTI-based stone pairings, and daily energy rituals. Written by practitioners, not algorithms.</p>
+  <p class="intro" data-en="A free library of in-depth guides on crystal healing, MBTI-based stone pairings, and daily energy rituals. Written by practitioners, not algorithms." data-zh="一个免费的深度指南库，涵盖水晶疗愈、MBTI 宝石搭配以及每日能量仪式。由从业者撰写，而非算法生成。">A free library of in-depth guides on crystal healing, MBTI-based stone pairings, and daily energy rituals. Written by practitioners, not algorithms.</p>
 
   <div class="grid" id="post-grid">
-    <!-- POSTS — newest first. Add a card here whenever you publish a new article. -->
 
     <article class="post-card">
-      <div class="tag">MBTI · INTJ</div>
-      <h2><a href="crystals-for-intj.html">7 Crystals for INTJ — Stones for the Strategist Who Thinks Three Moves Ahead</a></h2>
-      <p class="excerpt">INTJs are 2% of the population — and over-systematized. These 7 crystals create capacity for the half-formed feelings and long-range vision the architect mind needs.</p>
-      <div class="meta">May 2026 · 8 min read</div>
+      <div class="tag" data-en="MBTI · INTJ" data-zh="MBTI · INTJ">MBTI · INTJ</div>
+      <h2><a href="crystals-for-intj.html" data-en="7 Crystals for INTJ — Stones for the Strategist Who Thinks Three Moves Ahead" data-zh="INTJ 的 7 颗水晶——给三步之外才落子的战略家">7 Crystals for INTJ — Stones for the Strategist Who Thinks Three Moves Ahead</a></h2>
+      <p class="excerpt" data-en="INTJs are 2% of the population — and over-systematized. These 7 crystals create capacity for the half-formed feelings and long-range vision the architect mind needs." data-zh="INTJ 只占人口的 2%，而且过度系统化。这 7 颗水晶为建筑师之心所需的半成型情感和远景创造空间。">INTJs are 2% of the population — and over-systematized. These 7 crystals create capacity for the half-formed feelings and long-range vision the architect mind needs.</p>
+      <div class="meta" data-en="May 2026 · 8 min read" data-zh="2026 年 5 月 · 阅读 8 分钟">May 2026 · 8 min read</div>
     </article>
 
     <article class="post-card">
-      <div class="tag">MBTI · ENFP</div>
-      <h2><a href="crystals-for-enfp.html">7 Crystals for ENFP — Stones That Catch You When the Spark Crashes</a></h2>
-      <p class="excerpt">You burn bright and crash hard. These 7 stones protect your fire and survive the inevitable trough — without dimming what makes you, you.</p>
-      <div class="meta">May 2026 · 9 min read</div>
+      <div class="tag" data-en="MBTI · ENFP" data-zh="MBTI · ENFP">MBTI · ENFP</div>
+      <h2><a href="crystals-for-enfp.html" data-en="7 Crystals for ENFP — Stones That Catch You When the Spark Crashes" data-zh="ENFP 的 7 颗水晶——当火花熄灭时接住你的石头">7 Crystals for ENFP — Stones That Catch You When the Spark Crashes</a></h2>
+      <p class="excerpt" data-en="You burn bright and crash hard. These 7 stones protect your fire and survive the inevitable trough — without dimming what makes you, you." data-zh="你燃烧得明亮，跌落得也凶。这 7 颗石头保护你的火焰、陪你度过必然的低谷——又不削弱让你成为你的那部分。">You burn bright and crash hard. These 7 stones protect your fire and survive the inevitable trough — without dimming what makes you, you.</p>
+      <div class="meta" data-en="May 2026 · 9 min read" data-zh="2026 年 5 月 · 阅读 9 分钟">May 2026 · 9 min read</div>
     </article>
 
     <article class="post-card">
-      <div class="tag">CRYSTAL GUIDE</div>
-      <h2><a href="rose-quartz-meaning-and-uses.html">Rose Quartz Meaning and Uses — The Honest 2026 Guide</a></h2>
-      <p class="excerpt">Beyond the generic "self-love" platitudes. The actual meaning, real protocols, how to wear it, and the four mistakes most beginners make.</p>
-      <div class="meta">May 2026 · 10 min read</div>
+      <div class="tag" data-en="CRYSTAL GUIDE" data-zh="水晶指南">CRYSTAL GUIDE</div>
+      <h2><a href="rose-quartz-meaning-and-uses.html" data-en="Rose Quartz Meaning and Uses — The Honest 2026 Guide" data-zh="粉水晶的含义与用途——一份诚实的 2026 指南">Rose Quartz Meaning and Uses — The Honest 2026 Guide</a></h2>
+      <p class="excerpt" data-en="Beyond the generic &quot;self-love&quot; platitudes. The actual meaning, real protocols, how to wear it, and the four mistakes most beginners make." data-zh="超越那种千篇一律的 &quot;自我之爱&quot; 套话。真正的含义、真实的使用方式、如何佩戴，以及大多数初学者会犯的四个错误。">Beyond the generic "self-love" platitudes. The actual meaning, real protocols, how to wear it, and the four mistakes most beginners make.</p>
+      <div class="meta" data-en="May 2026 · 10 min read" data-zh="2026 年 5 月 · 阅读 10 分钟">May 2026 · 10 min read</div>
     </article>
 
     <article class="post-card">
-      <div class="tag">CRYSTAL GUIDE · ANXIETY</div>
-      <h2><a href="crystals-for-anxiety.html">Best Crystals for Anxiety — 7 Stones, 4 Mechanisms, Real Protocols</a></h2>
-      <p class="excerpt">What actually works, what's marketing fluff, and which stone matches which type of anxiety. With one-minute panic-interrupt protocols.</p>
-      <div class="meta">May 2026 · 11 min read</div>
+      <div class="tag" data-en="CRYSTAL GUIDE · ANXIETY" data-zh="水晶指南 · 焦虑">CRYSTAL GUIDE · ANXIETY</div>
+      <h2><a href="crystals-for-anxiety.html" data-en="Best Crystals for Anxiety — 7 Stones, 4 Mechanisms, Real Protocols" data-zh="对抗焦虑的最佳水晶——7 颗石头、4 种机制、真实可行的方案">Best Crystals for Anxiety — 7 Stones, 4 Mechanisms, Real Protocols</a></h2>
+      <p class="excerpt" data-en="What actually works, what's marketing fluff, and which stone matches which type of anxiety. With one-minute panic-interrupt protocols." data-zh="哪些真正有效，哪些是营销话术；不同类型的焦虑该用哪颗石头。附一分钟的恐慌中断协议。">What actually works, what's marketing fluff, and which stone matches which type of anxiety. With one-minute panic-interrupt protocols.</p>
+      <div class="meta" data-en="May 2026 · 11 min read" data-zh="2026 年 5 月 · 阅读 11 分钟">May 2026 · 11 min read</div>
     </article>
 
     <article class="post-card">
-      <div class="tag">DAILY PRACTICE</div>
-      <h2><a href="morning-crystal-ritual.html">Morning Crystal Ritual — A 5-Minute Daily Practice That Sticks</a></h2>
-      <p class="excerpt">No incense, no chanting, no 90-minute routine. Five minutes, one crystal, three breaths — designed for someone who wakes up at 7:14.</p>
-      <div class="meta">May 2026 · 7 min read</div>
+      <div class="tag" data-en="DAILY PRACTICE" data-zh="日常练习">DAILY PRACTICE</div>
+      <h2><a href="morning-crystal-ritual.html" data-en="Morning Crystal Ritual — A 5-Minute Daily Practice That Sticks" data-zh="晨间水晶仪式——一个能坚持下来的 5 分钟日常">Morning Crystal Ritual — A 5-Minute Daily Practice That Sticks</a></h2>
+      <p class="excerpt" data-en="No incense, no chanting, no 90-minute routine. Five minutes, one crystal, three breaths — designed for someone who wakes up at 7:14." data-zh="不烧香、不诵经、没有 90 分钟的仪式流程。五分钟、一颗水晶、三次呼吸——给 7:14 才起床的人设计的方案。">No incense, no chanting, no 90-minute routine. Five minutes, one crystal, three breaths — designed for someone who wakes up at 7:14.</p>
+      <div class="meta" data-en="May 2026 · 7 min read" data-zh="2026 年 5 月 · 阅读 7 分钟">May 2026 · 7 min read</div>
     </article>
 
     <article class="post-card">
-      <div class="tag">MBTI · INFJ</div>
-      <h2><a href="crystals-for-infj.html">7 Crystals for INFJ — Stones That Actually Match Your Inner World</a></h2>
-      <p class="excerpt">As an INFJ, you absorb others' emotions like a sponge and burn out twice as fast. Here are 7 crystals selected specifically for the rarest MBTI type — with daily rituals to use them.</p>
-      <div class="meta">May 2026 · 9 min read</div>
+      <div class="tag" data-en="MBTI · INFJ" data-zh="MBTI · INFJ">MBTI · INFJ</div>
+      <h2><a href="crystals-for-infj.html" data-en="7 Crystals for INFJ — Stones That Actually Match Your Inner World" data-zh="INFJ 的 7 颗水晶——真正匹配你内心世界的石头">7 Crystals for INFJ — Stones That Actually Match Your Inner World</a></h2>
+      <p class="excerpt" data-en="As an INFJ, you absorb others' emotions like a sponge and burn out twice as fast. Here are 7 crystals selected specifically for the rarest MBTI type — with daily rituals to use them." data-zh="作为 INFJ，你像海绵一样吸收别人的情绪，耗竭速度是别人的两倍。这里精选 7 颗专为最稀有的 MBTI 类型挑选的水晶——附每日使用仪式。">As an INFJ, you absorb others' emotions like a sponge and burn out twice as fast. Here are 7 crystals selected specifically for the rarest MBTI type — with daily rituals to use them.</p>
+      <div class="meta" data-en="May 2026 · 9 min read" data-zh="2026 年 5 月 · 阅读 9 分钟">May 2026 · 9 min read</div>
     </article>
 
   </div>
 
   <footer>
-    Destiny Atelier · A small studio for the energetically curious · <a href="../">Shop crystals</a>
+    <span data-en="Destiny Atelier · A small studio for the energetically curious · " data-zh="命运工坊 · 给对能量好奇的人的一间小工作室 · ">Destiny Atelier · A small studio for the energetically curious · </span><a href="../" data-en="Shop crystals" data-zh="挑选水晶">Shop crystals</a>
   </footer>
 </div>
-<!-- Plausible-style minimal pageview ping (reuses existing GAS analytics if available) -->
+
 <script>
+function setLang(lang){
+  var nodes = document.querySelectorAll("[data-en]");
+  for (var i=0;i<nodes.length;i++){
+    var n = nodes[i];
+    var v = n.getAttribute("data-" + lang);
+    if (v != null) n.innerHTML = v;
+  }
+  document.documentElement.lang = (lang === "zh") ? "zh-CN" : "en";
+  document.title = (lang === "zh")
+    ? "水晶智慧日志 · 命运工坊博客"
+    : "Crystal Wisdom Journal · Destiny Atelier Blog";
+  try { localStorage.setItem("da_lang", lang); } catch(e){}
+  var en = document.getElementById("btn-en");
+  var zh = document.getElementById("btn-zh");
+  if (en) en.classList.toggle("active", lang === "en");
+  if (zh) zh.classList.toggle("active", lang === "zh");
+}
+
+(function(){
+  var saved = "en";
+  try { saved = localStorage.getItem("da_lang") || (navigator.language && navigator.language.indexOf("zh") === 0 ? "zh" : "en"); } catch(e){}
+  setLang(saved);
+})();
+
 try {
-  fetch('https://script.google.com/macros/s/AKfycbwPvEcxWmlv0AeHHcc0OWKgbtKq5y6RZjIZmYOG0q8ofGbDPW3E5XgLwhPvqdCQd4oD/exec', {
-    method: 'POST',
-    body: JSON.stringify({ action: 'track_pv', page: 'blog_index', referrer: document.referrer || 'direct', timestamp: new Date().toISOString() }),
-    headers: { 'Content-Type': 'text/plain' }
+  fetch("https://script.google.com/macros/s/AKfycbwPvEcxWmlv0AeHHcc0OWKgbtKq5y6RZjIZmYOG0q8ofGbDPW3E5XgLwhPvqdCQd4oD/exec", {
+    method: "POST",
+    body: JSON.stringify({ action: "track_pv", page: "blog_index", referrer: document.referrer || "direct", timestamp: new Date().toISOString() }),
+    headers: { "Content-Type": "text/plain" }
   }).catch(function(){});
 } catch(e){}
 </script>

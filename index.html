@@ -1885,7 +1885,17 @@
         const MBTIS = ["INTJ", "INTP", "ENTJ", "ENTP", "INFJ", "INFP", "ENFJ", "ENFP", "ISTJ", "ISFJ", "ESTJ", "ESFJ", "ISTP", "ISFP", "ESTP", "ESFP"];
 
         // --- STATE ---
-        let lang = 'en';
+        let lang = (function(){
+            try {
+                const saved = localStorage.getItem('site_lang');
+                if (saved === 'zh' || saved === 'en') return saved;
+            } catch(e){}
+            try {
+                const nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
+                if (nav.indexOf('zh') === 0) return 'zh';
+            } catch(e){}
+            return 'en';
+        })();
         let cart = [];
         let recommendations = [];
         // Palm reading state (declared early to avoid TDZ when updateLanguage runs at init)
@@ -1914,6 +1924,8 @@
         function init() {
             populateForm();
             renderProducts();
+            try { document.documentElement.lang = (lang === 'zh' ? 'zh-CN' : 'en'); } catch(e){}
+            updateLangBtnLabel();
             updateLanguage();
         }
 
@@ -1958,7 +1970,20 @@
 
         function toggleLanguage() {
             lang = lang === 'zh' ? 'en' : 'zh';
+            try { localStorage.setItem('site_lang', lang); } catch(e){}
+            try { document.documentElement.lang = (lang === 'zh' ? 'zh-CN' : 'en'); } catch(e){}
+            updateLangBtnLabel();
             updateLanguage();
+        }
+        function updateLangBtnLabel() {
+            try {
+                document.querySelectorAll('.lang-toggle').forEach(btn => {
+                    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').indexOf('toggleLanguage') >= 0) {
+                        btn.textContent = (lang === 'zh' ? 'EN' : '中文');
+                        btn.title = (lang === 'zh' ? 'Switch to English' : '切换中文');
+                    }
+                });
+            } catch(e){}
         }
 
         function updateLanguage() {

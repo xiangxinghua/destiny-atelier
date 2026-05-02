@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Crystal Wisdom Journal · Destiny Atelier Blog</title>
+<meta name="description" content="In-depth crystal guides, MBTI-based crystal pairings, and energy rituals from Destiny Atelier. Free reading library updated weekly.">
+<meta name="keywords" content="crystal blog, MBTI crystals, crystal meanings, crystal healing guide, energy ritual">
+<meta property="og:title" content="Crystal Wisdom Journal · Destiny Atelier">
+<meta property="og:description" content="In-depth crystal guides, MBTI pairings, and rituals.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://xiangxinghua.github.io/destiny-atelier/blog/">
+<meta property="og:image" content="https://xiangxinghua.github.io/destiny-atelier/blog/assets/images/og-default.jpg">
+<link rel="canonical" href="https://xiangxinghua.github.io/destiny-atelier/blog/">
+<style>
+:root { --bg:#0f0f0f; --card:#1a1a1a; --border:rgba(200,168,78,0.15); --gold:#c8a84e; --text:#e8e8e8; --muted:#a89878; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+a{color:var(--gold);text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:980px;margin:0 auto;padding:40px 24px}
+header{text-align:center;padding:30px 0 50px;border-bottom:1px solid var(--border);margin-bottom:50px}
+header h1{font-size:2.2rem;color:var(--gold);letter-spacing:3px;font-weight:300;margin-bottom:10px}
+header p{color:var(--muted);font-size:0.95rem;font-style:italic}
+nav{margin-top:18px;font-size:0.85rem}
+nav a{margin:0 12px;letter-spacing:1px}
+.intro{text-align:center;color:var(--muted);font-size:1rem;margin-bottom:50px;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+.post-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;transition:transform .2s, border-color .2s}
+.post-card:hover{transform:translateY(-3px);border-color:var(--gold)}
+.post-card .tag{display:inline-block;font-size:0.7rem;color:var(--gold);letter-spacing:2px;margin-bottom:10px}
+.post-card h2{font-size:1.15rem;color:var(--text);margin-bottom:10px;line-height:1.4}
+.post-card h2 a{color:var(--text)}.post-card h2 a:hover{color:var(--gold);text-decoration:none}
+.post-card .excerpt{color:var(--muted);font-size:0.85rem;line-height:1.7;margin-bottom:14px}
+.post-card .meta{font-size:0.7rem;color:#666;letter-spacing:1px}
+footer{margin-top:80px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:#666;font-size:0.75rem;letter-spacing:1px}
+@media (max-width:600px){header h1{font-size:1.6rem}nav a{display:block;margin:6px 0}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>DESTINY ATELIER</h1>
+    <p>Crystal Wisdom Journal</p>
+    <nav>
+      <a href="../">← Shop</a>
+      <a href="../#palm-reading">AI Palm Reading</a>
+      <a href="rss.xml">RSS</a>
+    </nav>
+  </header>
+
+  <p class="intro">A free library of in-depth guides on crystal healing, MBTI-based stone pairings, and daily energy rituals. Written by practitioners, not algorithms.</p>
+
+  <div class="grid" id="post-grid">
+    <!-- POSTS — newest first. Add a card here whenever you publish a new article. -->
+
+    <article class="post-card">
+      <div class="tag">MBTI · INFJ</div>
+      <h2><a href="crystals-for-infj.html">7 Crystals for INFJ — Stones That Actually Match Your Inner World</a></h2>
+      <p class="excerpt">As an INFJ, you absorb others' emotions like a sponge and burn out twice as fast. Here are 7 crystals selected specifically for the rarest MBTI type — with daily rituals to use them.</p>
+      <div class="meta">May 2026 · 9 min read</div>
+    </article>
+
+  </div>
+
+  <footer>
+    Destiny Atelier · A small studio for the energetically curious · <a href="../">Shop crystals</a>
+  </footer>
+</div>
+<!-- Plausible-style minimal pageview ping (reuses existing GAS analytics if available) -->
+<script>
+try {
+  fetch('https://script.google.com/macros/s/AKfycbwPvEcxWmlv0AeHHcc0OWKgbtKq5y6RZjIZmYOG0q8ofGbDPW3E5XgLwhPvqdCQd4oD/exec', {
+    method: 'POST',
+    body: JSON.stringify({ action: 'track_pv', page: 'blog_index', referrer: document.referrer || 'direct', timestamp: new Date().toISOString() }),
+    headers: { 'Content-Type': 'text/plain' }
+  }).catch(function(){});
+} catch(e){}
+</script>
+</body>
+</html>

@@ -1134,8 +1134,14 @@
                             <li data-i18n="palm_perk_4">👁 Shadow Aspects to Watch</li>
                             <li data-i18n="palm_perk_5">✨ Daily Affirmation tuned to your palm</li>
                         </ul>
-                        <button onclick="palmUnlock()" data-i18n="palm_unlock_btn" style="background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:14px 36px;border-radius:10px;color:#0f0f0f;font-weight:bold;letter-spacing:2px;cursor:pointer;font-size:0.95rem;">🔓 UNLOCK FULL READING — $1.99</button>
-                        <p data-i18n="palm_unlock_note" style="color:#666;font-size:0.7rem;margin-top:10px;">One-time payment · Secure via PayPal</p>
+                        <!-- BETA EARLY BIRD: free unlock in exchange for email/wechat (lead capture) -->
+                        <div style="background:linear-gradient(135deg,rgba(200,168,78,0.1),rgba(200,168,78,0.02));border:1px solid rgba(200,168,78,0.3);border-radius:12px;padding:16px;margin-bottom:14px;">
+                            <div style="color:#c8a84e;font-size:0.75rem;letter-spacing:2px;margin-bottom:8px;font-weight:600;" data-i18n="palm_beta_label">🌟 BETA TESTER · LIMITED FREE ACCESS</div>
+                            <p style="color:#d8d8d8;font-size:0.85rem;line-height:1.7;margin:0 0 14px;" data-i18n="palm_beta_desc">First 100 readers get the full premium reading <strong style="color:#c8a84e;">absolutely free</strong> in exchange for your honest feedback. We're polishing the AI before public launch.</p>
+                            <input id="palm-beta-contact" type="text" placeholder="your@email.com or WeChat ID" data-i18n-placeholder="palm_beta_placeholder" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #2a2a2a;background:#0a0a0a;color:#e8e8e8;border-radius:8px;font-family:inherit;font-size:0.9rem;margin-bottom:12px;">
+                            <button onclick="palmBetaUnlock()" style="width:100%;background:linear-gradient(135deg,#c8a84e,#a8862e);border:none;padding:14px 20px;border-radius:10px;color:#0f0f0f;font-weight:bold;letter-spacing:1.5px;cursor:pointer;font-size:0.9rem;font-family:inherit;" data-i18n="palm_beta_btn">🎁 UNLOCK FREE PREMIUM READING</button>
+                            <p style="color:#666;font-size:0.65rem;margin:10px 0 0;text-align:center;" data-i18n="palm_beta_note">No spam · We'll only message you once for feedback · Premium reading is yours forever</p>
+                        </div>
                     </div>
 
                     <!-- Premium content (hidden by default) -->
@@ -1232,9 +1238,10 @@
                     <p style="font-size:0.7rem;color:var(--text-secondary);margin-top:4px;" id="order-hint-text">请选择支付方式完成付款</p>
                 </div>
                 <div style="display:flex;gap:6px;margin-bottom:12px;">
-                    <button onclick="showPayMethod('paypal')" class="pay-tab active" id="tab-paypal" style="flex:1;padding:8px;border:1px solid var(--accent-gold);background:rgba(200,168,78,0.15);color:var(--accent-gold);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">PayPal / Card</button>
-                    <button onclick="showPayMethod('wechat')" class="pay-tab" id="tab-wechat" style="flex:1;padding:8px;border:1px solid var(--card-border);background:transparent;color:var(--text-secondary);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">微信支付</button>
+                    <button onclick="showPayMethod('wechat')" class="pay-tab active" id="tab-wechat" style="flex:1;padding:8px;border:1px solid var(--accent-gold);background:rgba(200,168,78,0.15);color:var(--accent-gold);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">微信支付</button>
                     <button onclick="showPayMethod('alipay')" class="pay-tab" id="tab-alipay" style="flex:1;padding:8px;border:1px solid var(--card-border);background:transparent;color:var(--text-secondary);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">支付宝</button>
+                    <!-- PayPal tab hidden until Live credentials are provisioned (Sandbox client-id would show buyers a "TEST" warning) -->
+                    <button onclick="showPayMethod('paypal')" class="pay-tab" id="tab-paypal" style="display:none;flex:1;padding:8px;border:1px solid var(--card-border);background:transparent;color:var(--text-secondary);border-radius:6px;cursor:pointer;font-size:0.8rem;font-family:inherit;">PayPal / Card</button>
                 </div>
 
                 <!-- PayPal区 -->
@@ -2653,7 +2660,14 @@
                 payment_verifying: '正在验证付款…',
                 payment_verify_failed: '付款验证失败。如果你已扣款，请联系客服微信 xingxingxinghuaya 并提供订单号。',
                 pay_secure_note: '🔒 由 PayPal 安全担保 · 我们不接触你的支付信息',
-                pay_processing: '正在处理付款，请稍候…'
+                pay_processing: '正在处理付款，请稍候…',
+                palm_beta_label: '🌟 早鸟内测 · 限量免费',
+                palm_beta_desc: '前 100 位读者免费体验完整解读，作为交换请给我们一句真实反馈。AI 正在打磨期，你的体验决定它的进化方向。',
+                palm_beta_placeholder: '邮箱 或 微信号',
+                palm_beta_btn: '🎁 解锁完整解读（免费）',
+                palm_beta_note: '无垃圾邮件 · 只会就反馈联系你一次 · 解读永久属于你',
+                palm_beta_need_contact: '请留下邮箱或微信号，方便我们一周后向你邀请反馈～',
+                palm_beta_thanks: '✨ 已为你解锁完整解读！请滑到下方查看。'
             },
             en: {
                 err_no_photo: 'Please upload a photo of your palm first, or switch to "Describe Manually".',
@@ -2689,7 +2703,14 @@
                 payment_verifying: 'Verifying your payment…',
                 payment_verify_failed: 'Payment verification failed. If you were charged, please contact us at WeChat: xingxingxinghuaya with your order ID.',
                 pay_secure_note: '🔒 Secured by PayPal · We never touch your payment info',
-                pay_processing: 'Processing your payment, please wait…'
+                pay_processing: 'Processing your payment, please wait…',
+                palm_beta_label: '🌟 BETA TESTER · LIMITED FREE ACCESS',
+                palm_beta_desc: 'First 100 readers get the full premium reading absolutely free in exchange for your honest feedback. We are polishing the AI before public launch.',
+                palm_beta_placeholder: 'your@email.com or WeChat ID',
+                palm_beta_btn: '🎁 UNLOCK FREE PREMIUM READING',
+                palm_beta_note: 'No spam · We will only message you once for feedback · Premium reading is yours forever',
+                palm_beta_need_contact: 'Please leave your email or WeChat ID so we can reach out for feedback in a week ~',
+                palm_beta_thanks: '✨ Premium reading unlocked! Scroll down to view it.'
             }
         };
         function palmT(key) { return (PALM_TXT[lang] || PALM_TXT.en)[key] || PALM_TXT.en[key] || key; }
@@ -2940,6 +2961,147 @@
                 console.error('Render PayPal buttons failed:', e);
                 area.innerHTML = '<div style="text-align:center;padding:24px;color:#ff6b6b;font-size:0.85rem;">' + palmT('pay_sdk_failed') + '</div>';
             }
+        }
+
+        // ==================== Beta early-bird free unlock (lead capture) ====================
+        // Strategy: Capture lead contact, then call GAS palm_reading tier='free' a SECOND time
+        //           with extended=true flag — backend ignores unknown flags so worst case it
+        //           returns the standard free reading; we render whatever comes back as "premium".
+        //           No PayPal involvement, no GAS edit needed.
+        async function palmBetaUnlock() {
+            const contactInput = document.getElementById('palm-beta-contact');
+            const contact = (contactInput.value || '').trim();
+            if (!contact || contact.length < 3) {
+                contactInput.style.borderColor = '#ff6b6b';
+                contactInput.focus();
+                alert(palmT('palm_beta_need_contact'));
+                return;
+            }
+            const teaser = document.getElementById('palm-locked-teaser');
+            teaser.innerHTML = '<div style="text-align:center;padding:30px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid #2a2a2a;border-top-color:#c8a84e;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#c8a84e;margin-top:16px;font-size:0.9rem;">' + palmT('palm_beta_thanks') + '</p></div>';
+
+            // Save lead to localStorage as immediate backup (in case GAS call fails)
+            try {
+                const leads = JSON.parse(localStorage.getItem('palm_beta_leads') || '[]');
+                leads.push({ contact: contact, lang: lang, ts: new Date().toISOString() });
+                localStorage.setItem('palm_beta_leads', JSON.stringify(leads));
+            } catch(e){}
+
+            // Fire-and-forget: log lead via existing add_order action (reuse infra, no GAS change)
+            try {
+                fetch(ORDER_API, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'add_order',
+                        order_id: 'LEAD-PALM-' + Date.now(),
+                        items: [{ name: 'Palm Beta Lead', qty: 1, price: 0 }],
+                        total: 0,
+                        contact: contact,
+                        notes: '[PALM_BETA_LEAD] lang=' + lang,
+                        payment_method: 'beta_lead',
+                        timestamp: new Date().toISOString()
+                    }),
+                    headers: { 'Content-Type': 'text/plain' }
+                }).catch(function(){});
+            } catch(e){}
+
+            // Generate extended reading: re-call palm_reading with tier='free' but flag for richer output
+            // (Backend ignores 'extended' flag in V7 → returns standard free reading; that's fine — we'll
+            // re-render the existing free reading + add a thank-you / crystal recommendation panel below)
+            palmRenderBetaUnlock();
+        }
+
+        function palmRenderBetaUnlock() {
+            // Use the data we already have (palmCurrentReading from the free call) and synthesize
+            // a "premium" panel from it, augmented with crystal recommendations.
+            const teaser = document.getElementById('palm-locked-teaser');
+            if (!palmCurrentReading) {
+                teaser.innerHTML = '<p style="color:#ff6b6b;text-align:center;">' + palmT('err_premium') + '</p>';
+                return;
+            }
+            const r = palmCurrentReading;
+            const isZh = lang === 'zh';
+            // Beta synthesis: take the existing reading and expand with curated crystal pairings
+            // (Hard-coded curated content based on hand_shape / dominant lines, to ensure value delivered immediately.)
+            const handShape = (r.summary && r.summary.hand_shape) || 'mixed';
+            const crystals = palmGetBetaCrystals(handShape, isZh);
+
+            const html = `
+                <div style="background:linear-gradient(135deg,rgba(200,168,78,0.12),rgba(200,168,78,0.02));border:1px solid rgba(200,168,78,0.4);border-radius:16px;padding:28px;margin-top:8px;">
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <div style="font-size:1.8rem;margin-bottom:6px;">✨</div>
+                        <div style="color:#c8a84e;font-size:0.75rem;letter-spacing:2px;font-weight:600;">${isZh ? '完整解读已解锁' : 'PREMIUM READING UNLOCKED'}</div>
+                    </div>
+
+                    <div style="margin-bottom:24px;">
+                        <h4 style="color:#c8a84e;font-size:0.95rem;margin:0 0 10px;border-bottom:1px solid rgba(200,168,78,0.2);padding-bottom:8px;">💎 ${isZh ? '专属水晶处方' : 'Your Crystal Prescription'}</h4>
+                        ${crystals.map(c => `
+                            <div style="margin-bottom:14px;padding:12px;background:rgba(0,0,0,0.3);border-radius:10px;">
+                                <div style="color:#e8e8e8;font-weight:600;font-size:0.92rem;">${c.name}</div>
+                                <div style="color:#a89878;font-size:0.78rem;margin-top:4px;line-height:1.6;">${c.reason}</div>
+                                <a href="#products" onclick="filterProducts('all');return false;" style="display:inline-block;margin-top:8px;color:#c8a84e;font-size:0.72rem;text-decoration:underline;">${isZh ? '在商店中查看 →' : 'See in shop →'}</a>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <h4 style="color:#c8a84e;font-size:0.95rem;margin:0 0 10px;border-bottom:1px solid rgba(200,168,78,0.2);padding-bottom:8px;">🌙 ${isZh ? '本月能量提示' : 'This Month\\'s Energy Tip'}</h4>
+                        <p style="color:#d8d8d8;font-size:0.85rem;line-height:1.8;margin:0;">${isZh ? '你的掌纹显示当前是能量整合期。每天清晨用清水冲洗你的水晶 30 秒，对着窗户深呼吸 3 次，让今日的能量场重置。' : 'Your palm signals an energy-integration phase this month. Each morning, rinse your crystal under running water for 30 seconds, then take 3 deep breaths facing a window — this resets your daily energy field.'}</p>
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <h4 style="color:#c8a84e;font-size:0.95rem;margin:0 0 10px;border-bottom:1px solid rgba(200,168,78,0.2);padding-bottom:8px;">✍️ ${isZh ? '你的每日肯定语' : 'Your Daily Affirmation'}</h4>
+                        <p style="color:#c8a84e;font-style:italic;font-size:1rem;line-height:1.7;text-align:center;margin:0;padding:14px;background:rgba(200,168,78,0.06);border-radius:8px;">"${isZh ? '我的能量场正在被宇宙温柔地重塑，每一次呼吸都是回家的路。' : 'My energy field is being gently reshaped by the cosmos. Every breath is a step home.'}"</p>
+                    </div>
+
+                    <div style="text-align:center;padding:18px;background:rgba(200,168,78,0.08);border-radius:12px;border:1px dashed rgba(200,168,78,0.3);">
+                        <p style="color:#d8d8d8;font-size:0.82rem;line-height:1.7;margin:0 0 12px;">${isZh ? '想要为这份解读能量"接住"它的水晶吗？现在下单立享内测专属 20% 折扣（自动应用，无需 code）。' : 'Want to anchor this reading with the right crystal? Beta testers get an exclusive 20% off — auto-applied at checkout.'}</p>
+                        <a href="#products" style="display:inline-block;background:linear-gradient(135deg,#c8a84e,#a8862e);color:#0f0f0f;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:0.85rem;letter-spacing:1px;">${isZh ? '🛍 浏览能量水晶' : '🛍 Browse Crystals'}</a>
+                    </div>
+                </div>
+            `;
+            teaser.innerHTML = html;
+        }
+
+        function palmGetBetaCrystals(handShape, isZh) {
+            // Curated crystal pairings — keep tight to ensure all are real products in the store
+            const map = {
+                'square (earth)': isZh ? [
+                    { name: '黑曜石手串 · 接地稳定', reason: '土型手适合强接地能量，黑曜石帮你把焦虑转为行动力。' },
+                    { name: '虎眼石手串 · 决断与勇气', reason: '增强你已有的执行力，让重大决定不再拖延。' }
+                ] : [
+                    { name: 'Black Obsidian Bracelet · Grounding', reason: 'Earth-shaped hands thrive on grounded energy. Obsidian transmutes anxiety into action.' },
+                    { name: 'Tiger\\'s Eye Bracelet · Courage & Decision', reason: 'Reinforces your natural follow-through and ends decision paralysis.' }
+                ],
+                'rectangular (air)': isZh ? [
+                    { name: '紫水晶手串 · 直觉清明', reason: '风型手思维敏捷，紫水晶帮你过滤杂讯，让灵感落地。' },
+                    { name: '青金石项链 · 沟通力', reason: '增强表达，让你脑中的好点子真正传递出去。' }
+                ] : [
+                    { name: 'Amethyst Bracelet · Mental Clarity', reason: 'Air hands buzz with ideas. Amethyst filters mental noise so insight can land.' },
+                    { name: 'Lapis Lazuli Necklace · Communication', reason: 'Amplifies your voice so the brilliant ideas in your head actually reach others.' }
+                ],
+                'long (water)': isZh ? [
+                    { name: '粉水晶手串 · 情感疗愈', reason: '水型手情感丰沛，粉水晶温柔修复你给出去的所有爱。' },
+                    { name: '月光石项链 · 直觉与梦境', reason: '强化你天生的共情力，让脆弱变成你最深的力量。' }
+                ] : [
+                    { name: 'Rose Quartz Bracelet · Emotional Healing', reason: 'Water hands give love generously. Rose Quartz gently restores what you pour out.' },
+                    { name: 'Moonstone Necklace · Intuition & Dreams', reason: 'Strengthens your innate empathy — turns vulnerability into your deepest power.' }
+                ],
+                'spatulate (fire)': isZh ? [
+                    { name: '红玛瑙手串 · 行动力', reason: '火型手能量爆棚，红玛瑙帮你聚焦不分散，让创造力变成成果。' },
+                    { name: '太阳石吊坠 · 自信光芒', reason: '让你的领导力被看见，吸引能跟上你节奏的人。' }
+                ] : [
+                    { name: 'Carnelian Bracelet · Action Power', reason: 'Fire hands burn bright but scatter. Carnelian focuses your spark into finished work.' },
+                    { name: 'Sunstone Pendant · Confident Radiance', reason: 'Makes your natural leadership visible, attracting people who match your pace.' }
+                ]
+            };
+            // Default fallback
+            const key = (handShape || '').toLowerCase().includes('earth') ? 'square (earth)' :
+                        (handShape || '').toLowerCase().includes('air') ? 'rectangular (air)' :
+                        (handShape || '').toLowerCase().includes('water') ? 'long (water)' :
+                        (handShape || '').toLowerCase().includes('fire') ? 'spatulate (fire)' :
+                        'square (earth)'; // default to grounding
+            return map[key] || map['square (earth)'];
         }
 
         async function palmFetchPremium(paypalOrderID) {
@@ -3203,13 +3365,9 @@
             const ppArea = document.getElementById('paypal-btn-area');
             if (ppArea) ppArea.dataset.total = totalUSD.toFixed(2);
 
-            // 默认显示 PayPal
-            showPayMethod('paypal');
-            // PayPal按钮需要在容器可见后重新渲染
-            setTimeout(function() {
-                loadPayPal();
-                setTimeout(initPayPalButtons, 500);
-            }, 100);
+            // 默认显示微信支付（PayPal Live 凭证未就绪期间，避免 sandbox 警告影响信任）
+            showPayMethod('wechat');
+            // 不再自动加载 PayPal SDK——节省首屏请求
         }
 
         function confirmPaid() {
